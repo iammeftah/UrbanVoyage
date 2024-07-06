@@ -50,52 +50,59 @@
             </label>
           </div>
         </div>
-        <!-- Travel Date -->
-        <div>
-          <label class="text-sm font-medium mb-1 block" for="date">
-            Travel Date
-          </label>
-          <input
-            class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-400 focus:border-primary-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
-            id="date"
-            type="date"
-          />
-        </div>
-        <!-- Return Date (Visible only if Round Trip is selected) -->
-        <div [ngClass]="{'hidden': isOneWay}" data-aos="fade-left">
-          <label class="text-sm font-medium mb-1 block" for="return-date">
-            Return Date
-          </label>
-          <input
-            class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-400 focus:border-primary-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
-            id="return-date"
-            type="date"
-          />
+        <!-- Travel Date and Return Date -->
+        <div class="sm:col-span-2">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm font-medium mb-1 block" for="date">
+                Travel Date
+              </label>
+              <input
+                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-400 focus:border-primary-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                id="date"
+                type="date"
+              />
+            </div>
+            <div [ngClass]="{'hidden': isOneWay}" data-aos="fade-left">
+              <label class="text-sm font-medium mb-1 block" for="return-date">
+                Return Date
+              </label>
+              <input
+                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-400 focus:border-primary-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                id="return-date"
+                type="date"
+              />
+            </div>
+          </div>
         </div>
         <!-- Number of Travelers (Adults / Children) -->
-        <div>
-          <label class="text-sm font-medium mb-1 block" for="adults">
-            Adults
-          </label>
-          <input
-            class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-400 focus:border-primary-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
-            id="adults"
-            type="number"
-            min="1"
-            placeholder="Number of adults"
-          />
-        </div>
-        <div>
-          <label class="text-sm font-medium mb-1 block" for="children">
-            Children
-          </label>
-          <input
-            class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-400 focus:border-primary-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
-            id="children"
-            type="number"
-            min="0"
-            placeholder="Number of children"
-          />
+        <div class="sm:col-span-3 w-full md:w-2/3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm font-medium mb-1 block" for="adults">
+                Adults
+              </label>
+              <input
+                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-400 focus:border-primary-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                id="adults"
+                type="number"
+                min="1"
+                placeholder="Number of adults"
+              />
+            </div>
+            <div>
+              <label class="text-sm font-medium mb-1 block" for="children">
+                Children
+              </label>
+              <input
+                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-400 focus:border-primary-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                id="children"
+                type="number"
+                min="0"
+                placeholder="Number of children"
+              />
+            </div>
+          </div>
         </div>
         <!-- Pet Option -->
         <div class="sm:col-span-3">
@@ -124,6 +131,8 @@
         </div>
       </form>
     </div>
+
+    <!-- Rest of the content remains unchanged -->
 
     <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
       <!-- Route Card Component -->
