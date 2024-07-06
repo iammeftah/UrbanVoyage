@@ -12,6 +12,9 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { DarkModeToggleComponent } from './objects/dark-mode-toggle/dark-mode-toggle.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { RoutesPageComponent } from './pages/routes-page/routes-page.component';
+import { BookingPageComponent } from './pages/booking-page/booking-page.component';
+import { SchedulesPageComponent } from './pages/schedules-page/schedules-page.component';
+import { CarouselComponent } from './components/carousel/carousel.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +25,9 @@ import { RoutesPageComponent } from './pages/routes-page/routes-page.component';
     DarkModeToggleComponent,
     FooterComponent,
     RoutesPageComponent,
+    BookingPageComponent,
+    SchedulesPageComponent,
+    CarouselComponent,
   ],
   imports: [
     BrowserModule,
