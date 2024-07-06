@@ -15,6 +15,10 @@ import { RoutesPageComponent } from './pages/routes-page/routes-page.component';
 import { BookingPageComponent } from './pages/booking-page/booking-page.component';
 import { SchedulesPageComponent } from './pages/schedules-page/schedules-page.component';
 import { CarouselComponent } from './components/carousel/carousel.component';
+import {OurServicePageComponent} from "./pages/our-service-page/our-service-page.component";
+import { ContactPageComponent } from './pages/contact-page/contact-page.component';
+import { LoginPageComponent } from './pages/login-page/login-page.component';
+import { RegisterPageComponent } from './pages/register-page/register-page.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +31,11 @@ import { CarouselComponent } from './components/carousel/carousel.component';
     RoutesPageComponent,
     BookingPageComponent,
     SchedulesPageComponent,
+    OurServicePageComponent,
     CarouselComponent,
+    ContactPageComponent,
+    LoginPageComponent,
+    RegisterPageComponent,
   ],
   imports: [
     BrowserModule,

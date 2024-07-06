@@ -16,7 +16,7 @@
       <a class="hover:text-primary-400 duration-300 text-sm font-medium transition-colors" href="/schedules">
         Schedules
       </a>
-      <a class="hover:text-primary-400 duration-300 text-sm font-medium transition-colors" href="/our-services">
+      <a class="hover:text-primary-400 duration-300 text-sm font-medium transition-colors" href="/services">
         Our Services
       </a>
       <a class="hover:text-primary-400 duration-300 text-sm font-medium transition-colors" href="/contact">
@@ -32,7 +32,7 @@
       </a>
       <a
       class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-primary-600 dark:hover:text-primary-600 dark:hover:border-primary-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 duration-300"
-      href="/signup"
+      href="/register"
       >
       Sign Up
       </a>
@@ -69,7 +69,7 @@
     *ngIf="isSidebarOpen"
     class="fixed inset-0 z-40 md:hidden"
     (click)="closeSidebar()"
-  ></div>
+  >x</div>
 
   <nav
     id="mobile-menu"
@@ -89,7 +89,7 @@
       <a class="block py-2 text-sm font-medium hover:text-primary transition-colors" href="/routes" (click)="closeSidebar()">Routes</a>
       <a class="block py-2 text-sm font-medium hover:text-primary transition-colors" href="/booking" (click)="closeSidebar()">Booking</a>
       <a class="block py-2 text-sm font-medium hover:text-primary transition-colors" href="/schedules" (click)="closeSidebar()">Schedules</a>
-      <a class="block py-2 text-sm font-medium hover:text-primary transition-colors" href="/our-services" (click)="closeSidebar()">Our Services</a>
+      <a class="block py-2 text-sm font-medium hover:text-primary transition-colors" href="/services" (click)="closeSidebar()">Our Services</a>
       <a class="block py-2 text-sm font-medium hover:text-primary transition-colors" href="/contact" (click)="closeSidebar()">Contact</a>
       <a class="block py-2 text-sm font-medium hover:text-primary transition-colors" href="/login" (click)="closeSidebar()">Log In</a>
       <a class="block py-2 text-sm font-medium hover:text-primary transition-colors" href="/signup" (click)="closeSidebar()">Sign Up</a>
