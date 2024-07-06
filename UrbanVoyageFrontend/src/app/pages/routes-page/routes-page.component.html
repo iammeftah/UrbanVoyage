@@ -1,0 +1,134 @@
+<div class="flex flex-col min-h-screen">
+  <app-header></app-header>
+
+  <div class="flex-grow w-full px-4 py-8 sm:px-6 lg:px-32 bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold mb-2">Find your next trip</h1>
+      <p class="text-gray-600 dark:text-gray-300">Search for autocar routes to your destination.</p>
+    </div>
+
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+      <form class="p-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <!-- Departure Location -->
+        <div>
+          <label class="text-sm font-medium mb-1 block" for="departure">
+            Departure
+          </label>
+          <input
+            class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-400 focus:border-primary-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+            id="departure"
+            placeholder="Enter departure location"
+          />
+        </div>
+        <!-- Destination Location -->
+        <div>
+          <label class="text-sm font-medium mb-1 block" for="destination">
+            Destination
+          </label>
+          <input
+            class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-400 focus:border-primary-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+            id="destination"
+            placeholder="Enter destination"
+          />
+        </div>
+
+        <!-- Trip Type: One-Way or Round Trip -->
+        <div class="sm:col-span-3">
+          <label class="text-sm font-medium mb-1 block" for="trip-type">
+            Trip Type
+          </label>
+          <div class="flex space-x-4">
+            <label class="flex items-center">
+              <input type="radio" name="trip-type" value="one-way" class="text-primary-400 focus:ring-primary-400" checked (change)="onTripTypeChange($event)">
+              <span class="ml-2">One-Way</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="trip-type" value="round-trip" class="text-primary-400 focus:ring-primary-400" (change)="onTripTypeChange($event)">
+              <span class="ml-2">Round Trip</span>
+            </label>
+          </div>
+        </div>
+        <!-- Travel Date -->
+        <div>
+          <label class="text-sm font-medium mb-1 block" for="date">
+            Travel Date
+          </label>
+          <input
+            class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-400 focus:border-primary-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+            id="date"
+            type="date"
+          />
+        </div>
+        <div [ngClass]="{'hidden': isOneWay}" data-aos="fade-in">
+          <label class="text-sm font-medium mb-1 block" for="return-date">
+            Return Date
+          </label>
+          <input
+            class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-400 focus:border-primary-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+            id="return-date"
+            type="date"
+          />
+        </div>
+        <!-- Search Button -->
+        <div class="w-full flex justify-end sm:col-span-3">
+          <button
+            class="inline-flex items-center justify-center rounded-md bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-gray-900"
+            type="submit"
+          >
+            Search
+          </button>
+        </div>
+      </form>
+    </div>
+
+
+
+    <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+      <!-- this needs to be an independent component -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
+        <div class="p-6 grid grid-cols-2 gap-4">
+          <!-- Departure Time and Location -->
+          <div>
+            <div class="text-xl font-bold">8:00 AM</div>
+            <div class="text-gray-600 dark:text-gray-300">Departure</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">From: New York, NY</div>
+          </div>
+          <!-- Arrival Time and Location -->
+          <div>
+            <div class="text-xl font-bold">11:30 AM</div>
+            <div class="text-gray-600 dark:text-gray-300">Arrival</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">To: Boston, MA</div>
+          </div>
+          <!-- Duration -->
+          <div>
+            <div class="text-xl font-bold">3h 30m</div>
+            <div class="text-gray-600 dark:text-gray-300">Duration</div>
+          </div>
+          <!-- Price -->
+          <div>
+            <div class="text-xl font-bold">$99</div>
+            <div class="text-gray-600 dark:text-gray-300">Price</div>
+          </div>
+          <!-- Booking Button -->
+          <div class="col-span-2">
+            <button
+              class="inline-flex items-center justify-center rounded-md bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-gray-900 w-full"
+            >
+              Book
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Repeat this block for the other route cards, changing the details as needed -->
+      <!-- I'll include one more as an example, but you can add as many as needed -->
+
+
+    </div>
+  </div>
+
+  <app-footer class="mt-auto"></app-footer>
+</div>
