@@ -5,282 +5,92 @@
     <div class="flex-grow">
       <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold">Travel Schedules</h1>
-        <div class="flex items-center space-x-4">
-          <button
-            class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50  bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-lightText dark:text-darkText h-10 px-4 py-2 flex items-center space-x-2"
-            type="button"
-          >
-            <i class='bx bx-filter' ></i>
-            <span>Filter</span>
-          </button>
-          <button
-            class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50   bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-lightText dark:text-darkText h-10 px-4 py-2 flex items-center space-x-2"
-            type="button"
-          >
-            <i class='bx bx-sort-up' ></i>
-            <i class='bx bx-sort-down' ></i>
-            <span>Sort</span>
-          </button>
-        </div>
       </div>
 
       <div class="max-w-[600px] my-4">
         <input
-          class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-400 focus:border-primary-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
-          placeholder="Where do you want to go?"
+          [(ngModel)]="filterText"
+          (input)="applyFilter()"
+          class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+          placeholder="Filter by destination or travel type"
           type="text"
         />
       </div>
-
 
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
         <div class="relative w-full overflow-auto">
           <table class="w-full caption-bottom text-sm">
             <thead class="[&_tr]:border-b bg-gray-50 dark:bg-gray-700">
             <tr class="border-b transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
-              <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">
+              <th (click)="toggleSort('departure.time')" class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 cursor-pointer">
                 Departure
+                <i [class]="getSortIcon('departure.time')"></i>
               </th>
-              <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">
+              <th (click)="toggleSort('arrival.time')" class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 cursor-pointer">
                 Arrival
+                <i [class]="getSortIcon('arrival.time')"></i>
               </th>
-              <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">
+              <th (click)="toggleSort('destination.city')" class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 cursor-pointer">
                 Destination
+                <i [class]="getSortIcon('destination.city')"></i>
               </th>
-              <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">
+              <th (click)="toggleSort('travelType')" class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 cursor-pointer">
                 Travel Type
+                <i [class]="getSortIcon('travelType')"></i>
               </th>
-              <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">
+              <th (click)="toggleSort('duration')" class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 cursor-pointer">
                 Duration
+                <i [class]="getSortIcon('duration')"></i>
               </th>
-              <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">
+              <th (click)="toggleSort('price')" class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 cursor-pointer">
                 Price
+                <i [class]="getSortIcon('price')"></i>
               </th>
             </tr>
             </thead>
             <tbody class="[&_tr:last-child]:border-0">
-            <!-- Table rows remain the same, just update the classes for consistency -->
-            <tr class="border-b transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">8:00 AM</div>
-                <div class="text-muted-foreground text-sm">San Francisco</div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">11:30 AM</div>
-                <div class="text-muted-foreground text-sm">Los Angeles</div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">Los Angeles</div>
-                <div class="text-muted-foreground text-sm">California</div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div
-                  class="inline-flex w-fit items-center whitespace-nowrap border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary-600 text-white dark:bg-primary-600 dark:text-darkText hover:bg-primary-700 dark:hover:bg-primary-700 px-2 py-1 rounded-full text-xs"
-                >
-                  Bus
-                </div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">3h 30m</div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">$50</div>
-              </td>
-            </tr>
-            <!-- Repeat the above row structure for other entries -->
-            <tr class="border-b transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">10:00 AM</div>
-                <div class="text-muted-foreground text-sm">New York</div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">2:30 PM</div>
-                <div class="text-muted-foreground text-sm">Boston</div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">Boston</div>
-                <div class="text-muted-foreground text-sm">Massachusetts</div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="inline-flex w-fit items-center whitespace-nowrap border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary-600 text-white dark:bg-primary-600 dark:text-darkText hover:bg-primary-700 dark:hover:bg-primary-700 px-2 py-1 rounded-full text-xs">
-                  Train
-                </div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">4h 30m</div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">$80</div>
-              </td>
-            </tr>
-
-            <!-- Add more rows as needed -->
-            <tr class="border-b transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">1:00 PM</div>
-                <div class="text-muted-foreground text-sm">Chicago</div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">5:30 PM</div>
-                <div class="text-muted-foreground text-sm">Detroit</div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">Detroit</div>
-                <div class="text-muted-foreground text-sm">Michigan</div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="inline-flex w-fit items-center whitespace-nowrap border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary-600 text-white dark:bg-primary-600 dark:text-darkText hover:bg-primary-700 dark:hover:bg-primary-700 px-2 py-1 rounded-full text-xs">
-                  Van
-                </div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">1h 30m</div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">$120</div>
-              </td>
-            </tr>
-
-            <tr class="border-b transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">10:30 AM</div>
-                <div class="text-muted-foreground text-sm">Chicago</div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">2:00 PM</div>
-                <div class="text-muted-foreground text-sm">Dallas</div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">Dallas</div>
-                <div class="text-muted-foreground text-sm">Texas</div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="inline-flex w-fit items-center whitespace-nowrap border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary-600 text-white dark:bg-primary-600 dark:text-darkText hover:bg-primary-700 dark:hover:bg-primary-700 px-2 py-1 rounded-full text-xs">
-                  Train
-                </div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">4h 30m</div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">$90</div>
-              </td>
-            </tr>
-
-
-            <!-- Hna khas tkon wahd *ngFor bach hya li tjib lina les schedules mn database -->
-            <tr class="border-b transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">1:00 PM</div>
-                <div class="text-muted-foreground text-sm">Miami</div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">5:30 PM</div>
-                <div class="text-muted-foreground text-sm">Orlando</div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">Orlando</div>
-                <div class="text-muted-foreground text-sm">Florida</div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="inline-flex w-fit items-center whitespace-nowrap border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary-600 text-white dark:bg-primary-600 dark:text-darkText hover:bg-primary-700 dark:hover:bg-primary-700 px-2 py-1 rounded-full text-xs">
-                  Van
-                </div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">2h 30m</div>
-              </td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                <div class="font-medium">$120</div>
-              </td>
-            </tr>
-
+            <ng-container *ngIf="filteredSchedules.length > 0; else noRoutes">
+              <tr *ngFor="let schedule of filteredSchedules" class="border-b transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+                <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                  <div class="font-medium">{{ schedule.departure.time }}</div>
+                  <div class="text-muted-foreground text-sm">{{ schedule.departure.location }}</div>
+                </td>
+                <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                  <div class="font-medium">{{ schedule.arrival.time }}</div>
+                  <div class="text-muted-foreground text-sm">{{ schedule.arrival.location }}</div>
+                </td>
+                <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                  <div class="font-medium">{{ schedule.destination.city }}</div>
+                  <div class="text-muted-foreground text-sm">{{ schedule.destination.state }}</div>
+                </td>
+                <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                  <div
+                    class="inline-flex w-fit items-center whitespace-nowrap border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-cyan-600 text-white dark:bg-cyan-600 dark:text-darkText hover:bg-cyan-700 dark:hover:bg-cyan-700 px-2 py-1 rounded-full text-xs"
+                  >
+                    {{ schedule.travelType }}
+                  </div>
+                </td>
+                <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                  <div class="font-medium">{{ schedule.duration }}</div>
+                </td>
+                <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                  <div class="font-medium">${{ schedule.price }}</div>
+                </td>
+              </tr>
+            </ng-container>
+            <ng-template #noRoutes>
+              <tr class="border-b transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+                <td colspan="6" class="p-6 text-center text-muted-foreground">
+                  There are no available routes at the moment.
+                </td>
+              </tr>
+            </ng-template>
             </tbody>
           </table>
         </div>
       </div>
     </div>
   </div>
-
-
-
-<!-- hadi khas tkon f our service tanlohoha tma -->
-
-  <div class="w-full mx-auto px-4 md:px-32 py-8 md:py-12 bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText">
-    <!-- Featured Routes Section -->
-    <section class="mb-12">
-      <div class="space-y-6">
-        <div class="text-center">
-          <h2 class="text-3xl font-bold">Discover Our Top Destinations</h2>
-          <p class="mt-2 text-muted-foreground">Explore our curated selection of popular and must-visit destinations.</p>
-        </div>
-        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          <div class="group relative overflow-hidden rounded-lg shadow-md">
-            <img src="/placeholder.svg" alt="Paris" class="h-48 w-full object-cover transition-all duration-300 group-hover:scale-105" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-            <div class="absolute bottom-0 left-0 right-0 p-4">
-              <h3 class="text-xl font-bold text-white">Paris, France</h3>
-              <p class="text-sm text-white/80">Explore the City of Lights</p>
-            </div>
-          </div>
-          <!-- Add more destination cards here -->
-        </div>
-      </div>
-    </section>
-
-    <!-- Travel Tips Section -->
-    <section class="mb-12">
-      <div class="space-y-6">
-        <div class="text-center">
-          <h2 class="text-3xl font-bold">Helpful Travel Advice</h2>
-          <p class="mt-2 text-muted-foreground">Get the inside scoop on the best ways to make the most of your travels.</p>
-        </div>
-        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
-          <div class="rounded-lg bg-white dark:bg-gray-800 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-            <div class="mb-4 flex items-center gap-3">
-              <i class='bx bx-package text-2xl text-primary-600'></i>
-              <h3 class="text-lg font-bold">Travel Packing Tips</h3>
-            </div>
-            <p class="text-muted-foreground">Learn how to pack efficiently and avoid overpacking for your next trip.</p>
-            <a href="#" class="mt-4 inline-flex items-center gap-2 text-primary-600 hover:underline">
-              Read More
-              <i class='bx bx-right-arrow-alt'></i>
-            </a>
-          </div>
-          <!-- Add more travel tip cards here -->
-        </div>
-      </div>
-    </section>
-
-    <!-- Special Offers Section -->
-    <section class="mb-12">
-      <div class="space-y-6">
-        <div class="text-center">
-          <h2 class="text-3xl font-bold">Exclusive Promotions</h2>
-          <p class="mt-2 text-muted-foreground">Check out our latest deals and discounts to help you save on your next adventure.</p>
-        </div>
-        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
-          <div class="rounded-lg bg-white dark:bg-gray-800 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-            <img src="/placeholder.svg" alt="Bali Getaway" class="mb-4 h-48 w-full rounded-lg object-cover" />
-            <div class="mb-4">
-            <span class="inline-block rounded-full bg-primary-600 px-3 py-1 text-xs font-semibold text-white">
-              50% Off
-            </span>
-            </div>
-            <h3 class="mb-2 text-lg font-bold">Bali Getaway Package</h3>
-            <p class="text-muted-foreground">Enjoy a luxurious stay in Bali with this exclusive package.</p>
-            <a href="#" class="mt-4 inline-flex items-center gap-2 text-primary-600 hover:underline">
-              Learn More
-              <i class='bx bx-right-arrow-alt'></i>
-            </a>
-          </div>
-          <!-- Add more special offer cards here -->
-        </div>
-      </div>
-    </section>
-  </div>
-
-
 
   <app-footer></app-footer>
 </div>

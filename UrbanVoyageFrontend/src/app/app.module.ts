@@ -20,6 +20,7 @@ import { ContactPageComponent } from './pages/contact-page/contact-page.componen
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { RegisterPageComponent } from './pages/register-page/register-page.component';
 import { OurLocationMapComponent } from './components/our-location-map/our-location-map.component';
+import { SponsorsComponent } from './components/sponsors/sponsors.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { OurLocationMapComponent } from './components/our-location-map/our-locat
     LoginPageComponent,
     RegisterPageComponent,
     OurLocationMapComponent,
+    SponsorsComponent,
   ],
   imports: [
     BrowserModule,

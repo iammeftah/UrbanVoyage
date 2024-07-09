@@ -6,6 +6,15 @@ module.exports = {
   darkMode: 'class', // Enable dark mode with a 'class' strategy
   theme: {
     extend: {
+      animation: {
+        marquee: 'marquee 30s linear infinite',
+      },
+      keyframes: {
+        marquee: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        }
+      },
       colors: {
         //TEXT AND BACKGROUND
         lightBackground: '#F3F3F3',
@@ -47,6 +56,11 @@ module.exports = {
           900: '#7c2d12',
         },
       }
+    },
+    variants: {
+      extend: {
+        grayscale: ['group-hover'],
+      },
     },
   },
   plugins: [],

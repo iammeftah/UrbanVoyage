@@ -18,7 +18,7 @@
             Departure
           </label>
           <input
-            class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-400 focus:border-primary-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+            class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
             id="departure"
             placeholder="Enter departure location"
           />
@@ -29,7 +29,7 @@
             Destination
           </label>
           <input
-            class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-400 focus:border-primary-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+            class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
             id="destination"
             placeholder="Enter destination"
           />
@@ -41,11 +41,11 @@
           </label>
           <div class="flex space-x-4">
             <label class="flex items-center">
-              <input type="radio" name="trip-type" value="one-way" class="text-primary-400 focus:ring-primary-400" checked (change)="onTripTypeChange($event)">
+              <input type="radio" name="trip-type" value="one-way" class="text-cyan-400 focus:ring-cyan-400" checked (change)="onTripTypeChange($event)">
               <span class="ml-2">One-Way</span>
             </label>
             <label class="flex items-center">
-              <input type="radio" name="trip-type" value="round-trip" class="text-primary-400 focus:ring-primary-400" (change)="onTripTypeChange($event)">
+              <input type="radio" name="trip-type" value="round-trip" class="text-cyan-400 focus:ring-cyan-400" (change)="onTripTypeChange($event)">
               <span class="ml-2">Round Trip</span>
             </label>
           </div>
@@ -58,7 +58,7 @@
                 Travel Date
               </label>
               <input
-                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-400 focus:border-primary-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
                 id="date"
                 type="date"
               />
@@ -68,7 +68,7 @@
                 Return Date
               </label>
               <input
-                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-400 focus:border-primary-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
                 id="return-date"
                 type="date"
               />
@@ -83,7 +83,7 @@
                 Adults
               </label>
               <input
-                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-400 focus:border-primary-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
                 id="adults"
                 type="number"
                 min="1"
@@ -95,7 +95,7 @@
                 Children
               </label>
               <input
-                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-400 focus:border-primary-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
                 id="children"
                 type="number"
                 min="0"
@@ -111,11 +111,11 @@
           </label>
           <div class="flex space-x-4">
             <label class="flex items-center">
-              <input type="radio" name="pet" value="yes" class="text-primary-400 focus:ring-primary-400">
+              <input type="radio" name="pet" value="yes" class="text-cyan-400 focus:ring-cyan-400">
               <span class="ml-2">Yes</span>
             </label>
             <label class="flex items-center">
-              <input type="radio" name="pet" value="no" class="text-primary-400 focus:ring-primary-400" checked>
+              <input type="radio" name="pet" value="no" class="text-cyan-400 focus:ring-cyan-400" checked>
               <span class="ml-2">No</span>
             </label>
           </div>
@@ -123,7 +123,7 @@
         <!-- Search Button -->
         <div class="w-full flex justify-end sm:col-span-3" data-aos="fade-left">
           <button
-            class="inline-flex items-center justify-center rounded-md bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-gray-900"
+            class="inline-flex items-center justify-center rounded-md bg-cyan-600 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-gray-900"
             type="submit"
           >
             Search
@@ -163,7 +163,7 @@
           <!-- Booking Button -->
           <div class="col-span-2">
             <button
-              class="inline-flex items-center justify-center rounded-md bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-gray-900 w-full"
+              class="inline-flex items-center justify-center rounded-md bg-cyan-600 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-gray-900 w-full"
             >
               Book
             </button>
@@ -199,7 +199,7 @@
           <!-- Booking Button -->
           <div class="col-span-2">
             <button
-              class="inline-flex items-center justify-center rounded-md bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-gray-900 w-full"
+              class="inline-flex items-center justify-center rounded-md bg-cyan-600 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-gray-900 w-full"
             >
               Book
             </button>

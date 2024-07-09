@@ -1,0 +1,22 @@
+<div class="w-full mx-auto py-12 px-4 sm:px-6 lg:px-8 bg-lightBackground dark:bg-[#111827]">
+  <div class="relative">
+    <div class="overflow-hidden">
+      <div class="flex space-x-12 animate-marquee">
+        <ng-container *ngFor="let sponsor of duplicatedSponsors">
+          <a class="flex-shrink-0 group" [href]="sponsor.website" target="_blank" rel="noopener noreferrer">
+            <img
+              [src]="sponsor.imageUrl"
+              [alt]="sponsor.name"
+              width="160"
+              height="80"
+              class="h-8 md:h-16 w-auto object-contain filter grayscale transition-all duration-300 group-hover:grayscale-0 drop-shadow-[0_0_2px_rgba(0,0,0,.5)]"
+              style="aspect-ratio: 160 / 80; object-fit: contain;"
+            />
+          </a>
+        </ng-container>
+      </div>
+    </div>
+    <div class="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-background to-transparent"></div>
+    <div class="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background to-transparent"></div>
+  </div>
+</div>

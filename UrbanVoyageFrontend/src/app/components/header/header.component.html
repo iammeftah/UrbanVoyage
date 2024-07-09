@@ -1,37 +1,41 @@
 <header class="w-full shadow-sm bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText">
   <div class="container flex items-center justify-between h-16 px-4 md:px-32">
     <a class="flex items-center gap-2" href="/homepage">
-      <span class="text-lg font-semibold">Urban Voyage</span>
+      <span class="text-lg font-semibold hover:text-cyan-500 duration-300">Urban Voyage</span>
     </a>
     <nav class="hidden md:flex items-center gap-6">
-      <a class="hover:text-primary-400 duration-300 text-sm font-medium transition-colors" href="/homepage">
+      <a class="hover:text-cyan-400 duration-300 text-sm font-medium transition-colors" href="/homepage">
         Home
       </a>
-      <a class="hover:text-primary-400 duration-300 text-sm font-medium transition-colors" href="/routes">
+      <a class="hover:text-cyan-400 duration-300 text-sm font-medium transition-colors" href="/routes">
         Routes
       </a>
-      <a class="hover:text-primary-400 duration-300 text-sm font-medium transition-colors" href="/booking">
+      <a class="hover:text-cyan-400 duration-300 text-sm font-medium transition-colors" href="/booking">
         Booking
       </a>
-      <a class="hover:text-primary-400 duration-300 text-sm font-medium transition-colors" href="/schedules">
+      <a class="hover:text-cyan-400 duration-300 text-sm font-medium transition-colors" href="/schedules">
         Schedules
       </a>
-      <a class="hover:text-primary-400 duration-300 text-sm font-medium transition-colors" href="/services">
+      <a class="hover:text-cyan-400 duration-300 text-sm font-medium transition-colors" href="/services">
         Our Services
       </a>
-      <a class="hover:text-primary-400 duration-300 text-sm font-medium transition-colors" href="/contact">
+      <a class="hover:text-cyan-400 duration-300 text-sm font-medium transition-colors" href="/contact">
         Contact
       </a>
     </nav>
     <div class="hidden items-center gap-4 md:flex">
+      <a href="#x"><i class="bx bxl-twitter text-xl text-md text-lightText dark:text-darkText dark:hover:text-cyan-500 hover:text-cyan-500 duration-200"></i></a>
+      <a href="#facebook"><i class='bx bxl-meta text-xl text-md text-lightText dark:text-darkText dark:hover:text-cyan-500 hover:text-cyan-500 duration-200'></i></a>
+      <app-dark-mode-toggle></app-dark-mode-toggle>
+
       <a
-      class="bg-primary-600 hover:bg-primary-700 inline-flex items-center justify-center rounded-md dark:bg-primary-600 dark:hover:bg-primary-700  px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 duration-300"
+      class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md dark:bg-cyan-600 dark:hover:bg-cyan-700  px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 duration-300"
       href="/login"
       >
       Log In
       </a>
       <a
-      class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-primary-600 dark:hover:text-primary-600 dark:hover:border-primary-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 duration-300"
+      class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-cyan-500 dark:hover:text-cyan-500 dark:hover:border-cyan-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 duration-300"
       href="/register"
       >
       Sign Up
@@ -85,14 +89,14 @@
       </button>
     </div>
     <div class="p-4">
-      <a class="block py-2 text-sm font-medium hover:text-primary transition-colors" href="/homepage" (click)="closeSidebar()">Home</a>
-      <a class="block py-2 text-sm font-medium hover:text-primary transition-colors" href="/routes" (click)="closeSidebar()">Routes</a>
-      <a class="block py-2 text-sm font-medium hover:text-primary transition-colors" href="/booking" (click)="closeSidebar()">Booking</a>
-      <a class="block py-2 text-sm font-medium hover:text-primary transition-colors" href="/schedules" (click)="closeSidebar()">Schedules</a>
-      <a class="block py-2 text-sm font-medium hover:text-primary transition-colors" href="/services" (click)="closeSidebar()">Our Services</a>
-      <a class="block py-2 text-sm font-medium hover:text-primary transition-colors" href="/contact" (click)="closeSidebar()">Contact</a>
-      <a class="block py-2 text-sm font-medium hover:text-primary transition-colors" href="/login" (click)="closeSidebar()">Log In</a>
-      <a class="block py-2 text-sm font-medium hover:text-primary transition-colors" href="/signup" (click)="closeSidebar()">Sign Up</a>
+      <a class="block py-2 text-sm font-medium hover:text-cyan transition-colors" href="/homepage" (click)="closeSidebar()">Home</a>
+      <a class="block py-2 text-sm font-medium hover:text-cyan transition-colors" href="/routes" (click)="closeSidebar()">Routes</a>
+      <a class="block py-2 text-sm font-medium hover:text-cyan transition-colors" href="/booking" (click)="closeSidebar()">Booking</a>
+      <a class="block py-2 text-sm font-medium hover:text-cyan transition-colors" href="/schedules" (click)="closeSidebar()">Schedules</a>
+      <a class="block py-2 text-sm font-medium hover:text-cyan transition-colors" href="/services" (click)="closeSidebar()">Our Services</a>
+      <a class="block py-2 text-sm font-medium hover:text-cyan transition-colors" href="/contact" (click)="closeSidebar()">Contact</a>
+      <a class="block py-2 text-sm font-medium hover:text-cyan transition-colors" href="/login" (click)="closeSidebar()">Log In</a>
+      <a class="block py-2 text-sm font-medium hover:text-cyan transition-colors" href="/signup" (click)="closeSidebar()">Sign Up</a>
     </div>
   </nav>
 </header>
