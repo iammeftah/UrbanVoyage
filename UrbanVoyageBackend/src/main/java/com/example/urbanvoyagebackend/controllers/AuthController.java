@@ -14,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -53,10 +52,11 @@ public class AuthController {
         try {
             emailService.sendEmail(userDTO.getEmail(), verificationCode);
             System.out.println("Verification email sent to: " + userDTO.getEmail()); // Console output
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.err.println("Failed to send verification email: " + e.getMessage());
+            e.printStackTrace(); // This will print the full stack trace for debugging
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(createResponse("Error", "Failed to send verification email"));
+                    .body(createResponse("Error", "Failed to send verification email: " + e.getMessage()));
         }
 
         // Store the unverified user details temporarily (you might want to use a cache or temporary storage)
