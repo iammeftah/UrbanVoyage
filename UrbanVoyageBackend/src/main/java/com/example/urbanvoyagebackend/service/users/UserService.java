@@ -25,7 +25,6 @@ public class UserService {
 
     private final Map<String, UserDTO> unverifiedUsers = new HashMap<>();
 
-
     public User registerUser(UserDTO userDTO) {
         Client client = new Client(
                 userDTO.getFirstName(),
@@ -35,8 +34,8 @@ public class UserService {
                 userDTO.getUsername(),
                 passwordEncoder.encode(userDTO.getPassword())
         );
-        if(client.getUsername()==null){
-            client.setUsername(generateUniqueUsername(userDTO.getFirstName(),userDTO.getLastName()));
+        if(client.getUsername() == null || client.getUsername().isEmpty()){
+            client.setUsername(generateUniqueUsername(userDTO.getFirstName(), userDTO.getLastName()));
         }
         return userRepository.save(client);
     }
@@ -57,7 +56,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-
     public void storeUnverifiedUser(UserDTO userDTO, String verificationCode) {
         userDTO.setVerificationCode(verificationCode);
         unverifiedUsers.put(userDTO.getEmail(), userDTO);
@@ -68,9 +66,17 @@ public class UserService {
     }
 
     public User registerVerifiedUser(UserDTO userDTO) {
-        Client client = new Client();  // Use the Client class, which extends User
-        client.setUsername(userDTO.getUsername());
+        Client client = new Client();
+        client.setFirstName(userDTO.getFirstName());
+        client.setLastName(userDTO.getLastName());
+        client.setPhoneNumber(userDTO.getPhoneNumber());
         client.setEmail(userDTO.getEmail());
+        client.setUsername(userDTO.getUsername());
+
+        // If username is still null or empty, generate one
+        if(client.getUsername() == null || client.getUsername().isEmpty()){
+            client.setUsername(generateUniqueUsername(userDTO.getFirstName(), userDTO.getLastName()));
+        }
 
         // Hash the password before saving
         String hashedPassword = passwordEncoder.encode(userDTO.getPassword());
@@ -82,6 +88,4 @@ public class UserService {
         unverifiedUsers.remove(userDTO.getEmail());
         return savedUser;
     }
-
-
 }
