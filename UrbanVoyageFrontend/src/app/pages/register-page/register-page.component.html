@@ -1,7 +1,8 @@
-<app-header></app-header>
-
+<div class="absolute top-0 right-0 left-0">
+  <app-header></app-header>
+</div>
 <!-- Register Page -->
-<div class="flex items-center justify-center mx-auto space-y-6 p-4 text-lightText dark:text-darkText w-full bg-lightBackground dark:bg-darkBackground">
+<div class="flex items-center justify-center mx-auto space-y-6 p-4 text-lightText dark:text-darkText min-h-screen w-full bg-lightBackground dark:bg-darkBackground">
   <div class="w-full px-6 py-6 my-8 rounded-lg shadow-sm md:w-2/3 lg:w-1/2 xl:w-1/3 bg-white dark:bg-[#333333]">
     <div class="space-y-2 text-center">
       <h1 class="text-2xl font-bold text-cyan-500">Register</h1>
@@ -14,6 +15,7 @@
             First Name
           </label>
           <input
+            [(ngModel)]="firstName"
             class="flex h-9 w-full rounded-md border border-gray-300 dark:border-gray-500 bg-white dark:bg-[#444444] px-3 py-1 text-sm placeholder:text-gray-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
             id="first-name"
             placeholder="John"
@@ -25,6 +27,7 @@
             Last Name
           </label>
           <input
+            [(ngModel)]="lastName"
             class="flex h-9 w-full rounded-md border border-gray-300 dark:border-gray-500 bg-white dark:bg-[#444444] px-3 py-1 text-sm placeholder:text-gray-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
             id="last-name"
             placeholder="Doe"
@@ -37,6 +40,7 @@
           Email
         </label>
         <input
+          [(ngModel)]="email"
           class="flex h-9 w-full rounded-md border border-gray-300 dark:border-gray-500 bg-white dark:bg-[#444444] px-3 py-1 text-sm placeholder:text-gray-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
           id="email"
           placeholder="m@example.com"
@@ -49,6 +53,7 @@
           Phone
         </label>
         <input
+          [(ngModel)]="phone"
           class="flex h-9 w-full rounded-md border border-gray-300 dark:border-gray-500 bg-white dark:bg-[#444444] px-3 py-1 text-sm placeholder:text-gray-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
           id="phone"
           placeholder="+1 (555) 555-5555"
@@ -62,6 +67,7 @@
             Password
           </label>
           <input
+            [(ngModel)]="password"
             [type]="showPassword ? 'text' : 'password'"
             class="flex h-9 w-full rounded-md border border-gray-300 dark:border-gray-500 bg-white dark:bg-[#444444] px-3 py-1 text-sm placeholder:text-gray-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText pr-10"
             id="password"
@@ -81,6 +87,7 @@
             Confirm Password
           </label>
           <input
+            [(ngModel)]="confirmPassword"
             [type]="showConfirmPassword ? 'text' : 'password'"
             class="flex h-9 w-full rounded-md border border-gray-300 dark:border-gray-500 bg-white dark:bg-[#444444] px-3 py-1 text-sm placeholder:text-gray-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText pr-10"
             id="confirm-password"
@@ -111,6 +118,7 @@
         </button>
       </div>
       <button
+        (click)="register()"
         class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-cyan-500 text-white hover:bg-cyan-600 h-9 px-4 py-2 w-full"
       >
         Register

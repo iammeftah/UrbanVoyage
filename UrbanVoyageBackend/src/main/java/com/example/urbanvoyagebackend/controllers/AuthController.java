@@ -6,6 +6,7 @@ import com.example.urbanvoyagebackend.enitity.users.User;
 import com.example.urbanvoyagebackend.service.media.EmailService;
 import com.example.urbanvoyagebackend.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,16 +14,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Random;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:4200") // Assuming your Angular app runs on port 4200
 public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
     private UserService userService;
+
 
     @Autowired
     private EmailService emailService;
@@ -41,11 +45,17 @@ public class AuthController {
         userService.registerUser(user);
 
         // Send verification email
-        emailService.sendVerificationEmail(user.getEmail(), verificationCode);
+        try {
+            emailService.sendVerificationEmail(user.getEmail(), verificationCode);
+        } catch (IOException e) {
+            // Log the error and handle it appropriately
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body("User registered but failed to send verification email.");
+        }
 
         return ResponseEntity.ok("User registered successfully! Please check your email for verification.");
     }
-
     @PostMapping("/verify")
     public ResponseEntity<?> verifyEmail(@RequestBody VerificationRequest verificationRequest) {
         User user = userService.findByEmail(verificationRequest.getEmail());

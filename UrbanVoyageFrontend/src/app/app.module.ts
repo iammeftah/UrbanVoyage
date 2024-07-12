@@ -47,7 +47,7 @@ import { SponsorsComponent } from './components/sponsors/sponsors.component';
     ReactiveFormsModule,
     HttpClientModule,
     FormsModule,
-    RouterOutlet
+    RouterOutlet,
   ],
   providers: [
     /*

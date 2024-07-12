@@ -1,22 +1,51 @@
 package com.example.urbanvoyagebackend.service.media;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import okhttp3.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+    @Value("${mailtrap.api.token}")
+    private String mailtrapToken;
 
-    public void sendVerificationEmail(String to, String verificationCode) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject("Email Verification");
-        message.setText("Your verification code is: " + verificationCode);
-        mailSender.send(message);
+    private final OkHttpClient client = new OkHttpClient();
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public void sendVerificationEmail(String to, String verificationCode) throws IOException {
+        String url = "https://send.api.mailtrap.io/api/send";
+
+        Map<String, Object> emailData = new HashMap<>();
+        emailData.put("from", Map.of("email", "noreply@yourapp.com", "name", "Your App"));
+        emailData.put("to", new Object[]{Map.of("email", to)});
+        emailData.put("subject", "Email Verification");
+        emailData.put("text", "Your verification code is: " + verificationCode);
+        emailData.put("category", "Verification");
+
+        RequestBody body = RequestBody.create(
+            objectMapper.writeValueAsString(emailData),
+            MediaType.parse("application/json")
+        );
+
+        Request request = new Request.Builder()
+            .url(url)
+            .post(body)
+            .addHeader("Authorization", "Bearer " + mailtrapToken)
+            .addHeader("Content-Type", "application/json")
+            .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new IOException("Unexpected code " + response);
+            }
+            // You can log the response or handle it as needed
+            System.out.println(response.body().string());
+        }
     }
 }
