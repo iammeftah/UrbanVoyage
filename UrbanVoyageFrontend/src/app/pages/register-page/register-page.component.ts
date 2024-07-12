@@ -1,5 +1,8 @@
+// register-page.component.ts
+
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { AuthService } from "../../services/auth.service";
 
 @Component({
   selector: 'app-register-page',
@@ -10,14 +13,16 @@ export class RegisterPageComponent {
   firstName: string = '';
   lastName: string = '';
   email: string = '';
-  phone: string = '';
+  phoneNumber: string = '';
   password: string = '';
   confirmPassword: string = '';
 
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(private authService: AuthService, private router: Router) {}
+
+
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
@@ -26,6 +31,9 @@ export class RegisterPageComponent {
   toggleConfirmPasswordVisibility(): void {
     this.showConfirmPassword = !this.showConfirmPassword;
   }
+
+
+
 
   register(): void {
     if (this.password !== this.confirmPassword) {
@@ -37,13 +45,14 @@ export class RegisterPageComponent {
       firstName: this.firstName,
       lastName: this.lastName,
       email: this.email,
-      phone: this.phone,
+      phoneNumber: this.phoneNumber,
       password: this.password
     };
 
-    this.http.post('http://localhost:8080/api/auth/signup', user).subscribe(
-      (response: any) => {
-        alert('Registration successful! Please check your email for verification.');
+    this.authService.register(user).subscribe(
+      (response) => {
+        alert('Registration successful! Please check your email for the verification code.');
+        this.router.navigate(['/verify-email'], { queryParams: { email: this.email } });
       },
       (error) => {
         alert('Registration failed: ' + error.error);

@@ -10,6 +10,7 @@ import {OurServicePageComponent} from "./pages/our-service-page/our-service-page
 import {ContactPageComponent} from "./pages/contact-page/contact-page.component";
 import {RegisterPageComponent} from "./pages/register-page/register-page.component";
 import {LoginPageComponent} from "./pages/login-page/login-page.component";
+import {VerifyEmailComponent} from "./pages/verify-email/verify-email.component";
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -22,6 +23,9 @@ const routes: Routes = [
   { path: 'login', component: LoginPageComponent },
   { path: 'register', component: RegisterPageComponent },
   { path: 'auth', component: AuthPageComponent },
+  { path: 'register', component: RegisterPageComponent },
+  { path: 'verify-email', component: VerifyEmailComponent },
+
   // autres routes...
 ];
 

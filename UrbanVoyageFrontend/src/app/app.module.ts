@@ -21,6 +21,7 @@ import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { RegisterPageComponent } from './pages/register-page/register-page.component';
 import { OurLocationMapComponent } from './components/our-location-map/our-location-map.component';
 import { SponsorsComponent } from './components/sponsors/sponsors.component';
+import { VerifyEmailComponent } from './pages/verify-email/verify-email.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { SponsorsComponent } from './components/sponsors/sponsors.component';
     RegisterPageComponent,
     OurLocationMapComponent,
     SponsorsComponent,
+    VerifyEmailComponent,
   ],
   imports: [
     BrowserModule,

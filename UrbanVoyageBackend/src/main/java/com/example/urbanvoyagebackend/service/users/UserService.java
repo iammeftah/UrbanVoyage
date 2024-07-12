@@ -1,12 +1,19 @@
+// UserService.java
 package com.example.urbanvoyagebackend.service.users;
 
-
+import com.example.urbanvoyagebackend.config.UsernameGenerator;
+import com.example.urbanvoyagebackend.dto.UserDTO;
+import com.example.urbanvoyagebackend.enitity.users.Client;
 import com.example.urbanvoyagebackend.enitity.users.User;
 import com.example.urbanvoyagebackend.repository.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.example.urbanvoyagebackend.config.UsernameGenerator.generateUniqueUsername;
 
 @Service
 public class UserService {
@@ -16,17 +23,22 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public User registerUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
-    }
+    private final Map<String, UserDTO> unverifiedUsers = new HashMap<>();
 
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
 
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public User registerUser(UserDTO userDTO) {
+        Client client = new Client(
+                userDTO.getFirstName(),
+                userDTO.getLastName(),
+                userDTO.getPhoneNumber(),
+                userDTO.getEmail(),
+                userDTO.getUsername(),
+                passwordEncoder.encode(userDTO.getPassword())
+        );
+        if(client.getUsername()==null){
+            client.setUsername(generateUniqueUsername(userDTO.getFirstName(),userDTO.getLastName()));
+        }
+        return userRepository.save(client);
     }
 
     public boolean existsByUsername(String username) {
@@ -36,4 +48,40 @@ public class UserService {
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public void updateUser(User user) {
+        userRepository.save(user);
+    }
+
+
+    public void storeUnverifiedUser(UserDTO userDTO, String verificationCode) {
+        userDTO.setVerificationCode(verificationCode);
+        unverifiedUsers.put(userDTO.getEmail(), userDTO);
+    }
+
+    public UserDTO getUnverifiedUser(String email) {
+        return unverifiedUsers.get(email);
+    }
+
+    public User registerVerifiedUser(UserDTO userDTO) {
+        Client client = new Client();  // Use the Client class, which extends User
+        client.setUsername(userDTO.getUsername());
+        client.setEmail(userDTO.getEmail());
+
+        // Hash the password before saving
+        String hashedPassword = passwordEncoder.encode(userDTO.getPassword());
+        client.setPassword(hashedPassword);
+
+        client.setVerified(true);
+
+        User savedUser = userRepository.save(client);
+        unverifiedUsers.remove(userDTO.getEmail());
+        return savedUser;
+    }
+
+
 }
