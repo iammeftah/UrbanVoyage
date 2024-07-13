@@ -12,25 +12,40 @@ export class LoginPageComponent {
   password: string = '';
   showPassword: boolean = false;
   rememberMe: boolean = false;
+  isLoggedIn: boolean = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {
+    this.isLoggedIn = this.authService.isLoggedIn();
+  }
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
 
   login(): void {
+    console.log('Attempting login with email:', this.email); // Log the email being used for login
+    console.log('Password entered:', this.password); // Log the password entered
+
     this.authService.login(this.email, this.password).subscribe(
       (response) => {
-        console.log('Login successful:', response);
+        console.log('Login successful:', response); // Log the successful response from the backend
         alert('Login successful!');
-        this.router.navigate(['/dashboard']);
+        this.isLoggedIn = true;
+        this.router.navigate(['/routes']);
       },
       (error) => {
-        console.error('Login failed:', error);
-        alert('Login failed: ' + (error.error || 'Unknown error'));
+        console.error('Login failed:', error); // Log the error response from the backend
+        alert('Login failed: ' + (error.error?.message || 'Unknown error'));
       }
     );
+  }
+
+
+  logout(): void {
+    this.authService.logout();
+    this.isLoggedIn = false;
+    alert('Logged out successfully!');
+    this.router.navigate(['/login']);
   }
 
   forgotPassword(): void {

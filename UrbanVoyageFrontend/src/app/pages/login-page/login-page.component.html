@@ -26,6 +26,7 @@
           Password
         </label>
         <input
+          [(ngModel)]="password"
           [type]="showPassword ? 'text' : 'password'"
           class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-500 bg-white dark:bg-[#444444] px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
           id="password"
@@ -49,6 +50,7 @@
         <a href="#" class="text-sm text-cyan-500 hover:underline">Forgot password?</a>
       </div>
       <button
+        (click)="login()"
         class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-cyan-500 text-white hover:bg-cyan-600 h-10 px-4 py-2 w-full"
       >
         Login

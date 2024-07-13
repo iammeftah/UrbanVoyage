@@ -1,4 +1,4 @@
-package com.example.urbanvoyagebackend.enitity.users;
+package com.example.urbanvoyagebackend.entity.users;
 
 public enum Role {
     ROLE_CLIENT,

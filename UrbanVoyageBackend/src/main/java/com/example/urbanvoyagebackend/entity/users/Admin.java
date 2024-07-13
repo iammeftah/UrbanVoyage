@@ -1,4 +1,4 @@
-package com.example.urbanvoyagebackend.enitity.users;
+package com.example.urbanvoyagebackend.entity.users;
 
 import jakarta.persistence.*;
 

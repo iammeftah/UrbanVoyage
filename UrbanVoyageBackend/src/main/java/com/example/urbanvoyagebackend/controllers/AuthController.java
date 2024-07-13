@@ -3,9 +3,17 @@ package com.example.urbanvoyagebackend.controllers;
 import com.example.urbanvoyagebackend.dto.LoginRequest;
 import com.example.urbanvoyagebackend.dto.UserDTO;
 import com.example.urbanvoyagebackend.dto.VerificationRequest;
-import com.example.urbanvoyagebackend.enitity.users.User;
+import com.example.urbanvoyagebackend.entity.users.User;
 import com.example.urbanvoyagebackend.service.media.EmailService;
 import com.example.urbanvoyagebackend.service.users.UserService;
+import com.example.urbanvoyagebackend.utils.JwtUtil;
+import com.example.urbanvoyagebackend.utils.MD5Util; // Import MD5Util
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +22,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -22,6 +33,15 @@ import java.util.Random;
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:4200")
 public class AuthController {
+
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
+    @Value("${jwt.expiration}")
+    private Long jwtExpirationInMs;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
@@ -83,25 +103,57 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+        System.out.println("Received signin request for email: " + loginRequest.getEmail());
+        System.out.println("Password entered: " + loginRequest.getPassword()); // Display entered password
+
         User user = userService.findByEmail(loginRequest.getEmail());
         if (user == null) {
+            System.out.println("User not found for email: " + loginRequest.getEmail());
             return ResponseEntity.badRequest().body(createResponse("Error", "User not found!"));
         }
 
+        System.out.println("User found: " + user.getEmail());
+        System.out.println("Stored password: " + user.getPassword()); // Display stored password (hashed or encrypted)
+
         if (!user.isVerified()) {
+            System.out.println("User is not verified: " + user.getEmail());
             return ResponseEntity.badRequest().body(createResponse("Error", "Email not verified!"));
         }
 
+        // Hash the entered password for comparison
+        String hashedPassword = MD5Util.md5(loginRequest.getPassword());
+        System.out.println("Hashed password: " + hashedPassword);
+
+        // Compare the hashed password from the request with the stored hashed password
+        if (!user.getPassword().equals(hashedPassword)) {
+            System.out.println("Authentication failed for user: " + loginRequest.getEmail() + ". Invalid credentials.");
+            return ResponseEntity.badRequest().body(createResponse("Error", "Invalid credentials!"));
+        }
+
         try {
+            System.out.println("Authenticating user: " + loginRequest.getEmail());
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), hashedPassword));
+            System.out.println("User authenticated successfully: " + authentication.getName());
+
+            // Set the authenticated user in SecurityContext
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            // Generate JWT token here if needed
+
+            // Generate JWT token (if needed)
+            String token = jwtUtil.generateJwtToken(authentication); // Implement this method to generate JWT token
+            System.out.println("Generated JWT token: " + token);
+
+            System.out.println("Returning success response for user: " + authentication.getName());
             return ResponseEntity.ok(createResponse("Success", "User signed in successfully!"));
         } catch (Exception e) {
+            System.out.println("Authentication failed for user: " + loginRequest.getEmail());
             return ResponseEntity.badRequest().body(createResponse("Error", "Invalid credentials!"));
         }
     }
+
+
+
+
 
     @PostMapping("/signout")
     public ResponseEntity<?> logoutUser() {

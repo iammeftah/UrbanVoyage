@@ -1,7 +1,7 @@
 package com.example.urbanvoyagebackend.repository.travel;
 
 
-import com.example.urbanvoyagebackend.enitity.travel.Route;
+import com.example.urbanvoyagebackend.entity.travel.Route;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

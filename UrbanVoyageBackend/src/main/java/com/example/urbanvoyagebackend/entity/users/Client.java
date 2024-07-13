@@ -1,7 +1,7 @@
-package com.example.urbanvoyagebackend.enitity.users;
+package com.example.urbanvoyagebackend.entity.users;
 
-import com.example.urbanvoyagebackend.enitity.travel.Reservation;
-import com.example.urbanvoyagebackend.enitity.travel.Route;
+import com.example.urbanvoyagebackend.entity.travel.Reservation;
+import com.example.urbanvoyagebackend.entity.travel.Route;
 import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;

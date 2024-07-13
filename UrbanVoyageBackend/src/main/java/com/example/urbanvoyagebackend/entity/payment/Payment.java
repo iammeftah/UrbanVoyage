@@ -1,6 +1,6 @@
-package com.example.urbanvoyagebackend.enitity.payment;
+package com.example.urbanvoyagebackend.entity.payment;
 
-import com.example.urbanvoyagebackend.enitity.travel.Reservation;
+import com.example.urbanvoyagebackend.entity.travel.Reservation;
 import jakarta.persistence.*;
 import java.util.Date;
 

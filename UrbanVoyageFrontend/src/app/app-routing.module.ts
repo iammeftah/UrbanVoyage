@@ -26,6 +26,7 @@ const routes: Routes = [
   { path: 'register', component: RegisterPageComponent },
   { path: 'verify-email', component: VerifyEmailComponent },
 
+
   // autres routes...
 ];
 

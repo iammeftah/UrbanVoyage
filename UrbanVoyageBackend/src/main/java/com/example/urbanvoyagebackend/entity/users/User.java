@@ -1,6 +1,6 @@
-package com.example.urbanvoyagebackend.enitity.users;
+package com.example.urbanvoyagebackend.entity.users;
 
-import com.example.urbanvoyagebackend.enitity.travel.Reservation;
+import com.example.urbanvoyagebackend.entity.travel.Reservation;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;

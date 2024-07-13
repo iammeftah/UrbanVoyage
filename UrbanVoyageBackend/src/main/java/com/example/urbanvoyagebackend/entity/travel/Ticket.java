@@ -1,4 +1,4 @@
-package com.example.urbanvoyagebackend.enitity.travel;
+package com.example.urbanvoyagebackend.entity.travel;
 
 
 import jakarta.persistence.*;

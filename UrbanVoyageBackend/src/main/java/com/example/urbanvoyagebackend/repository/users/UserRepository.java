@@ -1,7 +1,7 @@
 // UserRepository.java
 package com.example.urbanvoyagebackend.repository.users;
 
-import com.example.urbanvoyagebackend.enitity.users.User;
+import com.example.urbanvoyagebackend.entity.users.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

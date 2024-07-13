@@ -1,42 +1,48 @@
-// UserService.java
 package com.example.urbanvoyagebackend.service.users;
 
-import com.example.urbanvoyagebackend.config.UsernameGenerator;
 import com.example.urbanvoyagebackend.dto.UserDTO;
-import com.example.urbanvoyagebackend.enitity.users.Client;
-import com.example.urbanvoyagebackend.enitity.users.User;
+import com.example.urbanvoyagebackend.entity.users.Client;
+import com.example.urbanvoyagebackend.entity.users.User;
 import com.example.urbanvoyagebackend.repository.users.UserRepository;
+import com.example.urbanvoyagebackend.utils.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.urbanvoyagebackend.config.UsernameGenerator.generateUniqueUsername;
-
 @Service
-public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+public class UserService implements UserDetailsService {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
+    private final UserRepository userRepository;
     private final Map<String, UserDTO> unverifiedUsers = new HashMap<>();
 
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     public User registerUser(UserDTO userDTO) {
-        Client client = new Client(
-                userDTO.getFirstName(),
-                userDTO.getLastName(),
-                userDTO.getPhoneNumber(),
-                userDTO.getEmail(),
-                userDTO.getUsername(),
-                passwordEncoder.encode(userDTO.getPassword())
-        );
-        if(client.getUsername() == null || client.getUsername().isEmpty()){
+        Client client = new Client();
+        client.setFirstName(userDTO.getFirstName());
+        client.setLastName(userDTO.getLastName());
+        client.setPhoneNumber(userDTO.getPhoneNumber());
+        client.setEmail(userDTO.getEmail());
+        client.setUsername(userDTO.getUsername());
+
+        // Hash password using MD5
+        String hashedPassword = MD5Util.md5(userDTO.getPassword());
+        client.setPassword(hashedPassword);
+
+        if (client.getUsername() == null || client.getUsername().isEmpty()) {
             client.setUsername(generateUniqueUsername(userDTO.getFirstName(), userDTO.getLastName()));
         }
+
         return userRepository.save(client);
     }
 
@@ -72,20 +78,43 @@ public class UserService {
         client.setPhoneNumber(userDTO.getPhoneNumber());
         client.setEmail(userDTO.getEmail());
         client.setUsername(userDTO.getUsername());
+        client.setVerificationCode(userDTO.getVerificationCode());
 
-        // If username is still null or empty, generate one
-        if(client.getUsername() == null || client.getUsername().isEmpty()){
+        // Hash password using MD5
+        String hashedPassword = MD5Util.md5(userDTO.getPassword());
+        client.setPassword(hashedPassword);
+
+        if (client.getUsername() == null || client.getUsername().isEmpty()) {
             client.setUsername(generateUniqueUsername(userDTO.getFirstName(), userDTO.getLastName()));
         }
-
-        // Hash the password before saving
-        String hashedPassword = passwordEncoder.encode(userDTO.getPassword());
-        client.setPassword(hashedPassword);
 
         client.setVerified(true);
 
         User savedUser = userRepository.save(client);
         unverifiedUsers.remove(userDTO.getEmail());
         return savedUser;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with email: " + email);
+        }
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                user.isVerified(),
+                true,
+                true,
+                true,
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+        );
+    }
+
+    // Method to generate a unique username if not provided
+    private String generateUniqueUsername(String firstName, String lastName) {
+        // Implement your logic to generate a unique username here
+        return firstName.toLowerCase() + "." + lastName.toLowerCase();
     }
 }

@@ -1,9 +1,9 @@
 package com.example.urbanvoyagebackend.controllers;
 
 
-import com.example.urbanvoyagebackend.enitity.travel.Reservation;
-import com.example.urbanvoyagebackend.enitity.travel.Schedule;
-import com.example.urbanvoyagebackend.enitity.users.User;
+import com.example.urbanvoyagebackend.entity.travel.Reservation;
+import com.example.urbanvoyagebackend.entity.travel.Schedule;
+import com.example.urbanvoyagebackend.entity.users.User;
 import com.example.urbanvoyagebackend.service.travel.ReservationService;
 import com.example.urbanvoyagebackend.service.travel.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;

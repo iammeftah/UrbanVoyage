@@ -1,7 +1,7 @@
 package com.example.urbanvoyagebackend.repository.travel;
 
 
-import com.example.urbanvoyagebackend.enitity.travel.Schedule;
+import com.example.urbanvoyagebackend.entity.travel.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;

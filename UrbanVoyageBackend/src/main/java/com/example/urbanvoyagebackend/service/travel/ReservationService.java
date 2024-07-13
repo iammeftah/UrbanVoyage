@@ -1,8 +1,8 @@
 package com.example.urbanvoyagebackend.service.travel;
 
 
-import com.example.urbanvoyagebackend.enitity.travel.Reservation;
-import com.example.urbanvoyagebackend.enitity.users.User;
+import com.example.urbanvoyagebackend.entity.travel.Reservation;
+import com.example.urbanvoyagebackend.entity.users.User;
 import com.example.urbanvoyagebackend.repository.travel.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

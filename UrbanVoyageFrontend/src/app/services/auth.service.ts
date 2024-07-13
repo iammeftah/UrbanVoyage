@@ -24,15 +24,18 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/signin`, { email, password })
       .pipe(
         tap((response: any) => {
-          // Store the token in localStorage
-          localStorage.setItem('token', response.token);
+          if (response.token) {
+            localStorage.setItem('token', response.token);
+          }
         })
       );
   }
 
-  logout(): void {
+  logout(): Observable<any> {
     localStorage.removeItem('token');
+    return this.http.post(`${this.apiUrl}/signout`, {});
   }
+
 
   isLoggedIn(): boolean {
     return !!localStorage.getItem('token');

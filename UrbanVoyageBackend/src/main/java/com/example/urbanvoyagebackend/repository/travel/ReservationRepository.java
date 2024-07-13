@@ -1,8 +1,8 @@
 package com.example.urbanvoyagebackend.repository.travel;
 
 
-import com.example.urbanvoyagebackend.enitity.travel.Reservation;
-import com.example.urbanvoyagebackend.enitity.users.User;
+import com.example.urbanvoyagebackend.entity.travel.Reservation;
+import com.example.urbanvoyagebackend.entity.users.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.example.urbanvoyagebackend.service.travel;
 
 
-import com.example.urbanvoyagebackend.enitity.travel.Route;
+import com.example.urbanvoyagebackend.entity.travel.Route;
 import com.example.urbanvoyagebackend.repository.travel.RouteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
