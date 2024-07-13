@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {catchError, Observable} from 'rxjs';
+import {catchError, Observable, throwError} from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 @Injectable({
@@ -13,7 +13,12 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   register(user: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, user);
+    return this.http.post(`${this.apiUrl}/register`, user).pipe(
+      catchError(error => {
+        console.error('Error during registration:', error);
+        return throwError(error);
+      })
+    );
   }
 
   verifyEmail(email: string, verificationCode: string): Observable<any> {
@@ -50,6 +55,17 @@ export class AuthService {
   getToken(): string | null {
     return localStorage.getItem('token');
   }
+
+  checkUserExists(email: string, phoneNumber: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/check-user`, { email, phoneNumber }).pipe(
+      catchError(error => {
+        console.error('Error checking user existence:', error);
+        return throwError(error);
+      })
+    );
+  }
+
+
 
 
 

@@ -10,6 +10,8 @@ import {Router} from "@angular/router";
 export class HeaderComponent {
   isSidebarOpen: boolean = false;
   isLoggedIn: boolean = false;
+  message: string | null = null;
+  messageType: 'success' | 'error' = 'success';
 
   constructor(private authService: AuthService, private router: Router) {
     this.isLoggedIn = this.authService.isLoggedIn();
@@ -26,8 +28,14 @@ export class HeaderComponent {
   logout(): void {
     this.authService.logout();
     this.isLoggedIn = false;
-    alert('Logged out successfully!');
+    this.message = "Log out successfuly"
+    this.messageType = 'success';
+
     this.router.navigate(['/login']);
+  }
+
+  closeMessage(){
+    this.message = null ;
   }
 
 

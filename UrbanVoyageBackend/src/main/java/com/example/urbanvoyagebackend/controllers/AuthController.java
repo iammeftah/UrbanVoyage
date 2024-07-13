@@ -134,6 +134,22 @@ public class AuthController {
     }
 
 
+    @PostMapping("/check-user")
+    public ResponseEntity<?> checkUserExists(@RequestBody Map<String, String> credentials) {
+        String email = credentials.get("email");
+        String phoneNumber = credentials.get("phoneNumber");
+
+        boolean emailExists = userService.existsByEmail(email);
+        boolean phoneExists = userService.existsByPhoneNumber(phoneNumber);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("emailExists", emailExists);
+        response.put("phoneExists", phoneExists);
+
+        return ResponseEntity.ok(response);
+    }
+
+
 
 
 

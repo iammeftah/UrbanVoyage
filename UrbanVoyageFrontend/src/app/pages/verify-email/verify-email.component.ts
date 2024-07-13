@@ -16,6 +16,8 @@ export class VerifyEmailComponent {
   verifyForm: FormGroup;
   message: string | null = null;
   messageType: 'success' | 'error' = 'success';
+  loading: boolean = false;
+
 
   constructor(
     private authService: AuthService,
@@ -39,7 +41,9 @@ export class VerifyEmailComponent {
   }
 
   verifyEmail() {
+    this.loading = true;
     if (this.verifyForm.invalid) {
+      this.loading = false;
       this.showMessage('Please enter a valid 6-digit verification code.', 'error');
       return;
     }
@@ -48,12 +52,14 @@ export class VerifyEmailComponent {
 
     this.authService.verifyEmail(this.email, verificationCode).subscribe(
       (response) => {
+        this.loading = false;
         this.showMessage('Email verified successfully!', 'success');
         this.verificationComplete.emit();
         this.router.navigate(['/login']);
 
       },
       (error) => {
+        this.loading = false;
         this.showMessage('Verification failed: ' + error.error, 'error');
       }
     );

@@ -16,6 +16,8 @@ export class LoginPageComponent {
   isLoggedIn: boolean = false;
   message: string | null = null;
   messageType: 'success' | 'error' = 'success';
+  loading: boolean = false;
+
 
   constructor(private authService: AuthService, private router: Router) {
     this.isLoggedIn = this.authService.isLoggedIn();
@@ -26,20 +28,23 @@ export class LoginPageComponent {
   }
 
   login(): void {
+    this.loading = true;
     console.log('Attempting login with email:', this.email);
     console.log('Password entered:', this.password);
 
     this.authService.login(this.email, this.password).subscribe(
       (response) => {
         console.log('Login successful:', response);
+        this.loading = false;
         this.message = 'Login successful!';
         this.messageType = 'success';
         this.isLoggedIn = true;
         this.router.navigate(['/routes']);
       },
       (error) => {
+        this.loading = false;
         console.error('Login failed:', error);
-        this.message = 'Login failed: ' + (error.error?.message || 'Unknown error');
+        this.message = (error.error?.message || 'Unknown error');
         this.messageType = 'error';
       }
     );
