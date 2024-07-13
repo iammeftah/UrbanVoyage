@@ -22,6 +22,7 @@ import { RegisterPageComponent } from './pages/register-page/register-page.compo
 import { OurLocationMapComponent } from './components/our-location-map/our-location-map.component';
 import { SponsorsComponent } from './components/sponsors/sponsors.component';
 import { VerifyEmailComponent } from './pages/verify-email/verify-email.component';
+import {AuthInterceptor} from "./services/auth.interceptor";
 
 @NgModule({
   declarations: [
@@ -52,9 +53,8 @@ import { VerifyEmailComponent } from './pages/verify-email/verify-email.componen
     RouterOutlet,
   ],
   providers: [
-    /*
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    */
+
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

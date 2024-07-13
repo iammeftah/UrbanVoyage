@@ -17,6 +17,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -114,15 +115,21 @@ public class AuthController {
             LoginResponse response = authService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
             if (response != null) {
                 System.out.println("Controller: Login successful for user: " + loginRequest.getEmail());
-                return ResponseEntity.ok(response);
+                return ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(response);
             } else {
                 System.out.println("Controller: Login failed: Invalid credentials for user: " + loginRequest.getEmail());
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body("{\"message\": \"Invalid email or password\"}");
             }
         } catch (Exception e) {
             System.out.println("Controller: Exception occurred during signin: " + e.getMessage());
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body("{\"message\": \"An error occurred: " + e.getMessage() + "\"}");
         }
     }
 

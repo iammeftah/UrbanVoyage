@@ -64,7 +64,6 @@ public class AuthService {
                 client.getEmail(),
                 client.getPhoneNumber(),
                 client.getUsername(),
-                client.getPassword(),
                 token
         );
     }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {catchError, Observable} from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 @Injectable({
@@ -27,9 +27,15 @@ export class AuthService {
           if (response.token) {
             localStorage.setItem('token', response.token);
           }
+        }),
+        catchError((error) => {
+          console.error('Error during login:', error);
+          throw error; // Re-throw the error to be handled by the caller
         })
       );
   }
+
+
 
   logout(): Observable<any> {
     localStorage.removeItem('token');
