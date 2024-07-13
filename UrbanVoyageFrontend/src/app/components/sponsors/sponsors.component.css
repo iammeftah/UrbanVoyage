@@ -8,7 +8,7 @@
 }
 
 .animate-marquee {
-  animation: marquee 30s linear infinite;
+  animation: marquee 15s cubic-bezier(0,.58,1,.37) infinite both;
 }
 
 .animate-marquee:hover {

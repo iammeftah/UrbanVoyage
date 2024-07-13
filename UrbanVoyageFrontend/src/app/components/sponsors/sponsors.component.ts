@@ -23,6 +23,6 @@ export class SponsorsComponent implements OnInit {
 
   ngOnInit() {
     // Duplicate the sponsors array to create a seamless loop
-    this.duplicatedSponsors = [...this.sponsors, ...this.sponsors];
+    this.duplicatedSponsors = [...this.sponsors,...this.sponsors, ...this.sponsors];
   }
 }

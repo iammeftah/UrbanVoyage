@@ -1,6 +1,6 @@
 <app-header></app-header>
 
-<div class="w-full min-h-screen mx-auto px-4 md:px-32 py-8 md:py-12 bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText">
+<div class="w-full pt-16 min-h-screen mx-auto px-4 md:px-32 py-8 md:py-12 bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText">
   <div class="grid md:grid-cols-2 gap-8">
     <div class="space-y-6">
       <div>
@@ -20,17 +20,17 @@
                   Name
                 </label>
                 <input
-                  class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                  class="duration-300 hover:border-cyan-500 dark:hover:border-cyan-500 flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:border-cyan-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
                   id="name"
                   placeholder="Enter your name"
                 />
               </div>
               <div class="space-y-2">
-                <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="email">
+                <label class=" text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="email">
                   Email
                 </label>
                 <input
-                  class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                  class="duration-300 hover:border-cyan-500 dark:hover:border-cyan-500 flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:border-cyan-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
                   id="email"
                   placeholder="Enter your email"
                   type="email"
@@ -42,7 +42,7 @@
                 Message
               </label>
               <textarea
-                class="resize-none flex min-h-[80px] w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                class="resize-none flex min-h-[80px] w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:border-cyan-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText duration-300 hover:border-cyan-500 dark:hover:border-cyan-500 "
                 id="message"
                 rows="5"
                 placeholder="Enter your message"
@@ -132,9 +132,50 @@
     </div>
   </div>
 
+  <div class="mt-12 space-y-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="rounded-lg bg-white dark:bg-gray-800 shadow-sm p-6" data-aos="slide-right" data-aos-duration="800">
+        <h2 id="user-growth" class="text-2xl font-bold mb-4">User Growth</h2>
+        <div class="h-full flex flex-col items-center justify-center">
+          <!-- User growth chart or content goes here -->
+          <canvas id="userGrowthChart" class="w-full h-64"></canvas>
 
+        </div>
+      </div>
 
+      <div class="rounded-lg bg-white dark:bg-gray-800 shadow-sm p-6" data-aos="slide-left" data-aos-duration="800">
+        <h2 id="top-user-nationalities" class="text-2xl font-bold mb-4">Top User Nationalities</h2>
+        <div class="w-full md:w-3/4 aspect-square m-auto p-4">
+          <!-- Top user nationalities chart or content goes here -->
+          <canvas id="nationalitiesChart"></canvas>
 
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-lg bg-white dark:bg-gray-800 shadow-sm p-6" data-aos="fade-up" data-aos-duration="1000">
+      <h2 id="our-locations" class="text-2xl font-bold mb-4">Our Locations</h2>
+      <div id="map" class="rounded-xl" style="height: 400px;">
+        <!-- Map content goes here -->
+      </div>
+    </div>
+
+    <div class="grid border-red-500 gap-8 md:grid-cols-2 lg:grid-cols-4 ">
+      <div class="rounded-lg bg-white dark:bg-gray-800 shadow-sm p-6 border border-gray-600 transition-all ease-in-out duration-300 hover:border-cyan-500 dark:hover:border-cyan-500" *ngFor="let location of locations" data-aos="flip-left" data-aos-duration="800" data-aos-delay="100">
+        <h3 id="location.name" class="text-lg font-semibold mb-2">{{ location.name }}</h3>
+        <p>{{ location.address }}</p>
+        <button class="mt-4 bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">View Details</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <app-footer></app-footer>
+
+
+
+
+
+
+
+
