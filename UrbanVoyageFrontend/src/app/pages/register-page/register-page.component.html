@@ -1,6 +1,9 @@
 <div class="absolute top-0 right-0 left-0">
   <app-header></app-header>
 </div>
+
+<app-message [message]="message" [type]="messageType"></app-message>
+
 <!-- Register Page -->
 <div class="flex items-center justify-center mx-auto space-y-6 p-4 text-lightText dark:text-darkText min-h-screen w-full bg-lightBackground dark:bg-darkBackground">
   <div class="w-full md:max-w-xl px-6 py-6 rounded-lg shadow-sm bg-white dark:bg-[#333333]">
@@ -129,6 +132,11 @@
         <a href="#" class="underline underline-offset-4 hover:text-cyan-500">Privacy Policy</a>.
       </p>
     </div>
+    <app-verify-email
+      *ngIf="showVerification"
+      [email]="email"
+      (verificationComplete)="onVerificationComplete()">
+    </app-verify-email>
   </div>
 </div>
 <app-footer></app-footer>

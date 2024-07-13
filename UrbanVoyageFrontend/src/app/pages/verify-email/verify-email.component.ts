@@ -1,44 +1,70 @@
 // verify-email.component.ts
-
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-verify-email',
   templateUrl: './verify-email.component.html',
   styleUrls: ['./verify-email.component.css']
 })
-export class VerifyEmailComponent implements OnInit {
-  email!: string;
-  verificationCode: string = '';
+export class VerifyEmailComponent {
+  @Input() email!: string;
+  @Output() verificationComplete = new EventEmitter<void>();
+
+  verifyForm: FormGroup;
+  message: string | null = null;
+  messageType: 'success' | 'error' = 'success';
 
   constructor(
     private authService: AuthService,
-    private route: ActivatedRoute,
+    private fb: FormBuilder,
     private router: Router
-  ) {}
-
-  ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.email = params['email'];
+  ) {
+    this.verifyForm = this.fb.group({
+      digit1: ['', [Validators.required, Validators.maxLength(1)]],
+      digit2: ['', [Validators.required, Validators.maxLength(1)]],
+      digit3: ['', [Validators.required, Validators.maxLength(1)]],
+      digit4: ['', [Validators.required, Validators.maxLength(1)]],
+      digit5: ['', [Validators.required, Validators.maxLength(1)]],
+      digit6: ['', [Validators.required, Validators.maxLength(1)]]
     });
   }
 
+  onDigitInput(event: any, nextInput: any) {
+    if (event.target.value.length === 1) {
+      nextInput.focus();
+    }
+  }
+
   verifyEmail() {
-    if (this.verificationCode.length !== 6) {
-      alert('Please enter a 6-digit verification code.');
+    if (this.verifyForm.invalid) {
+      this.showMessage('Please enter a valid 6-digit verification code.', 'error');
       return;
     }
 
-    this.authService.verifyEmail(this.email, this.verificationCode).subscribe(
+    const verificationCode = Object.values(this.verifyForm.value).join('');
+
+    this.authService.verifyEmail(this.email, verificationCode).subscribe(
       (response) => {
-        alert('Email verified successfully!');
+        this.showMessage('Email verified successfully!', 'success');
+        this.verificationComplete.emit();
         this.router.navigate(['/login']);
+
       },
       (error) => {
-        alert('Verification failed: ' + error.error);
+        this.showMessage('Verification failed: ' + error.error, 'error');
       }
     );
+  }
+
+  showMessage(msg: string, type: 'success' | 'error') {
+    this.message = msg;
+    this.messageType = type;
+  }
+
+  closeMessage() {
+    this.message = null;
   }
 }

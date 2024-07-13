@@ -23,6 +23,7 @@ import { OurLocationMapComponent } from './components/our-location-map/our-locat
 import { SponsorsComponent } from './components/sponsors/sponsors.component';
 import { VerifyEmailComponent } from './pages/verify-email/verify-email.component';
 import {AuthInterceptor} from "./services/auth.interceptor";
+import { MessageComponent } from './components/message/message.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import {AuthInterceptor} from "./services/auth.interceptor";
     OurLocationMapComponent,
     SponsorsComponent,
     VerifyEmailComponent,
+    MessageComponent,
   ],
   imports: [
     BrowserModule,
