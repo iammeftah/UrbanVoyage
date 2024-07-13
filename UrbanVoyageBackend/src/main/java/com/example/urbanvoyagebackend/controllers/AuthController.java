@@ -1,10 +1,12 @@
 package com.example.urbanvoyagebackend.controllers;
 
 import com.example.urbanvoyagebackend.dto.LoginRequest;
+import com.example.urbanvoyagebackend.dto.LoginResponse;
 import com.example.urbanvoyagebackend.dto.UserDTO;
 import com.example.urbanvoyagebackend.dto.VerificationRequest;
 import com.example.urbanvoyagebackend.entity.users.User;
 import com.example.urbanvoyagebackend.service.media.EmailService;
+import com.example.urbanvoyagebackend.service.users.AuthService;
 import com.example.urbanvoyagebackend.service.users.UserService;
 import com.example.urbanvoyagebackend.utils.JwtUtil;
 import com.example.urbanvoyagebackend.utils.MD5Util; // Import MD5Util
@@ -42,6 +44,9 @@ public class AuthController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private AuthService authService;
 
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
@@ -103,51 +108,21 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
-        System.out.println("Received signin request for email: " + loginRequest.getEmail());
-        System.out.println("Password entered: " + loginRequest.getPassword()); // Display entered password
-
-        User user = userService.findByEmail(loginRequest.getEmail());
-        if (user == null) {
-            System.out.println("User not found for email: " + loginRequest.getEmail());
-            return ResponseEntity.badRequest().body(createResponse("Error", "User not found!"));
-        }
-
-        System.out.println("User found: " + user.getEmail());
-        System.out.println("Stored password: " + user.getPassword()); // Display stored password (hashed or encrypted)
-
-        if (!user.isVerified()) {
-            System.out.println("User is not verified: " + user.getEmail());
-            return ResponseEntity.badRequest().body(createResponse("Error", "Email not verified!"));
-        }
-
-        // Hash the entered password for comparison
-        String hashedPassword = MD5Util.md5(loginRequest.getPassword());
-        System.out.println("Hashed password: " + hashedPassword);
-
-        // Compare the hashed password from the request with the stored hashed password
-        if (!user.getPassword().equals(hashedPassword)) {
-            System.out.println("Authentication failed for user: " + loginRequest.getEmail() + ". Invalid credentials.");
-            return ResponseEntity.badRequest().body(createResponse("Error", "Invalid credentials!"));
-        }
+        System.out.println("Controller: Received signin request for email: " + loginRequest.getEmail());
 
         try {
-            System.out.println("Authenticating user: " + loginRequest.getEmail());
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), hashedPassword));
-            System.out.println("User authenticated successfully: " + authentication.getName());
-
-            // Set the authenticated user in SecurityContext
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            // Generate JWT token (if needed)
-            String token = jwtUtil.generateJwtToken(authentication); // Implement this method to generate JWT token
-            System.out.println("Generated JWT token: " + token);
-
-            System.out.println("Returning success response for user: " + authentication.getName());
-            return ResponseEntity.ok(createResponse("Success", "User signed in successfully!"));
+            LoginResponse response = authService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
+            if (response != null) {
+                System.out.println("Controller: Login successful for user: " + loginRequest.getEmail());
+                return ResponseEntity.ok(response);
+            } else {
+                System.out.println("Controller: Login failed: Invalid credentials for user: " + loginRequest.getEmail());
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+            }
         } catch (Exception e) {
-            System.out.println("Authentication failed for user: " + loginRequest.getEmail());
-            return ResponseEntity.badRequest().body(createResponse("Error", "Invalid credentials!"));
+            System.out.println("Controller: Exception occurred during signin: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
         }
     }
 
