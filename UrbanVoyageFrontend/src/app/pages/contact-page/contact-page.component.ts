@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 import * as L from 'leaflet';
 
@@ -24,6 +24,8 @@ interface AgencyLocation {
   styleUrls: ['./contact-page.component.css']
 })
 export class ContactPageComponent implements OnInit {
+  @ViewChild('mapSection') mapSection!: ElementRef;
+
   faqs: FAQ[] = [
     {
       question: 'What is the cancellation policy?',
@@ -42,12 +44,7 @@ export class ContactPageComponent implements OnInit {
     }
   ];
 
-  locations: AgencyLocation[] = [
-    { name: 'New York', address: '123 Main St, New York, NY 10001', lat: 40.7128, lng: -74.0060 },
-    { name: 'Los Angeles', address: '456 Oak St, Los Angeles, CA 90001', lat: 34.0522, lng: -118.2437 },
-    { name: 'Chicago', address: '789 Elm St, Chicago, IL 60601', lat: 41.8781, lng: -87.6298 },
-    { name: 'Miami', address: '321 Palm Ave, Miami, FL 33101', lat: 25.7617, lng: -80.1918 }
-  ];
+
 
   toggleFAQ(faq: FAQ): void {
     faq.isOpen = !faq.isOpen;
@@ -55,7 +52,7 @@ export class ContactPageComponent implements OnInit {
 
   ngOnInit() {
     this.initUserGrowthChart();
-    this.initNationalitiesChart();
+    this.initCitiesChart();
     this.initMap();
   }
 
@@ -87,41 +84,99 @@ export class ContactPageComponent implements OnInit {
     });
   }
 
-  initMap() {
-    const map = L.map('map').setView([39.8283, -98.5795], 4);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+  map: any; // Declare map as any type
 
-    this.locations.forEach(location => {
-      L.marker([location.lat, location.lng])
-        .addTo(map)
-        .bindPopup(`<b>${location.name}</b><br>${location.address}`);
-    });
-  }
 
-  nationalities = [
-    { country: 'USA', users: 35 },
-    { country: 'UK', users: 25 },
-    { country: 'Canada', users: 20 },
-    { country: 'Australia', users: 15 },
-    { country: 'Other', users: 5 }
+  locations: AgencyLocation[] = [
+    { name: 'Casablanca', address: '123 Avenue Mohammed V, Casablanca', lat: 33.5731, lng: -7.5898 },
+    { name: 'Rabat', address: '456 Avenue Mohamed V, Rabat', lat: 34.020882, lng: -6.841650 },
+    { name: 'Marrakech', address: '789 Rue Yves Saint Laurent, Marrakech', lat: 31.6306, lng: -7.9922 },
+    { name: 'Fes', address: '321 Place R\'cif, Fes', lat: 34.0339, lng: -5.0003 },
+    { name: 'Tangier', address: '567 Place du 9 Avril 1947, Tangier', lat: 35.7721, lng: -5.8099 },
+    { name: 'Agadir', address: '890 Avenue du Prince Moulay Abdallah, Agadir', lat: 30.4210, lng: -9.5831 },
+    { name: 'Meknes', address: '234 Avenue des F.A.R., Meknes', lat: 33.8935, lng: -5.5364 },
+    { name: 'Oujda', address: '543 Avenue Mohammed V, Oujda', lat: 34.6819, lng: -1.9086 },
+    { name: 'Chefchaouen', address: '876 Place Outa el Hammam, Chefchaouen', lat: 35.1688, lng: -5.2688 },
+    { name: 'Essaouira', address: '109 Avenue de l\'Istiqlal, Essaouira', lat: 31.5085, lng: -9.7595 }
   ];
 
 
+  initMap() {
+    // Define a custom marker icon with cyan color
+    const cyanIcon = new L.Icon({
+      iconUrl: 'assets/map-pin.svg',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      shadowSize: [41, 41]
+    });
+
+    this.map = L.map('map', {
+      center: [32.4279, -6.3418], // Center map around Morocco initially
+      zoom: 6,
+      minZoom: 6,
+      maxZoom: 18
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(this.map);
+
+    this.locations.forEach(location => {
+      L.marker([location.lat, location.lng])
+        .addTo(this.map)
+        .bindPopup(`<b>${location.name}</b><br>${location.address}`);
+    });
+
+    const bounds = L.latLngBounds(this.locations.map(loc => [loc.lat, loc.lng]));
+    this.map.fitBounds(bounds, { padding: [50, 50] });
+  }
+
+  showLocationOnMap(location: AgencyLocation) {
+    if (this.map) {
+      this.map.flyTo([location.lat, location.lng], 14, {
+        duration: 4,  // Animation duration in seconds
+        easeLinearity: 0.5,  // Animation easing
+        zoom: { animate: true }
+      });
+
+      // Scroll to the map section
+      this.mapSection.nativeElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+
+
+  cities = [
+    { country: 'Casablanca', users: 5500 },
+    { country: 'Rabat', users: 4800 },
+    { country: 'Marrakech', users: 4200 },
+    { country: 'Fes', users: 3800 },
+    { country: 'Tangier', users: 3200 },
+    { country: 'Agadir', users: 2800 },
+    { country: 'Meknes', users: 2300 },
+    { country: 'Oujda', users: 1800 },
+    { country: 'Chefchaouen', users: 1500 },
+    { country: 'Essaouira', users: 1200 }
+  ];
 
   initUserGrowthChart() {
     const ctx = document.getElementById('userGrowthChart') as HTMLCanvasElement;
     new Chart(ctx, {
       type: 'line',
       data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        datasets: [{
-          label: 'Number of Users',
-          data: [1000, 1500, 2800, 3500, 4000, 4500, 5000, 5400, 5800, 6500, 7300, 8500],
-          borderColor: 'rgb(75, 192, 192)',
-          tension: 0.1
-        }]
+        labels: this.generateMonthLabels(), // Function to generate labels like ['Jan 2024', 'Feb 2024', ...]
+        datasets: this.cities.map(city => {
+          const growthData = this.generateCityUserGrowth(city.users);
+          return {
+            label: city.country,
+            data: growthData,
+            borderColor: this.getRandomColor(),
+            tension: 0.4,
+            fill: false
+          };
+        })
       },
       options: {
         responsive: true,
@@ -138,14 +193,65 @@ export class ContactPageComponent implements OnInit {
     });
   }
 
-  initNationalitiesChart() {
-    const ctx = document.getElementById('nationalitiesChart') as HTMLCanvasElement;
+  generateCityUserGrowth(initialUsers: number): number[] {
+    const growthData = [initialUsers];
+    let currentValue = initialUsers;
+    for (let i = 1; i < 36; i++) { // Simulate growth over 3 years (36 months)
+      const randomChange = this.getRandomNumberInRange(-200, 300); // Random change between -200 and 300
+      const growthFactor = 1 + randomChange / 10000; // Convert random change to growth factor
+
+      currentValue = Math.round(currentValue * growthFactor);
+      growthData.push(currentValue);
+    }
+    return growthData;
+  }
+
+  generateMonthLabels(): string[] {
+    const labels = [];
+    const currentDate = new Date();
+    let month = currentDate.getMonth();
+    let year = currentDate.getFullYear();
+    for (let i = 0; i < 36; i++) {
+      labels.push(`${this.getMonthName(month)} ${year}`);
+      month++;
+      if (month > 11) {
+        month = 0;
+        year++;
+      }
+    }
+    return labels;
+  }
+
+  getMonthName(monthIndex: number): string {
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return monthNames[monthIndex];
+  }
+
+  getRandomNumberInRange(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  getRandomColor(): string {
+    const r = 0; // Set red channel to 0 or a low value
+    const g = Math.floor(Math.random() * 156);
+    const b = Math.floor(Math.random() * 256);
+
+    // Adjusting the values to create a cyan or teal-like color
+    const cyanishColor = `rgb(${r}, ${g}, ${b})`;
+
+    return cyanishColor;
+  }
+
+
+
+  initCitiesChart() {
+    const ctx = document.getElementById('citiesChart') as HTMLCanvasElement;
     new Chart(ctx, {
       type: 'pie',
       data: {
-        labels: this.nationalities.map(n => n.country),
+        labels: this.cities.map(n => n.country),
         datasets: [{
-          data: this.nationalities.map(n => n.users),
+          data: this.cities.map(n => n.users),
           backgroundColor: [
             'rgba(6, 182, 212, 0.8)',  // cyan-500
             'rgba(8, 145, 178, 0.8)',  // cyan-600
@@ -171,7 +277,7 @@ export class ContactPageComponent implements OnInit {
           },
           title: {
             display: true,
-            text: 'Top User Nationalities'
+            text: 'Top User Cities'
           }
         },
         animation: {

@@ -1,0 +1,17 @@
+/* Example CSS - adjust as needed */
+#userGrowthChart {
+  width: 100%; /* Ensure the chart spans the entire width of its container */
+  height: 400px; /* Set an initial height for larger screens */
+}
+
+@media (max-width: 768px) {
+  #userGrowthChart {
+    height: 300px; /* Adjust height for medium-sized screens */
+  }
+}
+
+@media (max-width: 576px) {
+  #userGrowthChart {
+    height: 200px; /* Adjust height for small screens (e.g., phones) */
+  }
+}
