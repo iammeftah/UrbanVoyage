@@ -36,71 +36,25 @@
               <div class="text-muted-foreground">Duration</div>
               <div class="font-medium">3h 30m</div>
             </div>
-            <div class="flex items-center justify-between">
-              <div class="text-muted-foreground">Flight</div>
-              <div class="font-medium">ABC123</div>
-            </div>
           </div>
         </div>
       </div>
 
 
 
-      <div data-aos="fade-up" data-aos-delay="100" class="rounded-lg bg-white dark:bg-gray-800 text-card-foreground shadow-sm" data-v0-t="card">
-        <div class="flex flex-col p-6">
-          <h3 class="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight">Seat Selection</h3>
+      <div data-aos="fade-up" data-aos-delay="100" class="rounded-lg bg-white dark:bg-gray-800 text-card-foreground shadow-sm p-6">
+        <h3 class="text-2xl font-semibold mb-4">Seat Selection</h3>
+        <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4">
+          <button
+            *ngFor="let seatType of seatTypes; let i = index"
+            (click)="selectSeatType(i)"
+            [class]="getSeatTypeButtonClass(i)"
+          >
+            <span class="mr-2">{{ i + 1 }}</span>
+            {{ seatType }}
+          </button>
         </div>
-        <div class="p-6">
-          <div class="grid gap-2">
-            <div class="relative">
-              <button
-                type="button"
-                role="combobox"
-                aria-haspopup="listbox"
-                [attr.aria-expanded]="isDropdownOpen ? 'true' : 'false'"
-                aria-autocomplete="none"
-                aria-labelledby="listbox-label"
-                aria-describedby="listbox-description"
-                dir="ltr"
-                class="flex items-center justify-between h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
-                (click)="toggleDropdown()"
-              >
-                <span>Select a seat type</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-chevron-down h-4 w-4 opacity-50"
-                  aria-hidden="true"
-                >
-                  <path d="m6 9 6 6 6-6"></path>
-                </svg>
-              </button>
-              <ul
-                *ngIf="isDropdownOpen"
-                class="absolute z-10 mt-1 w-full bg-white dark:bg-darkBackground text-lightText dark:text-darkText rounded-md shadow-lg ring-1 ring-black ring-opacity-5"
-                role="listbox"
-                aria-labelledby="listbox-label"
-                aria-describedby="listbox-description"
-              >
-                <li
-                  *ngFor="let seatType of seatTypes"
-                  class="cursor-pointer select-none relative py-2 pl-3 pr-9 text-sm text-lightText dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-700 "
-                  role="option"
-                >
-                  <span class="block truncate">{{ seatType }}</span>
-                </li>
-              </ul>
-            </div>
-            <div class="text-sm text-muted-foreground">Choose your preferred seat type.</div>
-          </div>
-        </div>
+        <div class="text-sm text-gray-600 dark:text-gray-400 mt-4">Choose your preferred seat type.</div>
       </div>
 
 
@@ -108,7 +62,7 @@
 
 
 
-      <div data-aos="fade-up" data-aos-delay="200" class="rounded-lg bg-white dark:bg-gray-800 text-card-foreground shadow-sm" data-v0-t="card">
+      <div  class="rounded-lg bg-white dark:bg-gray-800 text-card-foreground shadow-sm" data-aos="fade-up" data-aos-delay="200" data-v0-t="card">
         <div class="flex flex-col space-y-1.5 p-6">
           <h3 class="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight">
             Passenger Information
@@ -125,7 +79,7 @@
                   First Name
                 </label>
                 <input
-                  class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                  class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-cyan-500 dark:hover:border-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500"
                   id="firstName"
                   placeholder="John"
                   fdprocessedid="ve1lg"
@@ -139,7 +93,7 @@
                   Last Name
                 </label>
                 <input
-                  class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                  class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-cyan-500 dark:hover:border-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500"
                   id="lastName"
                   placeholder="Doe"
                   fdprocessedid="ijtzp"
@@ -154,7 +108,7 @@
                 Email
               </label>
               <input
-                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-cyan-500 dark:hover:border-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500"
                 id="email"
                 placeholder="john@example.com"
                 type="email"
@@ -169,7 +123,7 @@
                 Phone
               </label>
               <input
-                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-cyan-500 dark:hover:border-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500"
                 id="phone"
                 placeholder="+1 (555) 555-5555"
                 type="tel"
@@ -184,7 +138,7 @@
                 Special Requests
               </label>
               <textarea
-                class="flex h-36 resize-none w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                class="flex h-36 resize-none w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-cyan-500 dark:hover:border-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500"
                 id="specialRequests"
                 placeholder="e.g. Wheelchair assistance, dietary restrictions"
               ></textarea>
@@ -239,7 +193,7 @@
                 Card Number
               </label>
               <input
-                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-cyan-500 dark:hover:border-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500"
                 id="cardNumber"
                 placeholder="XXXX XXXX XXXX XXXX"
                 type="text"
@@ -255,7 +209,7 @@
                   Expiry Date
                 </label>
                 <input
-                  class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                  class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-cyan-500 dark:hover:border-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500"
                   id="expiryDate"
                   placeholder="MM/YY"
                   type="text"
@@ -270,7 +224,7 @@
                   CVV
                 </label>
                 <input
-                  class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                  class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-cyan-500 dark:hover:border-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500"
                   id="cvv"
                   placeholder="123"
                   type="text"
