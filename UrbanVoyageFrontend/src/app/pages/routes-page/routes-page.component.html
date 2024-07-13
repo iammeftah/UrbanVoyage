@@ -35,44 +35,31 @@
           />
         </div>
         <!-- Trip Type: One-Way or Round Trip -->
-        <div class="sm:col-span-3">
-          <label class="text-sm font-medium mb-1 block" for="trip-type">
-            Trip Type
-          </label>
-          <div class="flex space-x-4">
-            <label class="flex items-center">
-              <input type="radio" name="trip-type" value="one-way" class="text-cyan-400 focus:ring-cyan-400" checked (change)="onTripTypeChange($event)">
-              <span class="ml-2">One-Way</span>
-            </label>
-            <label class="flex items-center">
-              <input type="radio" name="trip-type" value="round-trip" class="text-cyan-400 focus:ring-cyan-400" (change)="onTripTypeChange($event)">
-              <span class="ml-2">Round Trip</span>
-            </label>
+        <div class="mb-6">
+          <label class="block text-sm font-medium mb-1">Trip Type</label>
+          <div class="flex justify-around bg-white dark:bg-gray-700 rounded-lg w-full md:w-fit relative">
+            <div class="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-t from-cyan-600 to-cyan-500 rounded-md transition-all duration-300 ease-in-out"
+                 [ngStyle]="{'transform': isOneWay ? 'translateX(0)' : 'translateX(100%)'}">
+            </div>
+            <button class="px-6 py-2 h-10 rounded-md transition-colors relative z-10"
+                    [ngClass]="{'text-white': isOneWay, 'text-gray-500': !isOneWay}"
+                    (click)="isOneWay = true">One-Way</button>
+            <button class="px-6 py-2 h-10 rounded-md transition-colors ml-1 relative z-10"
+                    [ngClass]="{'text-white': !isOneWay, 'text-gray-500': isOneWay}"
+                    (click)="isOneWay = false">Round Trip</button>
           </div>
         </div>
+
+
         <!-- Travel Date and Return Date -->
-        <div class="sm:col-span-2">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="text-sm font-medium mb-1 block" for="date">
-                Travel Date
-              </label>
-              <input
-                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
-                id="date"
-                type="date"
-              />
-            </div>
-            <div [ngClass]="{'hidden': isOneWay}" data-aos="fade-left">
-              <label class="text-sm font-medium mb-1 block" for="return-date">
-                Return Date
-              </label>
-              <input
-                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
-                id="return-date"
-                type="date"
-              />
-            </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label for="travel-date" class="block text-sm font-medium mb-1">Travel Date</label>
+            <input type="date" id="travel-date" class="w-full h-10 px-3 py-2 border border-gray-300 dark:border-gray-600 cursor-pointer bg-white dark:bg-gray-700 rounded-md focus:ring-cyan-500 focus:border-cyan-500 custom-date-input">
+          </div>
+          <div [ngClass]="{'hidden': isOneWay}">
+            <label for="return-date" class="block text-sm font-medium mb-1">Return Date</label>
+            <input type="date" id="return-date" class="w-full h-10 px-3 py-2 border border-gray-300 dark:border-gray-600 cursor-pointer bg-white dark:bg-gray-700 rounded-md focus:ring-cyan-500 focus:border-cyan-500 custom-date-input">
           </div>
         </div>
         <!-- Number of Travelers (Adults / Children) -->
@@ -105,19 +92,18 @@
           </div>
         </div>
         <!-- Pet Option -->
-        <div class="sm:col-span-3">
-          <label class="text-sm font-medium mb-1 block" for="pet">
-            Traveling with a Pet?
-          </label>
-          <div class="flex space-x-4">
-            <label class="flex items-center">
-              <input type="radio" name="pet" value="yes" class="text-cyan-400 focus:ring-cyan-400">
-              <span class="ml-2">Yes</span>
-            </label>
-            <label class="flex items-center">
-              <input type="radio" name="pet" value="no" class="text-cyan-400 focus:ring-cyan-400" checked>
-              <span class="ml-2">No</span>
-            </label>
+        <div class="mb-6">
+          <label class="block text-sm font-medium mb-1">Traveling with a Pet?</label>
+          <div class="flex bg-white dark:bg-gray-700 rounded-lg w-fit relative">
+            <div class="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-t from-cyan-600 to-cyan-500 rounded-md transition-all duration-300 ease-in-out"
+                 [ngStyle]="{'transform': travelingWithPet ? 'translateX(0)' : 'translateX(100%)'}">
+            </div>
+            <button class="px-4 py-2 h-10 rounded-md transition-colors relative z-10"
+                    [ngClass]="{'text-white': travelingWithPet, 'text-gray-500': !travelingWithPet}"
+                    (click)="travelingWithPet = true">Yes</button>
+            <button class="px-4 py-2 h-10 rounded-md transition-colors ml-1 relative z-10"
+                    [ngClass]="{'text-white': !travelingWithPet, 'text-gray-500': travelingWithPet}"
+                    (click)="travelingWithPet = false">No</button>
           </div>
         </div>
         <!-- Search Button -->

@@ -18,7 +18,6 @@ export class LoginPageComponent {
   messageType: 'success' | 'error' = 'success';
   loading: boolean = false;
 
-
   constructor(private authService: AuthService, private router: Router) {
     this.isLoggedIn = this.authService.isLoggedIn();
   }
@@ -28,24 +27,36 @@ export class LoginPageComponent {
   }
 
   login(): void {
+    // Reset message
+    this.message = null;
+
+    // Validate fields
+    if (!this.email.trim()) {
+      this.showMessage('Please enter your email address.', 'error');
+      return;
+    }
+
+    if (!this.password.trim()) {
+      this.showMessage('Please enter your password.', 'error');
+      return;
+    }
+
+    // If validation passes, proceed with login
     this.loading = true;
     console.log('Attempting login with email:', this.email);
-    console.log('Password entered:', this.password);
 
     this.authService.login(this.email, this.password).subscribe(
       (response) => {
         console.log('Login successful:', response);
         this.loading = false;
-        this.message = 'Login successful!';
-        this.messageType = 'success';
+        this.showMessage('Login successful!', 'success');
         this.isLoggedIn = true;
         this.router.navigate(['/routes']);
       },
       (error) => {
         this.loading = false;
         console.error('Login failed:', error);
-        this.message = (error.error?.message || 'Unknown error');
-        this.messageType = 'error';
+        this.showMessage(error.error?.message || 'An error occurred during login. Please try again.', 'error');
       }
     );
   }
@@ -53,27 +64,30 @@ export class LoginPageComponent {
   logout(): void {
     this.authService.logout();
     this.isLoggedIn = false;
-    this.message = 'Logged out successfully!';
-    this.messageType = 'success';
+    this.showMessage('Logged out successfully!', 'success');
     this.router.navigate(['/login']);
   }
 
   forgotPassword(): void {
-    this.message = 'Forgot password functionality not implemented yet.';
-    this.messageType = 'error';
+    this.showMessage('Forgot password functionality not implemented yet.', 'error');
   }
 
   loginWithFacebook(): void {
-    this.message = 'Facebook login not implemented yet.';
-    this.messageType = 'error';
+    this.showMessage('Facebook login not implemented yet.', 'error');
   }
 
   loginWithGoogle(): void {
-    this.message = 'Google login not implemented yet.';
-    this.messageType = 'error';
+    this.showMessage('Google login not implemented yet.', 'error');
   }
 
-  closeMessage(){
-    this.message = null ;
+  showMessage(msg: string, type: 'success' | 'error'): void {
+    this.message = msg;
+    this.messageType = type;
+    // Optionally, you can set a timer to clear the message after a few seconds
+    setTimeout(() => this.closeMessage(), 5000); // Clear message after 5 seconds
+  }
+
+  closeMessage(): void {
+    this.message = null;
   }
 }

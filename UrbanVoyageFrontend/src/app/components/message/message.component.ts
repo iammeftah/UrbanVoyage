@@ -4,7 +4,7 @@ import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angu
   selector: 'app-message',
   template: `
     <div *ngIf="message"
-         class="flex flex-row gap-4 items-center justify-center fixed top-4 right-4 p-4 rounded-md shadow-md text-white z-50"
+         class="flex flex-row gap-4 items-center justify-center fixed top-4 right-4 p-4 rounded-md shadow-md text-white z-50 max-w-[100%] "
          [ngClass]="{'bg-green-500': type === 'success', 'bg-red-500': type === 'error'}"
          data-aos="fade-left">
       <i (click)="closeMessage()" class="bx bx-x cursor-pointer"></i>

@@ -38,5 +38,9 @@ export class HeaderComponent {
     this.message = null ;
   }
 
+  closelogout(){
+    this.closeSidebar();
+    this.logout();
+  }
 
 }

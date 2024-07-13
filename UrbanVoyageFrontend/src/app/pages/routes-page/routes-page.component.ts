@@ -8,6 +8,7 @@ import {Component, OnInit} from '@angular/core';
 export class RoutesPageComponent implements OnInit{
 
   isOneWay: boolean = true;
+  travelingWithPet: boolean = false;
 
   constructor() {}
 
