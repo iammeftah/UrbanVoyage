@@ -24,7 +24,7 @@
         <app-dark-mode-toggle></app-dark-mode-toggle>
       </div>
 
-      <div>
+      <div class="flex flex-row items-center justify-center gap-2">
         <button *ngIf="isLoggedIn" (click)="logout()"  class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-cyan-500 dark:hover:text-cyan-500  disabled:opacity-50 duration-300">
           Logout
         </button>

@@ -1,4 +1,4 @@
-import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
+import {APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
@@ -26,6 +26,16 @@ import {AuthInterceptor} from "./services/auth.interceptor";
 import { MessageComponent } from './components/message/message.component';
 import { LoadingSpinnerComponent } from './objects/loading-spinner/loading-spinner.component';
 import { BackofficePageComponent } from './pages/backoffice-page/backoffice-page.component';
+
+export function initializeApp() {
+  return () => {
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    }
+  };
+}
+
 
 @NgModule({
   declarations: [
@@ -60,6 +70,11 @@ import { BackofficePageComponent } from './pages/backoffice-page/backoffice-page
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeApp,
+      multi: true
+    }
 
   ],
   bootstrap: [AppComponent],

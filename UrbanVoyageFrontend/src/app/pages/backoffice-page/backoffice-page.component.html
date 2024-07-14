@@ -1,5 +1,5 @@
 <div class="flex flex-col min-h-screen">
-
+  <app-message [message]="message" [type]="messageType" (close)="closeMessage()"></app-message>
 
   <app-header></app-header>
 
@@ -41,7 +41,7 @@
         </div>
 
         <div class="overflow-x-auto">
-          <table class="w-full caption-bottom text-sm rounded-xl overflow-hidden">
+          <table class="w-full caption-bottom text-sm rounded-lg overflow-hidden">
             <thead class="bg-gray-50 dark:bg-gray-700">
             <tr class="transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
               <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Departure City</th>
@@ -56,7 +56,7 @@
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ route.arrivalCity }}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ route.distance | number:'1.0-0' }}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 w-full flex flex-row gap-2 items-center justify-center">
-                <button (click)="updateRoute(route)" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors disabled:opacity-50 duration-300">Edit</button>
+                <button (click)="openRouteEditForm(route)" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors disabled:opacity-50 duration-300">Edit</button>
                 <button (click)="deleteRoute(route.routeID)" class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-cyan-500 dark:hover:text-cyan-500 disabled:opacity-50 duration-300">Delete</button>
               </td>
             </tr>
@@ -80,7 +80,7 @@
         </div>
 
         <div class="overflow-x-auto">
-          <table class="w-full caption-bottom text-sm rounded-lg">
+          <table class="w-full caption-bottom text-sm rounded-lg overflow-hidden">
             <thead class="[&_tr]:border-b bg-gray-50 dark:bg-gray-700">
             <tr class="w-full border-b transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
               <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Route</th>
@@ -95,7 +95,7 @@
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ schedule.departureTime | date:'medium' }}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ schedule.arrivalTime | date:'medium' }}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 w-full flex flex-row gap-2 items-center justify-center">
-                <button (click)="updateSchedule(schedule)" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">Edit</button>
+                <button (click)="openScheduleEditForm(schedule)" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">Edit</button>
                 <button (click)="deleteSchedule(schedule.scheduleID)" class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-cyan-500 dark:hover:text-cyan-500  disabled:opacity-50 duration-300">Delete</button>
               </td>
             </tr>
@@ -108,7 +108,7 @@
         <h2 class="text-xl font-bold mb-4">Manage Reservations</h2>
 
         <div class="overflow-x-auto">
-          <table class="w-full caption-bottom text-sm">
+          <table class="w-full caption-bottom text-sm rounded-lg overflow-hidden">
             <thead class="[&_tr]:border-b bg-gray-50 dark:bg-gray-700">
             <tr class="border-b transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
               <th class="w-1/5 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">User</th>
@@ -127,19 +127,36 @@
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ reservation.reservationDate | date:'mediumDate' }}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
                 <div
-                  class="inline-flex w-fit items-center justify-center whitespace-nowrap border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent px-2 py-1 rounded-full text-xs"
+                  class="inline-flex w-fit items-center text-white justify-center whitespace-nowrap border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent px-2 py-1 rounded-full text-xs"
                   [ngClass]="{
-                              'bg-green-600 text-white hover:bg-green-700': reservation.status === 'CONFIRMED',
-                              'bg-yellow-600 text-white hover:bg-yellow-700': reservation.status === 'PENDING'
-                            }"
+                'bg-green-600 text-white': reservation.status === 'CONFIRMED',
+                'bg-yellow-600 text-white': reservation.status === 'PENDING',
+                'bg-red-600 text-white': reservation.status === 'CANCELLED'
+              }"
                 >
                   {{ reservation.status }}
                 </div>
               </td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
                 <div class="w-full flex flex-row gap-2 items-center justify-center">
-                  <button (click)="updateReservationStatus(reservation, 'CONFIRMED')" class="inline-flex items-center whitespace-nowrap border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-cyan-600 text-white hover:bg-cyan-700 px-3 py-1 rounded">Confirm</button>
-                  <button (click)="updateReservationStatus(reservation, 'CANCELLED')" class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-cyan-500 dark:hover:text-cyan-500 disabled:opacity-50 duration-300">Cancel</button>
+                  <ng-container [ngSwitch]="reservation.status">
+                    <ng-container *ngSwitchCase="'PENDING'">
+                      <button (click)="updateReservationStatus(reservation, 'CONFIRMED')" class="inline-flex items-center whitespace-nowrap border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-cyan-600 text-white hover:bg-cyan-700 px-3 py-1 rounded">Confirm</button>
+                      <button (click)="updateReservationStatus(reservation, 'CANCELLED')" class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-cyan-500 dark:hover:text-cyan-500 disabled:opacity-50 duration-300">Cancel</button>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'CONFIRMED'">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span class="text-green-500">Confirmed</span>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'CANCELLED'">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      <span class="text-red-500">Cancelled</span>
+                    </ng-container>
+                  </ng-container>
                 </div>
               </td>
             </tr>
@@ -148,9 +165,8 @@
         </div>
       </div>
 
-      <div *ngIf="activeTab === 'statistics'" class="w-full">
+      <div *ngIf="activeTab === 'statistics'">
         <h2 class="text-xl font-bold mb-4">Statistics</h2>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="w-full">
             <h3 class="text-lg font-semibold mb-2">Users and Passengers</h3>
@@ -168,3 +184,76 @@
   <app-footer></app-footer>
 
 </div>
+
+
+
+
+<!-- ... (keep existing content) -->
+
+<!-- Route Edit Modal -->
+<div  *ngIf="isEditingRoute" class="fixed inset-0 z-50 overflow-auto bg-white dark:bg-darkBackground bg-opacity-50 dark:bg-opacity-50 backdrop-blur-sm flex items-center justify-center">
+  <div data-aos="fade-down" data-aos-duration="400" class="relative bg-white dark:bg-gray-800 w-11/12 md:w-3/4 lg:w-1/2 xl:w-2/5 rounded-lg shadow-lg p-6">
+    <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-4">Edit Route</h3>
+    <div class="mb-4">
+      <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" for="departureCity">
+        Departure City
+      </label>
+      <select [(ngModel)]="editingRoute!.departureCity" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        <option *ngFor="let location of locations" [value]="location.name">{{location.name}}</option>
+      </select>
+    </div>
+    <div class="mb-4">
+      <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" for="arrivalCity">
+        Arrival City
+      </label>
+      <select [(ngModel)]="editingRoute!.arrivalCity" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        <option *ngFor="let location of locations" [value]="location.name">{{location.name}}</option>
+      </select>
+    </div>
+    <div class="flex items-center justify-end gap-2">
+      <button (click)="saveRouteEdit()" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">
+        Save
+      </button>
+      <button (click)="closeRouteEditForm()" class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-cyan-500 dark:hover:text-cyan-500  disabled:opacity-50 duration-300">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Schedule Edit Modal -->
+<div  *ngIf="isEditingSchedule" class="fixed inset-0 z-50 overflow-auto bg-white dark:bg-darkBackground bg-opacity-50 dark:bg-opacity-50 backdrop-blur-sm flex items-center justify-center">
+  <div data-aos="fade-down" data-aos-duration="400" class="relative bg-white dark:bg-gray-800 w-11/12 md:w-3/4 lg:w-1/2 xl:w-2/5 rounded-lg shadow-lg p-6">
+    <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-4">Edit Schedule</h3>
+    <div class="mb-4">
+      <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" for="route">
+        Route
+      </label>
+      <select [(ngModel)]="editingSchedule!.route.routeID" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        <option *ngFor="let route of routes" [value]="route.routeID">{{route.departureCity}} - {{route.arrivalCity}}</option>
+      </select>
+    </div>
+    <div class="mb-4">
+      <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" for="departureTime">
+        Departure Time
+      </label>
+      <input [(ngModel)]="editingSchedule!.departureTime" type="datetime-local" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+    </div>
+    <div class="mb-4">
+      <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" for="arrivalTime">
+        Arrival Time
+      </label>
+      <input [(ngModel)]="editingSchedule!.arrivalTime" type="datetime-local" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+    </div>
+    <div class="flex items-center justify-end gap-2">
+      <button (click)="saveScheduleEdit()" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">
+        Save
+      </button>
+      <button (click)="closeScheduleEditForm()" class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-cyan-500 dark:hover:text-cyan-500  disabled:opacity-50 duration-300">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+

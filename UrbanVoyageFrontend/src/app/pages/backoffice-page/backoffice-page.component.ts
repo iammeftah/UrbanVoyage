@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import { Chart, ChartConfiguration } from 'chart.js/auto';
 
 interface AgencyLocation {
@@ -41,13 +41,31 @@ interface Statistics {
   templateUrl: './backoffice-page.component.html',
   styleUrls: ['./backoffice-page.component.css']
 })
-export class BackofficePageComponent implements OnInit {
+export class BackofficePageComponent implements OnInit , AfterViewInit {
+  ngOnInit(): void {
+    this.loadRoutes();
+    this.loadSchedules();
+    this.loadReservations();
+    this.loadStatistics();
+  }
+
+  ngAfterViewInit(): void {
+    if (this.activeTab === 'statistics') {
+      setTimeout(() => this.initializeCharts(), 0);
+    }
+  }
   activeTab: 'routes' | 'schedules' | 'reservations' | 'statistics' = 'routes';
   tabs: ('routes' | 'schedules' | 'reservations' | 'statistics')[] = ['routes', 'schedules', 'reservations', 'statistics'];
   routes: Route[] = [];
   schedules: Schedule[] = [];
   reservations: Reservation[] = [];
   statistics: Statistics = { totalUsers: 0, totalPassengers: 0, reservationsPerMonth: [] };
+  message: string | null = null;
+  messageType: 'success' | 'error' = 'success';
+  isEditingRoute: boolean = false;
+  isEditingSchedule: boolean = false;
+  editingRoute: Route | null = null;
+  editingSchedule: Schedule | null = null;
 
   locations: AgencyLocation[] = [
     { name: 'Casablanca', address: '123 Avenue Mohammed V, Casablanca', lat: 33.5731, lng: -7.5898 },
@@ -79,12 +97,7 @@ export class BackofficePageComponent implements OnInit {
     this.initializeCityDistances();
   }
 
-  ngOnInit(): void {
-    this.loadRoutes();
-    this.loadSchedules();
-    this.loadReservations();
-    this.loadStatistics();
-  }
+
 
   initializeCityDistances(): void {
     this.locations.forEach(city1 => {
@@ -147,7 +160,9 @@ export class BackofficePageComponent implements OnInit {
       reservationsPerMonth: [65, 59, 80, 81, 56, 55, 40, 45, 70, 75, 80, 90]
     };
     console.log('Statistics loaded:', this.statistics);
-    this.initializeCharts();
+    if (this.activeTab === 'statistics') {
+      this.initializeCharts();
+    }
   }
 
   initializeCharts(): void {
@@ -229,6 +244,9 @@ export class BackofficePageComponent implements OnInit {
       this.newRoute.distance = this.cityDistances[this.newRoute.departureCity][this.newRoute.arrivalCity];
       this.routes.push({ ...this.newRoute });
       this.newRoute = { routeID: 0, departureCity: '', arrivalCity: '', distance: 0 };
+      this.showMessage('Route added successfully', 'success');
+    } else {
+      this.showMessage('Please fill in all required fields', 'error');
     }
   }
 
@@ -237,44 +255,66 @@ export class BackofficePageComponent implements OnInit {
     if (index !== -1) {
       route.distance = this.cityDistances[route.departureCity][route.arrivalCity];
       this.routes[index] = { ...route };
+      this.showMessage('Route updated successfully', 'success');
+    } else {
+      this.showMessage('Failed to update route', 'error');
     }
   }
 
   deleteRoute(id: number): void {
     // TODO: Replace with actual API call
+    const initialLength = this.routes.length;
     this.routes = this.routes.filter(r => r.routeID !== id);
+    if (this.routes.length < initialLength) {
+      this.showMessage('Route deleted successfully', 'success');
+    } else {
+      this.showMessage('Failed to delete route', 'error');
+    }
   }
 
   addSchedule(): void {
-    // TODO: Replace with actual API call
-    this.newSchedule.scheduleID = this.schedules.length + 1;
-    this.schedules.push({ ...this.newSchedule });
-    this.newSchedule = {
-      scheduleID: 0,
-      route: { routeID: 0, departureCity: '', arrivalCity: '', distance: 0 },
-      departureTime: new Date(),
-      arrivalTime: new Date()
-    };
+    if (this.newSchedule.route.routeID && this.newSchedule.departureTime && this.newSchedule.arrivalTime) {
+      this.newSchedule.scheduleID = this.schedules.length + 1;
+      this.schedules.push({ ...this.newSchedule });
+      this.newSchedule = {
+        scheduleID: 0,
+        route: { routeID: 0, departureCity: '', arrivalCity: '', distance: 0 },
+        departureTime: new Date(),
+        arrivalTime: new Date()
+      };
+      this.showMessage('Schedule added successfully', 'success');
+    } else {
+      this.showMessage('Please fill in all required fields', 'error');
+    }
   }
 
   updateSchedule(schedule: Schedule): void {
-    // TODO: Replace with actual API call
     const index = this.schedules.findIndex(s => s.scheduleID === schedule.scheduleID);
     if (index !== -1) {
       this.schedules[index] = { ...schedule };
+      this.showMessage('Schedule updated successfully', 'success');
+    } else {
+      this.showMessage('Failed to update schedule', 'error');
     }
   }
 
   deleteSchedule(id: number): void {
-    // TODO: Replace with actual API call
+    const initialLength = this.schedules.length;
     this.schedules = this.schedules.filter(s => s.scheduleID !== id);
+    if (this.schedules.length < initialLength) {
+      this.showMessage('Schedule deleted successfully', 'success');
+    } else {
+      this.showMessage('Failed to delete schedule', 'error');
+    }
   }
 
   updateReservationStatus(reservation: Reservation, newStatus: 'PENDING' | 'CONFIRMED' | 'CANCELLED'): void {
-    // TODO: Replace with actual API call
     const index = this.reservations.findIndex(r => r.reservationID === reservation.reservationID);
     if (index !== -1) {
       this.reservations[index] = { ...reservation, status: newStatus };
+      this.showMessage(`Reservation status updated to ${newStatus}`, 'success');
+    } else {
+      this.showMessage('Failed to update reservation status', 'error');
     }
   }
 
@@ -299,5 +339,61 @@ export class BackofficePageComponent implements OnInit {
       default:
         return 'error';
     }
+  }
+
+  showMessage(message: string, type: 'success' | 'error'): void {
+    this.message = message;
+    this.messageType = type;
+  }
+
+  closeMessage(): void {
+    this.message = null;
+  }
+
+  openRouteEditForm(route: Route): void {
+    this.editingRoute = { ...route };
+    this.isEditingRoute = true;
+  }
+
+  closeRouteEditForm(): void {
+    this.editingRoute = null;
+    this.isEditingRoute = false;
+  }
+
+  saveRouteEdit(): void {
+    if (this.editingRoute) {
+      const index = this.routes.findIndex(r => r.routeID === this.editingRoute!.routeID);
+      if (index !== -1) {
+        this.editingRoute.distance = this.cityDistances[this.editingRoute.departureCity][this.editingRoute.arrivalCity];
+        this.routes[index] = { ...this.editingRoute };
+        this.showMessage('Route updated successfully', 'success');
+      } else {
+        this.showMessage('Failed to update route', 'error');
+      }
+    }
+    this.closeRouteEditForm();
+  }
+
+  openScheduleEditForm(schedule: Schedule): void {
+    this.editingSchedule = { ...schedule };
+    this.isEditingSchedule = true;
+  }
+
+  closeScheduleEditForm(): void {
+    this.editingSchedule = null;
+    this.isEditingSchedule = false;
+  }
+
+  saveScheduleEdit(): void {
+    if (this.editingSchedule) {
+      const index = this.schedules.findIndex(s => s.scheduleID === this.editingSchedule!.scheduleID);
+      if (index !== -1) {
+        this.schedules[index] = { ...this.editingSchedule };
+        this.showMessage('Schedule updated successfully', 'success');
+      } else {
+        this.showMessage('Failed to update schedule', 'error');
+      }
+    }
+    this.closeScheduleEditForm();
   }
 }

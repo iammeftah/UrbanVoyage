@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 import * as L from 'leaflet';
 
@@ -23,8 +23,12 @@ interface AgencyLocation {
   templateUrl: './contact-page.component.html',
   styleUrls: ['./contact-page.component.css']
 })
-export class ContactPageComponent implements OnInit {
+export class ContactPageComponent implements OnInit  {
   @ViewChild('mapSection') mapSection!: ElementRef;
+
+  private userGrowthChart: Chart | null = null
+
+
 
   faqs: FAQ[] = [
     {
@@ -103,14 +107,15 @@ export class ContactPageComponent implements OnInit {
 
   initMap() {
     // Define a custom marker icon with cyan color
-    const cyanIcon = new L.Icon({
-      iconUrl: 'assets/map-pin.svg',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
+    const cyanIcon = L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
       shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-      shadowSize: [41, 41]
+      iconSize: [16, 27], // Adjusted icon size to 2/3 of the original
+      iconAnchor: [8, 27], // Adjusted icon anchor to 2/3 of the original
+      popupAnchor: [0, -22], // Adjusted popup anchor to 2/3 of the original
+      shadowSize: [27, 27] // Adjusted shadow size to 2/3 of the original
     });
+
 
     this.map = L.map('map', {
       center: [32.4279, -6.3418], // Center map around Morocco initially
@@ -124,8 +129,8 @@ export class ContactPageComponent implements OnInit {
     }).addTo(this.map);
 
     this.locations.forEach(location => {
-      L.marker([location.lat, location.lng])
-        .addTo(this.map)
+      L.marker([location.lat, location.lng], { icon: cyanIcon })
+        .addTo(this.map!)
         .bindPopup(`<b>${location.name}</b><br>${location.address}`);
     });
 
@@ -163,7 +168,10 @@ export class ContactPageComponent implements OnInit {
 
   initUserGrowthChart() {
     const ctx = document.getElementById('userGrowthChart') as HTMLCanvasElement;
-    new Chart(ctx, {
+    if (this.userGrowthChart) {
+      this.userGrowthChart.destroy();
+    }
+    this.userGrowthChart = new Chart(ctx,{
       type: 'line',
       data: {
         labels: this.generateMonthLabels(), // Function to generate labels like ['Jan 2024', 'Feb 2024', ...]
