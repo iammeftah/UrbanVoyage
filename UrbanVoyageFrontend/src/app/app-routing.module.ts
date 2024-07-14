@@ -11,6 +11,7 @@ import {ContactPageComponent} from "./pages/contact-page/contact-page.component"
 import {RegisterPageComponent} from "./pages/register-page/register-page.component";
 import {LoginPageComponent} from "./pages/login-page/login-page.component";
 import {VerifyEmailComponent} from "./pages/verify-email/verify-email.component";
+import {BackofficePageComponent} from "./pages/backoffice-page/backoffice-page.component";
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -25,6 +26,7 @@ const routes: Routes = [
   { path: 'auth', component: AuthPageComponent },
   { path: 'register', component: RegisterPageComponent },
   { path: 'verify-email', component: VerifyEmailComponent },
+  { path: 'backoffice', component: BackofficePageComponent },
 
 
   // autres routes...

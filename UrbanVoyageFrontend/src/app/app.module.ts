@@ -25,6 +25,7 @@ import { VerifyEmailComponent } from './pages/verify-email/verify-email.componen
 import {AuthInterceptor} from "./services/auth.interceptor";
 import { MessageComponent } from './components/message/message.component';
 import { LoadingSpinnerComponent } from './objects/loading-spinner/loading-spinner.component';
+import { BackofficePageComponent } from './pages/backoffice-page/backoffice-page.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { LoadingSpinnerComponent } from './objects/loading-spinner/loading-spinn
     VerifyEmailComponent,
     MessageComponent,
     LoadingSpinnerComponent,
+    BackofficePageComponent,
   ],
   imports: [
     BrowserModule,

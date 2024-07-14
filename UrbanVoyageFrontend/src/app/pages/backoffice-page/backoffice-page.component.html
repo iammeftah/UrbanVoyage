@@ -1,0 +1,170 @@
+<div class="flex flex-col min-h-screen">
+
+
+  <app-header></app-header>
+
+
+  <div class="flex flex-col md:flex-row  min-h-screen text-lightText dark:text-darkText bg-lightBackground dark:bg-darkBackground">
+    <!-- Sidebar -->
+    <div class="w-full  md:w-64 bg-lightBgColor dark:bg-darkBgColor p-4 transition-all duration-200 ">
+      <nav>
+        <ul class="w-full flex flex-row md:flex-col items-center justify-around md:items-start md:justify-start ">
+          <li *ngFor="let tab of tabs"
+              (click)="setActiveTab(tab)"
+              class="mb-2 p-2 cursor-pointer rounded flex items-center hover:text-cyan-500 duration-200 "
+              [ngClass]="{'bg-lightAccent dark:bg-darkAccent': activeTab === tab}">
+            <i class="material-icons mr-2 md:mr-4 text-3xl md:text-2xl ">{{getTabIcon(tab)}}</i>
+            <span class="hidden md:inline">{{ tab | titlecase }}</span>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-grow p-4 md:p-8">
+      <div *ngIf="activeTab === 'routes'">
+        <h2 class="text-xl font-bold mb-4">Manage Routes</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+          <select [(ngModel)]="newRoute.departureCity" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+            <option value="">Select Departure City</option>
+            <option *ngFor="let location of locations" [value]="location.name">{{ location.name }}</option>
+          </select>
+          <select [(ngModel)]="newRoute.arrivalCity" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+            <option value="">Select Arrival City</option>
+            <option *ngFor="let location of locations" [value]="location.name">{{ location.name }}</option>
+          </select>
+          <div class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+            Distance: {{ newRoute.departureCity && newRoute.arrivalCity ? (cityDistances[newRoute.departureCity][newRoute.arrivalCity] | number:'1.0-0') + ' km' : 'N/A' }}
+          </div>
+          <button (click)="addRoute()" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">Add Route</button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full caption-bottom text-sm rounded-xl overflow-hidden">
+            <thead class="bg-gray-50 dark:bg-gray-700">
+            <tr class="transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+              <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Departure City</th>
+              <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Arrival City</th>
+              <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Distance (km)</th>
+              <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let route of routes; let last = last" class="transition-colors hover:bg-gray-100 dark:hover:bg-gray-600" [ngClass]="{'border-b': !last}">
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ route.departureCity }}</td>
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ route.arrivalCity }}</td>
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ route.distance | number:'1.0-0' }}</td>
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 w-full flex flex-row gap-2 items-center justify-center">
+                <button (click)="updateRoute(route)" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors disabled:opacity-50 duration-300">Edit</button>
+                <button (click)="deleteRoute(route.routeID)" class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-cyan-500 dark:hover:text-cyan-500 disabled:opacity-50 duration-300">Delete</button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div *ngIf="activeTab === 'schedules'">
+        <h2 class="text-xl font-bold mb-4">Manage Schedules</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+          <select [(ngModel)]="newSchedule.route" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+            <option *ngFor="let route of routes" [ngValue]="route">{{ route.departureCity }} - {{ route.arrivalCity }}</option>
+          </select>
+          <input [(ngModel)]="newSchedule.departureTime" type="datetime-local"
+                 class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+          <input [(ngModel)]="newSchedule.arrivalTime" type="datetime-local"
+                 class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+          <button (click)="addSchedule()" class="bg-cyan-500 text-white p-2 rounded">Add Schedule</button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full caption-bottom text-sm rounded-lg">
+            <thead class="[&_tr]:border-b bg-gray-50 dark:bg-gray-700">
+            <tr class="w-full border-b transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+              <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Route</th>
+              <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Departure Time</th>
+              <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Arrival Time</th>
+              <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Actions</th>
+            </tr>
+            </thead>
+            <tbody class="[&_tr:last-child]:border-0">
+            <tr *ngFor="let schedule of schedules" class="border-b transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 flex items-center justify-start gap-2">{{ schedule.route.departureCity }} <i class='bx bx-sort rotate-90 text-xl' ></i> {{ schedule.route.arrivalCity }}</td>
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ schedule.departureTime | date:'medium' }}</td>
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ schedule.arrivalTime | date:'medium' }}</td>
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 w-full flex flex-row gap-2 items-center justify-center">
+                <button (click)="updateSchedule(schedule)" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">Edit</button>
+                <button (click)="deleteSchedule(schedule.scheduleID)" class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-cyan-500 dark:hover:text-cyan-500  disabled:opacity-50 duration-300">Delete</button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div *ngIf="activeTab === 'reservations'">
+        <h2 class="text-xl font-bold mb-4">Manage Reservations</h2>
+
+        <div class="overflow-x-auto">
+          <table class="w-full caption-bottom text-sm">
+            <thead class="[&_tr]:border-b bg-gray-50 dark:bg-gray-700">
+            <tr class="border-b transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+              <th class="w-1/5 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">User</th>
+              <th class="w-1/5 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Route</th>
+              <th class="w-1/5 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Reservation Date</th>
+              <th class="w-1/5 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Status</th>
+              <th class="w-1/5 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Actions</th>
+            </tr>
+            </thead>
+            <tbody class="[&_tr:last-child]:border-0">
+            <tr *ngFor="let reservation of reservations" class="border-b transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                <div class="font-medium">{{ reservation.user.name }}</div>
+              </td>
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ reservation.route.departureCity }} - {{ reservation.route.arrivalCity }}</td>
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ reservation.reservationDate | date:'mediumDate' }}</td>
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                <div
+                  class="inline-flex w-fit items-center justify-center whitespace-nowrap border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent px-2 py-1 rounded-full text-xs"
+                  [ngClass]="{
+                              'bg-green-600 text-white hover:bg-green-700': reservation.status === 'CONFIRMED',
+                              'bg-yellow-600 text-white hover:bg-yellow-700': reservation.status === 'PENDING'
+                            }"
+                >
+                  {{ reservation.status }}
+                </div>
+              </td>
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                <div class="w-full flex flex-row gap-2 items-center justify-center">
+                  <button (click)="updateReservationStatus(reservation, 'CONFIRMED')" class="inline-flex items-center whitespace-nowrap border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-cyan-600 text-white hover:bg-cyan-700 px-3 py-1 rounded">Confirm</button>
+                  <button (click)="updateReservationStatus(reservation, 'CANCELLED')" class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-cyan-500 dark:hover:text-cyan-500 disabled:opacity-50 duration-300">Cancel</button>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div *ngIf="activeTab === 'statistics'" class="w-full">
+        <h2 class="text-xl font-bold mb-4">Statistics</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="w-full">
+            <h3 class="text-lg font-semibold mb-2">Users and Passengers</h3>
+            <canvas id="userChart"></canvas>
+          </div>
+          <div class="w-full">
+            <h3 class="text-lg font-semibold mb-2">Reservations per Month</h3>
+            <canvas id="reservationChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-footer></app-footer>
+
+</div>
