@@ -67,7 +67,7 @@
 
   <nav
     id="mobile-menu"
-    class="fixed opacity-100 md:opacity-0 top-0 right-0 bottom-0 w-64 bg-white dark:bg-gray-800 text-lightText dark:text-darkText z-50 transform transition-transform duration-300 ease-in-out"
+    class="fixed  opacity-100 md:opacity-0 top-0 right-0 bottom-0 w-full bg-white dark:bg-darkBackground text-lightText dark:text-darkText z-50 transform transition-transform duration-300 ease-in-out"
     [ngClass]="{'translate-x-0': isSidebarOpen, 'translate-x-full': !isSidebarOpen}"
   >
     <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
@@ -79,16 +79,16 @@
       </button>
     </div>
     <div class="p-4">
-      <a class="block py-2 text-sm font-medium hover:text-cyan-500 transition-colors" href="/homepage" (click)="closeSidebar()">Home</a>
-      <a class="block py-2 text-sm font-medium hover:text-cyan-500 transition-colors" href="/routes" (click)="closeSidebar()">Routes</a>
-      <a class="block py-2 text-sm font-medium hover:text-cyan-500 transition-colors" href="/booking" (click)="closeSidebar()">Booking</a>
-      <a class="block py-2 text-sm font-medium hover:text-cyan-500 transition-colors" href="/schedules" (click)="closeSidebar()">Schedules</a>
-      <a class="block py-2 text-sm font-medium hover:text-cyan-500 transition-colors" href="/services" (click)="closeSidebar()">Our Services</a>
-      <a class="block py-2 text-sm font-medium hover:text-cyan-500 transition-colors" href="/contact" (click)="closeSidebar()">About us</a>
-      <a class="block py-2 text-sm font-medium hover:text-cyan-500 transition-colors" href="/backoffice" (click)="closeSidebar()">Back office</a>
-      <a *ngIf="!isLoggedIn" class="block py-2 text-sm font-medium hover:text-cyan-500 transition-colors" href="/login" (click)="closeSidebar()">Log In</a>
-      <a *ngIf="!isLoggedIn" class="block py-2 text-sm font-medium hover:text-cyan-500 transition-colors" href="/register" (click)="closeSidebar()">Sign Up</a>
-      <button *ngIf="isLoggedIn" class="block py-2 text-sm font-medium hover:text-cyan-500 transition-colors" (click)="closelogout()">Log out</button>
+      <a class="block py-2 text-md font-medium hover:text-cyan-500 transition-colors" href="/homepage" (click)="closeSidebar()">Home</a>
+      <a class="block py-2 text-md font-medium hover:text-cyan-500 transition-colors" href="/routes" (click)="closeSidebar()">Routes</a>
+      <a class="block py-2 text-md font-medium hover:text-cyan-500 transition-colors" href="/booking" (click)="closeSidebar()">Booking</a>
+      <a class="block py-2 text-md font-medium hover:text-cyan-500 transition-colors" href="/schedules" (click)="closeSidebar()">Schedules</a>
+      <a class="block py-2 text-md font-medium hover:text-cyan-500 transition-colors" href="/services" (click)="closeSidebar()">Our Services</a>
+      <a class="block py-2 text-md font-medium hover:text-cyan-500 transition-colors" href="/contact" (click)="closeSidebar()">About us</a>
+      <a class="block py-2 text-md font-medium hover:text-cyan-500 transition-colors" href="/backoffice" (click)="closeSidebar()">Back office</a>
+      <a *ngIf="!isLoggedIn" class="block py-2 text-md font-medium hover:text-cyan-500 transition-colors" href="/login" (click)="closeSidebar()">Log In</a>
+      <a *ngIf="!isLoggedIn" class="block py-2 text-md font-medium hover:text-cyan-500 transition-colors" href="/register" (click)="closeSidebar()">Sign Up</a>
+      <button *ngIf="isLoggedIn" class="block py-2 text-md font-medium hover:text-cyan-500 transition-colors" (click)="closelogout()">Log out</button>
       <div class="flex flex-row gap-2 items-center justify-center">
         <app-dark-mode-toggle></app-dark-mode-toggle>
         <a href="#instagram" class="text-xl text-lightText dark:text-darkText hover:text-cyan-500 dark:hover:text-cyan-500 transition-colors duration-200">
