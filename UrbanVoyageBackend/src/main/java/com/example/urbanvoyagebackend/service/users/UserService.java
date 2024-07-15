@@ -14,13 +14,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
 public class UserService implements UserDetailsService {
 
+
+
+
     private final UserRepository userRepository;
     private final Map<String, UserDTO> unverifiedUsers = new HashMap<>();
+
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 
     @Autowired
     public UserService(UserRepository userRepository) {

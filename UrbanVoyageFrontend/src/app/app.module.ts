@@ -26,6 +26,7 @@ import {AuthInterceptor} from "./services/auth.interceptor";
 import { MessageComponent } from './components/message/message.component';
 import { LoadingSpinnerComponent } from './objects/loading-spinner/loading-spinner.component';
 import { BackofficePageComponent } from './pages/backoffice-page/backoffice-page.component';
+import { GoogleMapsModule } from '@angular/google-maps';
 
 export function initializeApp() {
   return () => {
@@ -67,6 +68,7 @@ export function initializeApp() {
     HttpClientModule,
     FormsModule,
     RouterOutlet,
+    GoogleMapsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
@@ -74,7 +76,8 @@ export function initializeApp() {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
       multi: true
-    }
+    },
+
 
   ],
   bootstrap: [AppComponent],

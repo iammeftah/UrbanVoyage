@@ -1,5 +1,14 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Chart, ChartConfiguration } from 'chart.js/auto';
+import { RouteService } from '../../services/route.service';
+import { ScheduleService } from '../../services/schedule.service';
+import { ReservationService } from '../../services/reservation.service';
+import { UserService } from '../../services/user.service';
+import { Route } from '../../models/route.model';
+import { Schedule } from '../../models/schedule.model';
+import { Reservation } from "../../models/reservation.model";
+
+declare var google: any;
 
 interface AgencyLocation {
   name: string;
@@ -8,26 +17,10 @@ interface AgencyLocation {
   lng: number;
 }
 
-interface Route {
-  routeID: number;
-  departureCity: string;
-  arrivalCity: string;
-  distance: number;
-}
-
-interface Schedule {
-  scheduleID: number;
-  route: Route;
-  departureTime: Date;
-  arrivalTime: Date;
-}
-
-interface Reservation {
-  reservationID: number;
-  user: { id: number, name: string };
-  route: Route;
-  reservationDate: Date;
-  status: 'PENDING' | 'CONFIRMED' | 'CANCELLED';
+declare global {
+  interface Window {
+    initMap: () => void;
+  }
 }
 
 interface Statistics {
@@ -41,19 +34,7 @@ interface Statistics {
   templateUrl: './backoffice-page.component.html',
   styleUrls: ['./backoffice-page.component.css']
 })
-export class BackofficePageComponent implements OnInit , AfterViewInit {
-  ngOnInit(): void {
-    this.loadRoutes();
-    this.loadSchedules();
-    this.loadReservations();
-    this.loadStatistics();
-  }
-
-  ngAfterViewInit(): void {
-    if (this.activeTab === 'statistics') {
-      setTimeout(() => this.initializeCharts(), 0);
-    }
-  }
+export class BackofficePageComponent implements OnInit, AfterViewInit {
   activeTab: 'routes' | 'schedules' | 'reservations' | 'statistics' = 'routes';
   tabs: ('routes' | 'schedules' | 'reservations' | 'statistics')[] = ['routes', 'schedules', 'reservations', 'statistics'];
   routes: Route[] = [];
@@ -79,22 +60,89 @@ export class BackofficePageComponent implements OnInit , AfterViewInit {
     { name: 'Chefchaouen', address: '876 Place Outa el Hammam, Chefchaouen', lat: 35.1688, lng: -5.2688 },
     { name: 'Essaouira', address: '109 Avenue de l\'Istiqlal, Essaouira', lat: 31.5085, lng: -9.7595 }
   ];
-
-  cityDistances: { [key: string]: { [key: string]: number } } = {};
-
-  newRoute: Route = { routeID: 0, departureCity: '', arrivalCity: '', distance: 0 };
-  newSchedule: Schedule = {
-    scheduleID: 0,
-    route: { routeID: 0, departureCity: '', arrivalCity: '', distance: 0 },
-    departureTime: new Date(),
-    arrivalTime: new Date()
-  };
+  newRoute: Partial<Route> = {};
+  newSchedule: Partial<Schedule> = {};
 
   userChart?: Chart;
   reservationChart?: Chart;
 
-  constructor() {
+  cityDistances: { [key: string]: { [key: string]: number } } = {};
+  private distanceMatrixService: any;
+
+  private googleMapsLoadedPromise!: Promise<void>;
+
+  constructor(
+    private routeService: RouteService,
+    private scheduleService: ScheduleService,
+    private reservationService: ReservationService,
+    private userService: UserService,
+    private cdr: ChangeDetectorRef
+  ) {
     this.initializeCityDistances();
+    this.newSchedule = {
+      availableSeats: 50,
+    };
+    this.googleMapsLoadedPromise = Promise.resolve();
+  }
+
+
+
+  ngOnInit(): void {
+    console.log('Initial newSchedule:', this.newSchedule);
+
+    this.loadRoutes();
+    this.loadSchedules();
+    this.loadStatistics();
+    this.initializeGoogleMaps();
+  }
+
+  ngAfterViewInit(): void {
+    if (this.activeTab === 'statistics') {
+      setTimeout(() => this.initializeCharts(), 0);
+    }
+  }
+
+  private googleMapsLoaded = false;
+
+  initializeGoogleMaps(): void {
+    this.googleMapsLoadedPromise = new Promise<void>((resolve) => {
+      if (window.google && window.google.maps) {
+        this.initializeDistanceMatrixService();
+        resolve();
+        return;
+      }
+
+      if (document.querySelector('script[src*="maps.googleapis.com/maps/api/js"]')) {
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyCDjOf_9XM-mSZ9h4Hv9ukO5YCCBIrxIHc&libraries=places&callback=initMap`;
+      script.async = true;
+      script.defer = true;
+
+      script.onerror = () => {
+        console.error('Failed to load Google Maps API');
+        // Handle the error appropriately
+      };
+
+      window.initMap = () => {
+        this.initializeDistanceMatrixService();
+        this.googleMapsLoaded = true;
+        resolve();
+      };
+
+      document.head.appendChild(script);
+    });
+  }
+
+  private initializeDistanceMatrixService(): void {
+    if (window.google && window.google.maps) {
+      this.distanceMatrixService = new google.maps.DistanceMatrixService();
+    } else {
+      console.error('Google Maps API not loaded');
+      // Handle this error state appropriately
+    }
   }
 
 
@@ -111,63 +159,54 @@ export class BackofficePageComponent implements OnInit , AfterViewInit {
     });
   }
 
-  calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-    const R = 6371; // Radius of the earth in km
-    const dLat = this.deg2rad(lat2 - lat1);
-    const dLon = this.deg2rad(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const d = R * c; // Distance in km
-    return d;
-  }
-
-  deg2rad(deg: number): number {
-    return deg * (Math.PI / 180);
-  }
 
   loadRoutes(): void {
-    // TODO: Replace with actual API call
-    this.routes = [
-      { routeID: 1, departureCity: 'Casablanca', arrivalCity: 'Marrakech', distance: this.cityDistances['Casablanca']['Marrakech'] },
-      { routeID: 2, departureCity: 'Rabat', arrivalCity: 'Fes', distance: this.cityDistances['Rabat']['Fes'] },
-    ];
+    this.routeService.getRoutes().subscribe({
+      next: (routes) => {
+        this.routes = routes;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading routes:', error);
+        this.showMessage('Error loading routes: ' + (error.message || 'Unknown error'), 'error');
+      }
+    });
   }
 
   loadSchedules(): void {
-    // TODO: Replace with actual API call
-    this.schedules = [
-      { scheduleID: 1, route: this.routes[0], departureTime: new Date('2023-05-01T08:00:00'), arrivalTime: new Date('2023-05-01T14:00:00') },
-      { scheduleID: 2, route: this.routes[0], departureTime: new Date('2023-05-01T12:00:00'), arrivalTime: new Date('2023-05-01T18:00:00') },
-    ];
-  }
-
-  loadReservations(): void {
-    // TODO: Replace with actual API call
-    this.reservations = [
-      { reservationID: 1, user: { id: 1, name: 'John Doe' }, route: this.routes[0], reservationDate: new Date('2023-04-25'), status: 'CONFIRMED' },
-      { reservationID: 2, user: { id: 2, name: 'Jane Smith' }, route: this.routes[1], reservationDate: new Date('2023-04-26'), status: 'PENDING' },
-    ];
+    this.scheduleService.getSchedules().subscribe({
+      next: (schedules) => {
+        this.schedules = schedules;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading schedules:', error);
+        this.showMessage('Error loading schedules: ' + (error.message || 'Unknown error'), 'error');
+      }
+    });
   }
 
   loadStatistics(): void {
-    // TODO: Replace with actual API call
-    this.statistics = {
-      totalUsers: 1000,
-      totalPassengers: 750,
-      reservationsPerMonth: [65, 59, 80, 81, 56, 55, 40, 45, 70, 75, 80, 90]
-    };
-    console.log('Statistics loaded:', this.statistics);
-    if (this.activeTab === 'statistics') {
-      this.initializeCharts();
-    }
+    this.userService.getAllUsers().subscribe({
+      next: (users) => {
+        this.statistics.totalUsers = users.length;
+        this.statistics.totalPassengers = users.filter(user => user.hasReservations).length;
+
+        // Calculate reservations per month (dummy data for example)
+        this.statistics.reservationsPerMonth = Array(12).fill(0).map(() => Math.floor(Math.random() * 100));
+
+        if (this.activeTab === 'statistics') {
+          this.initializeCharts();
+        }
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        this.showMessage('Error loading statistics: ' + error.message, 'error');
+      }
+    });
   }
 
   initializeCharts(): void {
-    console.log('Initializing charts');
-
     const cyan500 = '#06b6d4';
     const cyan400 = '#22d3ee';
 
@@ -235,92 +274,344 @@ export class BackofficePageComponent implements OnInit , AfterViewInit {
 
     this.userChart = new Chart('userChart', userChartConfig);
     this.reservationChart = new Chart('reservationChart', reservationChartConfig);
-    console.log('Charts initialized');
   }
 
   addRoute(): void {
-    if (this.newRoute.departureCity && this.newRoute.arrivalCity) {
-      this.newRoute.routeID = this.routes.length + 1;
-      this.newRoute.distance = this.cityDistances[this.newRoute.departureCity][this.newRoute.arrivalCity];
-      this.routes.push({ ...this.newRoute });
-      this.newRoute = { routeID: 0, departureCity: '', arrivalCity: '', distance: 0 };
-      this.showMessage('Route added successfully', 'success');
-    } else {
-      this.showMessage('Please fill in all required fields', 'error');
+    console.log('Adding schedule:', this.newSchedule);
+
+    if (!this.newRoute.departureCity || !this.newRoute.arrivalCity) {
+      this.message = "Please select both departure and arrival cities.";
+      this.messageType="error";
+      return;
     }
+
+    const distance = this.cityDistances[this.newRoute.departureCity][this.newRoute.arrivalCity];
+    if (distance === undefined) {
+      this.message = "Distance not found for the selected cities.";
+      this.messageType="error";
+      return;
+    }
+
+    this.newRoute.distance = distance;
+
+    this.routeService.addRoute(this.newRoute as Route).subscribe({
+      next: (route) => {
+        this.routes.push(route);
+        this.newRoute = {};
+        this.loadRoutes(); // Reload routes to ensure consistency
+        this.message = "Route added successfully";
+        this.messageType="success";
+
+      },
+      error: (error) => {
+        console.error('Error adding route:', error);
+        this.message = "Error adding route: " + (error.message || 'Unknown error');
+        this.messageType="error";
+      }
+    });
   }
 
-  updateRoute(route: Route): void {
-    const index = this.routes.findIndex(r => r.routeID === route.routeID);
-    if (index !== -1) {
-      route.distance = this.cityDistances[route.departureCity][route.arrivalCity];
-      this.routes[index] = { ...route };
-      this.showMessage('Route updated successfully', 'success');
-    } else {
-      this.showMessage('Failed to update route', 'error');
+  updateRoute(): void {
+    if (!this.editingRoute || !this.editingRoute.departureCity || !this.editingRoute.arrivalCity) {
+      this.message = "Invalid route data. Please check all fields.";
+      this.messageType="error";
+      return;
     }
+
+    const distance = this.cityDistances[this.editingRoute.departureCity][this.editingRoute.arrivalCity];
+    if (distance === undefined) {
+      this.message = "Distance not found for the selected cities.";
+      this.messageType="error";
+      return;
+    }
+
+    this.editingRoute.distance = distance;
+
+    this.routeService.updateRoute(this.editingRoute).subscribe({
+      next: (updatedRoute) => {
+        const index = this.routes.findIndex(r => r.routeID === updatedRoute.routeID);
+        if (index !== -1) {
+          this.routes[index] = updatedRoute;
+        }
+        this.message = "Route updated successfully";
+        this.messageType="success";
+        this.closeRouteEditForm();
+        this.loadRoutes(); // Reload routes to ensure consistency
+      },
+      error: (error) => {
+        console.error('Error updating route:', error);
+        this.message = 'Error updating route: ' + (error.message || 'Unknown error');
+        this.messageType="error";
+
+      }
+    });
   }
 
-  deleteRoute(id: number): void {
-    // TODO: Replace with actual API call
-    const initialLength = this.routes.length;
-    this.routes = this.routes.filter(r => r.routeID !== id);
-    if (this.routes.length < initialLength) {
-      this.showMessage('Route deleted successfully', 'success');
-    } else {
-      this.showMessage('Failed to delete route', 'error');
-    }
+  deleteRoute(routeID: number): void {
+
+
+
+    this.routeService.deleteRoute(routeID).subscribe({
+      next: () => {
+        this.routes = this.routes.filter(r => r.routeID !== routeID);
+        this.message = "Route deleted successfully";
+        this.messageType="success";
+        this.loadRoutes(); // Reload routes to ensure consistency
+      },
+      error: (error) => {
+        console.error('Error deleting route:', error);
+        if (error.status === 400) {
+          this.message = "Cannot delete route with active schedules";
+          this.messageType="error";
+        } else {
+          this.message = "Error deleting route: " + (error.message || 'Unknown error');
+          this.messageType="error";
+        }
+      }
+    });
   }
 
   addSchedule(): void {
-    if (this.newSchedule.route.routeID && this.newSchedule.departureTime && this.newSchedule.arrivalTime) {
-      this.newSchedule.scheduleID = this.schedules.length + 1;
-      this.schedules.push({ ...this.newSchedule });
-      this.newSchedule = {
-        scheduleID: 0,
-        route: { routeID: 0, departureCity: '', arrivalCity: '', distance: 0 },
-        departureTime: new Date(),
-        arrivalTime: new Date()
+    if (!this.newSchedule.route || !this.newSchedule.departureTime || this.newSchedule.availableSeats === undefined) {
+      this.message = "Please fill in all required fields.";
+      this.messageType="error";
+      return;
+    }
+
+    if(!this.newSchedule.departureTime){
+      this.message = "Please fill in all required fields.";
+      this.messageType="error";
+      return ;
+    }
+
+    let routeId: number;
+    if (typeof this.newSchedule.route === 'number') {
+      routeId = this.newSchedule.route;
+    } else if (this.newSchedule.route && 'routeID' in this.newSchedule.route) {
+      routeId = this.newSchedule.route.routeID;
+    } else {
+      this.message = "Invalid route selected.";
+      this.messageType="error";
+
+
+      return;
+    }
+
+    const route = this.routes.find(r => r.routeID === routeId);
+    if (!route) {
+      this.message = "Selected route not found.";
+      this.messageType="error";
+      return;
+    }
+
+    this.calculateTravelTime(route.departureCity, route.arrivalCity).then(travelTimeSeconds => {
+      const departureTime = new Date(this.newSchedule.departureTime!);
+      const arrivalTime = new Date(departureTime.getTime() + travelTimeSeconds * 1000);
+
+      const scheduleToAdd: Omit<Schedule, 'scheduleID'> = {
+        route: { routeID: routeId } as Route,
+        departureTime: departureTime.toISOString(),
+        arrivalTime: arrivalTime.toISOString(),
+        availableSeats: this.newSchedule.availableSeats || 50
       };
-      this.showMessage('Schedule added successfully', 'success');
-    } else {
-      this.showMessage('Please fill in all required fields', 'error');
-    }
+
+      this.scheduleService.addSchedule(scheduleToAdd).subscribe({
+        next: (schedule) => {
+          this.schedules.push(schedule);
+          this.newSchedule = {
+            departureTime: new Date().toISOString(),
+            availableSeats: 50
+          };
+          this.message = "Schedule added successfully";
+          this.messageType="success";
+          this.loadSchedules();
+        },
+        error: (error) => {
+          console.error('Error adding schedule:', error);
+          this.message = 'Error adding schedule: ' + (error.message || 'Unknown error');
+          this.messageType="error";
+        }
+      });
+    }).catch(error => {
+      this.message = 'Error calculating travel time: ' + error;
+      this.messageType="error";
+    });
   }
 
-  updateSchedule(schedule: Schedule): void {
-    const index = this.schedules.findIndex(s => s.scheduleID === schedule.scheduleID);
-    if (index !== -1) {
-      this.schedules[index] = { ...schedule };
-      this.showMessage('Schedule updated successfully', 'success');
-    } else {
-      this.showMessage('Failed to update schedule', 'error');
+  updateSchedule(): void {
+    if (!this.editingSchedule || !this.editingSchedule.scheduleID) {
+      this.message = 'No valid schedule is currently being edited';
+      this.messageType="error";
+      return;
     }
+
+    let routeId: number | undefined;
+    if (typeof this.editingSchedule.route === 'number') {
+      routeId = this.editingSchedule.route;
+    } else if (this.editingSchedule.route && 'routeID' in this.editingSchedule.route) {
+      routeId = this.editingSchedule.route.routeID;
+    }
+
+    if (routeId === undefined) {
+      this.message = 'Invalid route data for this schedule';
+      this.messageType="error";
+      return;
+    }
+
+    const route = this.routes.find(r => r.routeID === routeId);
+    if (!route) {
+      this.message = 'Route not found for this schedule';
+      this.messageType="error";
+      return;
+    }
+
+    this.calculateTravelTime(route.departureCity, route.arrivalCity).then(travelTimeSeconds => {
+      const departureTime = new Date(this.editingSchedule!.departureTime);
+      const arrivalTime = new Date(departureTime.getTime() + travelTimeSeconds * 1000);
+
+      const scheduleToUpdate: Schedule = {
+        scheduleID: this.editingSchedule!.scheduleID,
+        route: { routeID: routeId } as Route,
+        departureTime: departureTime.toISOString(),
+        arrivalTime: arrivalTime.toISOString(),
+        availableSeats: this.editingSchedule!.availableSeats
+      };
+
+      this.scheduleService.updateSchedule(scheduleToUpdate).subscribe({
+        next: (updatedSchedule) => {
+          const index = this.schedules.findIndex(s => s.scheduleID === updatedSchedule.scheduleID);
+          if (index !== -1) {
+            this.schedules[index] = updatedSchedule;
+          }
+          this.message = 'Schedule updated successfully';
+          this.messageType="success";
+          this.closeScheduleEditForm();
+          this.loadSchedules();
+        },
+        error: (error) => {
+          console.error('Error updating schedule:', error);
+          this.message = 'Error updating schedule: ' + (error.message || 'Unknown error');
+          this.messageType="error";
+        }
+      });
+    }).catch(error => {
+      this.message = 'Error calculating travel time: ' + error ;
+      this.messageType="error";
+    });
   }
 
-  deleteSchedule(id: number): void {
-    const initialLength = this.schedules.length;
-    this.schedules = this.schedules.filter(s => s.scheduleID !== id);
-    if (this.schedules.length < initialLength) {
-      this.showMessage('Schedule deleted successfully', 'success');
-    } else {
-      this.showMessage('Failed to delete schedule', 'error');
-    }
+  formatDateToLocalISO(date: Date): string {
+    return date.toISOString().slice(0, 19).replace('T', ' ');
   }
 
-  updateReservationStatus(reservation: Reservation, newStatus: 'PENDING' | 'CONFIRMED' | 'CANCELLED'): void {
-    const index = this.reservations.findIndex(r => r.reservationID === reservation.reservationID);
-    if (index !== -1) {
-      this.reservations[index] = { ...reservation, status: newStatus };
-      this.showMessage(`Reservation status updated to ${newStatus}`, 'success');
-    } else {
-      this.showMessage('Failed to update reservation status', 'error');
+  deleteSchedule(scheduleID: number): void {
+
+    this.scheduleService.deleteSchedule(scheduleID).subscribe({
+      next: () => {
+        this.schedules = this.schedules.filter(s => s.scheduleID !== scheduleID);
+        this.message = 'Schedule deleted successfully.' ;
+        this.messageType="success";
+        this.loadSchedules(); // Reload schedules to ensure consistency
+      },
+      error: (error) => {
+        console.error('Error deleting schedule:', error);
+        this.message = 'Error deleting schedule: ' + (error.message || 'Unknown error') ;
+        this.messageType="error";
+      }
+    });
+  }
+
+  loadReservations(): void {
+    this.reservationService.getReservations().subscribe({
+      next: (reservations) => {
+        this.reservations = reservations;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading reservations:', error);
+        this.message = 'Error loading reservations: ' + error.message ;
+        this.messageType="error";
+      }
+    });
+  }
+
+  updateReservationStatus(reservationId: number, newStatus: string): void {
+    this.reservationService.updateReservationStatus(reservationId, newStatus).subscribe({
+      next: (updatedReservation) => {
+        const index = this.reservations.findIndex(r => r.reservationID === updatedReservation.reservationID);
+        if (index !== -1) {
+          this.reservations[index] = updatedReservation;
+        }
+        this.message = 'Reservation status updated successfully.' ;
+        this.messageType="success";
+      },
+      error: (error) => {
+        console.error('Error updating reservation status:', error);
+        this.message = 'Error updating reservation status: ' + error.message ;
+        this.messageType="error";
+      }
+    });
+  }
+
+  showMessage(message: string, type: 'success' | 'error'): void {
+    this.message = message;
+    this.messageType = type;
+    setTimeout(() => {
+      this.message = null;
+    }, 5000);
+  }
+
+  closeMessage(): void {
+    this.message = null;
+  }
+
+  openRouteEditForm(route: Route): void {
+    this.editingRoute = { ...route };
+    this.isEditingRoute = true;
+  }
+
+  closeRouteEditForm(): void {
+    this.editingRoute = null;
+    this.isEditingRoute = false;
+  }
+
+  openScheduleEditForm(schedule: Schedule): void {
+    this.editingSchedule = { ...schedule };
+
+    let routeId: number | undefined;
+    if (typeof this.editingSchedule.route === 'number') {
+      routeId = this.editingSchedule.route;
+    } else if (this.editingSchedule.route && 'routeID' in this.editingSchedule.route) {
+      routeId = this.editingSchedule.route.routeID;
     }
+
+    if (routeId !== undefined) {
+      const route = this.routes.find(r => r.routeID === routeId);
+      if (route) {
+        this.calculateTravelTime(route.departureCity, route.arrivalCity).then(travelTimeSeconds => {
+          if (this.editingSchedule) {
+            const departureTime = new Date(this.editingSchedule.departureTime);
+            const arrivalTime = new Date(departureTime.getTime() + travelTimeSeconds * 1000);
+
+            this.editingSchedule.departureTime = departureTime.toISOString();
+            this.editingSchedule.arrivalTime = arrivalTime.toISOString();
+          }
+        }).catch(error => {
+          this.showMessage('Error calculating travel time: ' + error, 'error');
+        });
+      }
+    }
+
+    this.isEditingSchedule = true;
+  }
+
+  closeScheduleEditForm(): void {
+    this.editingSchedule = null;
+    this.isEditingSchedule = false;
   }
 
   setActiveTab(tab: 'routes' | 'schedules' | 'reservations' | 'statistics'): void {
     this.activeTab = tab;
-    console.log('Active tab set to:', tab);
     if (tab === 'statistics') {
       setTimeout(() => this.initializeCharts(), 0);
     }
@@ -341,59 +632,46 @@ export class BackofficePageComponent implements OnInit , AfterViewInit {
     }
   }
 
-  showMessage(message: string, type: 'success' | 'error'): void {
-    this.message = message;
-    this.messageType = type;
-  }
 
-  closeMessage(): void {
-    this.message = null;
-  }
 
-  openRouteEditForm(route: Route): void {
-    this.editingRoute = { ...route };
-    this.isEditingRoute = true;
-  }
+  calculateTravelTime(origin: string, destination: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      const originLocation = this.locations.find(loc => loc.name === origin);
+      const destLocation = this.locations.find(loc => loc.name === destination);
 
-  closeRouteEditForm(): void {
-    this.editingRoute = null;
-    this.isEditingRoute = false;
-  }
-
-  saveRouteEdit(): void {
-    if (this.editingRoute) {
-      const index = this.routes.findIndex(r => r.routeID === this.editingRoute!.routeID);
-      if (index !== -1) {
-        this.editingRoute.distance = this.cityDistances[this.editingRoute.departureCity][this.editingRoute.arrivalCity];
-        this.routes[index] = { ...this.editingRoute };
-        this.showMessage('Route updated successfully', 'success');
-      } else {
-        this.showMessage('Failed to update route', 'error');
+      if (!originLocation || !destLocation) {
+        reject('Location not found');
+        return;
       }
-    }
-    this.closeRouteEditForm();
+
+      const distance = this.calculateDistance(
+        originLocation.lat, originLocation.lng,
+        destLocation.lat, destLocation.lng
+      );
+
+      // Assume an average speed of 60 km/h
+      const averageSpeed = 60; // km/h
+      const travelTimeHours = distance / averageSpeed;
+      const travelTimeSeconds = Math.round(travelTimeHours * 3600); // Convert hours to seconds
+
+      resolve(travelTimeSeconds);
+    });
   }
 
-  openScheduleEditForm(schedule: Schedule): void {
-    this.editingSchedule = { ...schedule };
-    this.isEditingSchedule = true;
+  calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371; // Radius of the earth in km
+    const dLat = this.deg2rad(lat2 - lat1);
+    const dLon = this.deg2rad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = R * c; // Distance in km
+    return d;
   }
 
-  closeScheduleEditForm(): void {
-    this.editingSchedule = null;
-    this.isEditingSchedule = false;
-  }
-
-  saveScheduleEdit(): void {
-    if (this.editingSchedule) {
-      const index = this.schedules.findIndex(s => s.scheduleID === this.editingSchedule!.scheduleID);
-      if (index !== -1) {
-        this.schedules[index] = { ...this.editingSchedule };
-        this.showMessage('Schedule updated successfully', 'success');
-      } else {
-        this.showMessage('Failed to update schedule', 'error');
-      }
-    }
-    this.closeScheduleEditForm();
+  deg2rad(deg: number): number {
+    return deg * (Math.PI / 180);
   }
 }

@@ -1,6 +1,7 @@
 package com.example.urbanvoyagebackend.entity.travel;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.Set;
 
@@ -21,6 +22,7 @@ public class Route {
     private double distance;
 
     @OneToMany(mappedBy = "route")
+    @JsonManagedReference
     private Set<Schedule> schedules;
 
     @OneToMany(mappedBy = "route")

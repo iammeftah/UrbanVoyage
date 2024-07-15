@@ -26,4 +26,23 @@ public class ReservationService {
         reservationRepository.deleteById(reservationId);
         return true;
     }
+
+
+    public List<Reservation> getAllReservations() {
+        return reservationRepository.findAll();
+    }
+
+    public Reservation updateReservationStatus(Long id, String status) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+        reservation.setStatus(Reservation.ReservationStatus.valueOf(status));
+        return reservationRepository.save(reservation);
+    }
+
+    public void deleteReservation(Long id) {
+        if (!reservationRepository.existsById(id)) {
+            throw new IllegalArgumentException("Reservation with id " + id + " not found");
+        }
+        reservationRepository.deleteById(id);
+    }
 }

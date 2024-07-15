@@ -46,6 +46,10 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/auth/**", "/error").permitAll() // Allow /error endpoint
+                        .requestMatchers("/api/routes/**", "/error").permitAll() // Allow /error endpoint
+                        .requestMatchers("/api/reservations/**", "/error").permitAll() // Allow /error endpoint
+                        .requestMatchers("/api/users/**", "/error").permitAll() // Allow /error endpoint
+                        .requestMatchers("/api/schedules/**", "/error").permitAll() // Allow /error endpoint
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
