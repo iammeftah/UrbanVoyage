@@ -5,6 +5,7 @@ export interface Route {
   departureCity: string;
   arrivalCity: string;
   distance: number;
+  duration?: number;
   schedules?: Schedule[];
 }
 

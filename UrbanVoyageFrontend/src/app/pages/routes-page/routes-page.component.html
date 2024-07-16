@@ -17,22 +17,21 @@
           <label class="text-sm font-medium mb-1 block" for="departure">
             Departure
           </label>
-          <input
-            class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
-            id="departure"
-            placeholder="Enter departure location"
-          />
+          <select [(ngModel)]="departureCity" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+            <option value="">Select Departure City</option>
+            <option *ngFor="let location of locations" [value]="location.name">{{ location.name }}</option>
+          </select>
+
         </div>
         <!-- Destination Location -->
         <div>
           <label class="text-sm font-medium mb-1 block" for="destination">
             Destination
           </label>
-          <input
-            class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
-            id="destination"
-            placeholder="Enter destination"
-          />
+          <select [(ngModel)]="arrivalCity" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+            <option value="">Select Arrival City</option>
+            <option *ngFor="let location of locations" [value]="location.name">{{ location.name }}</option>
+          </select>
         </div>
         <!-- Trip Type: One-Way or Round Trip -->
         <div class="mb-6">
@@ -55,7 +54,7 @@
 
         <div class="grid grid-cols-1  gap-4 mb-6">
           <label for="travel-date" class="block text-sm font-medium mb-1">Travel Date</label>
-          <input type="date" id="travel-date" class="w-full h-10 px-3 py-2 border border-gray-300 dark:border-gray-600 cursor-pointer bg-white dark:bg-gray-700 rounded-md focus:ring-cyan-500 focus:border-cyan-500 custom-date-input">
+          <input [(ngModel)]="travelDate" type="date" id="travel-date" class="w-full h-10 px-3 py-2 border border-gray-300 dark:border-gray-600 cursor-pointer bg-white dark:bg-gray-700 rounded-md focus:ring-cyan-500 focus:border-cyan-500 custom-date-input">
         </div>
         <div class="grid grid-cols-1  gap-4 mb-6" [ngClass]="{'hidden': isOneWay}">
           <label for="return-date" class="block text-sm font-medium mb-1">Return Date</label>
@@ -108,6 +107,7 @@
         <!-- Search Button -->
         <div class="w-full flex justify-end sm:col-span-3" data-aos="fade-left">
           <button
+            (click)="searchRoutes()"
             class="inline-flex items-center justify-center rounded-md bg-cyan-600 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-gray-900"
             type="submit"
           >
@@ -119,79 +119,56 @@
 
     <!-- Rest of the content remains unchanged -->
 
-    <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
-      <!-- Route Card Component -->
-      <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm" data-aos="fade-up">
-        <div class="p-6 grid grid-cols-2 gap-4">
-          <!-- Departure Time and Location -->
-          <div>
-            <div class="text-xl font-bold">8:00 AM</div>
-            <div class="text-gray-600 dark:text-gray-300">Departure</div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">From: New York, NY</div>
-          </div>
-          <!-- Arrival Time and Location -->
-          <div>
-            <div class="text-xl font-bold">11:30 AM</div>
-            <div class="text-gray-600 dark:text-gray-300">Arrival</div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">To: Boston, MA</div>
-          </div>
-          <!-- Duration -->
-          <div>
-            <div class="text-xl font-bold">3h 30m</div>
-            <div class="text-gray-600 dark:text-gray-300">Duration</div>
-          </div>
-          <!-- Price -->
-          <div>
-            <div class="text-xl font-bold">$99</div>
-            <div class="text-gray-600 dark:text-gray-300">Price</div>
-          </div>
-          <!-- Booking Button -->
-          <div class="col-span-2">
-            <button
-              class="inline-flex items-center justify-center rounded-md bg-cyan-600 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-gray-900 w-full"
-            >
-              Book
-            </button>
-          </div>
-        </div>
-      </div>
+    <!-- Loading indicator -->
+    <div *ngIf="isLoading" class="mt-8 text-center">
+      <p>Loading...</p>
+    </div>
 
-      <!-- Similar Route Card Component -->
-      <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm" data-aos="fade-up">
+    <!-- Error message -->
+    <div *ngIf="errorMessage" class="mt-8 text-center text-red-500">
+      {{ errorMessage }}
+    </div>
+
+    <!-- No routes found message -->
+    <div *ngIf="searchPerformed && noRoutesFound" class="mt-8 text-center">
+      <p>No routes found for the selected cities and date.</p>
+    </div>
+
+
+
+
+
+
+
+    <!-- Schedules list -->
+    <div *ngIf="searchPerformed && !isLoading && !noRoutesFound" class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div *ngFor="let schedule of schedules" class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm" aos="fade-up">
         <div class="p-6 grid grid-cols-2 gap-4">
-          <!-- Departure Time and Location -->
           <div>
-            <div class="text-xl font-bold">10:00 AM</div>
-            <div class="text-gray-600 dark:text-gray-300">Departure</div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">From: New York, NY</div>
+            <p class="text-xl font-bold">{{ formatTime(schedule.departureTime) }}</p>
+            <p class="text-gray-600 dark:text-gray-300">Departure</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">From: {{ schedule.route.departureCity }}</p>
           </div>
-          <!-- Arrival Time and Location -->
           <div>
-            <div class="text-xl font-bold">1:30 PM</div>
-            <div class="text-gray-600 dark:text-gray-300">Arrival</div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">To: Boston, MA</div>
+            <p class="text-xl font-bold">{{ formatTime(schedule.arrivalTime) }}</p>
+            <p class="text-gray-600 dark:text-gray-300">Arrival</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">To: {{ schedule.route.arrivalCity }}</p>
           </div>
-          <!-- Duration -->
           <div>
-            <div class="text-xl font-bold">3h 30m</div>
-            <div class="text-gray-600 dark:text-gray-300">Duration</div>
+            <p class="text-xl font-bold">{{ schedule.duration }}</p>
+            <p class="text-gray-600 dark:text-gray-300">Duration</p>
           </div>
-          <!-- Price -->
           <div>
-            <div class="text-xl font-bold">$109</div>
-            <div class="text-gray-600 dark:text-gray-300">Price</div>
+            <p class="text-xl font-bold">$22.00</p>
+            <p class="text-gray-600 dark:text-gray-300">Price</p>
           </div>
-          <!-- Booking Button -->
           <div class="col-span-2">
-            <button
-              class="inline-flex items-center justify-center rounded-md bg-cyan-600 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-gray-900 w-full"
-            >
-              Book
-            </button>
+            <button class="w-full px-4 py-2 bg-green-500 text-white rounded-lg">Book</button>
           </div>
         </div>
       </div>
     </div>
+
   </div>
 
   <app-footer></app-footer>

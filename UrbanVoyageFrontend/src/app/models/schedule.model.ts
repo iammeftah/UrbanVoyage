@@ -2,6 +2,7 @@ import {Route} from "./route.model";
 
 
 export interface Schedule {
+  duration: any;
   scheduleID: number;
   departureTime: string;
   arrivalTime: string;

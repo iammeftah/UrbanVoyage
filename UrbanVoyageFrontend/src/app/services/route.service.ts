@@ -18,7 +18,7 @@ export class RouteService {
       catchError(this.handleError)
     );
   }
-  
+
 
   getRouteById(id: number): Observable<Route> {
     return this.http.get<Route>(`${this.apiUrl}/${id}`).pipe(
@@ -59,5 +59,13 @@ export class RouteService {
     }
     console.error(errorMessage);
     return throwError(() => new Error(errorMessage));
+  }
+
+  findByDepartureAndArrival(departure: string, arrival: string ): Observable<Route[]> {
+    return this.http.get<Route[]>(`${this.apiUrl}/search`, {
+      params: { departure, arrival }
+    }).pipe(
+      catchError(this.handleError)
+    );
   }
 }

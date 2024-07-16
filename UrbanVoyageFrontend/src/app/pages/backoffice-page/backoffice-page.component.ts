@@ -412,7 +412,8 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
         route: { routeID: routeId } as Route,
         departureTime: departureTime.toISOString(),
         arrivalTime: arrivalTime.toISOString(),
-        availableSeats: this.newSchedule.availableSeats || 50
+        availableSeats: this.newSchedule.availableSeats || 50,
+        duration:null
       };
 
       this.scheduleService.addSchedule(scheduleToAdd).subscribe({
@@ -474,7 +475,8 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
         route: { routeID: routeId } as Route,
         departureTime: departureTime.toISOString(),
         arrivalTime: arrivalTime.toISOString(),
-        availableSeats: this.editingSchedule!.availableSeats
+        availableSeats: this.editingSchedule!.availableSeats,
+        duration: null  // Assuming selectedSchedule has a duration property
       };
 
       this.scheduleService.updateSchedule(scheduleToUpdate).subscribe({
