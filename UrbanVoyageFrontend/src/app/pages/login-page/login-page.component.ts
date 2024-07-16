@@ -48,10 +48,28 @@ export class LoginPageComponent {
     this.authService.login(this.email, this.password).subscribe(
       (response) => {
         console.log('Login successful:', response);
+
+        console.log('User ID:', response.id);
+        console.log('First Name:', response.firstName);
+        console.log('Last Name:', response.lastName);
+        console.log('Email:', response.email);
+        console.log('Phone Number:', response.phoneNumber);
+        console.log('Username:', response.username);
+        console.log('Token:', response.token);
+
+        // Convert roles array to a list for easier iteration
+        const rolesList = response.roles;
+
+        // Determine the redirection route based on the presence of "ROLE_ADMIN"
+        let redirectTo = '/routes'; // Default route for non-admins
+        if (rolesList.includes("ROLE_ADMIN")) {
+          redirectTo = '/backoffice';
+        }
+
         this.loading = false;
         this.showMessage('Login successful!', 'success');
         this.isLoggedIn = true;
-        this.router.navigate(['/routes']);
+        this.router.navigate([redirectTo]);
       },
       (error) => {
         this.loading = false;
@@ -59,6 +77,8 @@ export class LoginPageComponent {
         this.showMessage(error.error?.message || 'An error occurred during login. Please try again.', 'error');
       }
     );
+
+
   }
 
   logout(): void {

@@ -31,17 +31,17 @@ public class AuthService {
 
     public LoginResponse authenticate(String email, String password) {
         System.out.println("AuthService: Attempting to authenticate user with email: " + email);
-        Client client = (Client) userRepository.findByEmail(email);
-        System.out.println("Client: " +client);
+        User user = userRepository.findByEmail(email);
+        System.out.println("Client: " + user);
         System.out.println("Entered password: " + password);
 
-        if (client != null && verifyPassword(MD5Util.md5(password), client.getPassword())) {
+        if (user != null && verifyPassword(MD5Util.md5(password), user.getPassword())) {
             System.out.println("Stored password: " + MD5Util.md5(password));
 
             System.out.println();
-            System.out.println("AuthService: Verifying password returns :" + verifyPassword(password,  client.getPassword()));
+            System.out.println("AuthService: Verifying password returns :" + verifyPassword(password,  user.getPassword()));
             System.out.println("AuthService: Client authentication successful");
-            return createLoginResponse(client);
+            return createLoginResponse(user);
         }
         System.out.println("AuthService: client authentication failed");
         return null;
@@ -53,17 +53,18 @@ public class AuthService {
         return inputPassword.equals(storedPassword); // Example comparison, adjust as needed
     }
 
-    private LoginResponse createLoginResponse(Client client) {
-        String token = generateToken(client.getEmail());
+    private LoginResponse createLoginResponse(User user) {
+        String token = generateToken(user.getEmail());
         System.out.println("Generating JWT token: " + token);
 
         return new LoginResponse(
-                client.getUserID(),
-                client.getFirstName(),
-                client.getLastName(),
-                client.getEmail(),
-                client.getPhoneNumber(),
-                client.getUsername(),
+                user.getUserID(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getPhoneNumber(),
+                user.getUsername(),
+                user.getRoles(),
                 token
         );
     }

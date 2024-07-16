@@ -17,9 +17,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -47,7 +49,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             logger.info("Username from token: " + username);
             logger.info("Role from token: " + role);
 
-            List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(role));
+            List<SimpleGrantedAuthority> authorities = Arrays.stream(claims.get("roles").toString().split(","))
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
 
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                     username, null, authorities);

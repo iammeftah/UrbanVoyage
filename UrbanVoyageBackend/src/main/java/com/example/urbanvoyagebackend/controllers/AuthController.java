@@ -115,6 +115,7 @@ public class AuthController {
             LoginResponse response = authService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
             if (response != null) {
                 System.out.println("Controller: Login successful for user: " + loginRequest.getEmail());
+                System.out.println("Controller: Is user admin: " + response.getRoles());
                 return ResponseEntity.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(response);

@@ -1,5 +1,9 @@
 package com.example.urbanvoyagebackend.dto;
 
+import com.example.urbanvoyagebackend.entity.users.Role;
+
+import java.util.Set;
+
 public class LoginResponse {
     private Long id;
     private String firstName;
@@ -8,9 +12,10 @@ public class LoginResponse {
     private String phoneNumber;
     private String username;
     private String token; // JWT token
+    private Set<Role> roles;
 
     // Constructor
-    public LoginResponse(Long id, String lastName, String firstName, String email, String phoneNumber, String username, String token) {
+    public LoginResponse(Long id, String lastName, String firstName, String email, String phoneNumber, String username, Set<Role> roles , String token) {
         this.id = id;
         this.lastName = lastName;
         this.firstName = firstName;
@@ -18,6 +23,7 @@ public class LoginResponse {
         this.phoneNumber = phoneNumber;
         this.username = username;
         this.token = token;
+        this.roles = roles;
     }
 
 
@@ -76,5 +82,13 @@ public class LoginResponse {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }
