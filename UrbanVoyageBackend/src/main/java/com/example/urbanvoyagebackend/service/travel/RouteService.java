@@ -8,6 +8,7 @@ import com.example.urbanvoyagebackend.repository.travel.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -42,5 +43,9 @@ public class RouteService {
         }
 
         routeRepository.deleteById(id);
+    }
+
+    public List<Route>  findByDepartureAndArrivalCity(String departure, String arrival) {
+        return routeRepository.findByDepartureCityAndArrivalCity(departure,arrival);
     }
 }

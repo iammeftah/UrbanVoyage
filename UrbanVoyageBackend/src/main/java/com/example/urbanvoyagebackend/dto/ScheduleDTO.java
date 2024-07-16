@@ -1,24 +1,34 @@
 package com.example.urbanvoyagebackend.dto;
 
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class ScheduleDTO {
     private Long scheduleID;
-    private Date departureTime;
-    private Date arrivalTime;
+    private LocalDateTime departureTime;
+    private LocalDateTime arrivalTime;
     private RouteDTO route;
     private int availableSeats;
+    private String duration;
 
     // Getters and setters
     public Long getScheduleID() { return scheduleID; }
     public void setScheduleID(Long scheduleID) { this.scheduleID = scheduleID; }
-    public Date getDepartureTime() { return departureTime; }
-    public void setDepartureTime(Date departureTime) { this.departureTime = departureTime; }
-    public Date getArrivalTime() { return arrivalTime; }
-    public void setArrivalTime(Date arrivalTime) { this.arrivalTime = arrivalTime; }
+    public LocalDateTime getDepartureTime() { return departureTime; }
+    public void setDepartureTime(LocalDateTime departureTime) { this.departureTime = departureTime; }
+    public LocalDateTime getArrivalTime() { return arrivalTime; }
+    public void setArrivalTime(LocalDateTime arrivalTime) { this.arrivalTime = arrivalTime; }
     public RouteDTO getRoute() { return route; }
     public void setRoute(RouteDTO route) { this.route = route; }
     public int getAvailableSeats() { return availableSeats;}
     public void setAvailableSeats(int availableSeats) {this.availableSeats=availableSeats;}
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
 }

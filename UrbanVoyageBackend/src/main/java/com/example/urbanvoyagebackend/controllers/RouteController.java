@@ -16,6 +16,15 @@ public class RouteController {
     @Autowired
     private RouteService routeService;
 
+
+    @GetMapping("/search")
+    public List<Route> findByDepartureAndArrival(@RequestParam String departure, @RequestParam String arrival ) {
+        List<Route> routes = routeService.findByDepartureAndArrivalCity(departure, arrival);
+        System.out.println("Returning " + routes.size() + " routes");
+        System.out.println("Routes: " + routes);
+        return routes;
+    }
+
     @GetMapping
     public List<Route> getAllRoutes() {
         List<Route> routes = routeService.getAllRoutes();

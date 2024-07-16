@@ -24,6 +24,7 @@ public class ScheduleController {
         return schedules.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
+
     private ScheduleDTO convertToDTO(Schedule schedule) {
         ScheduleDTO dto = new ScheduleDTO();
         dto.setScheduleID(schedule.getScheduleID());
@@ -36,6 +37,8 @@ public class ScheduleController {
         routeDTO.setDepartureCity(schedule.getRoute().getDepartureCity());
         routeDTO.setArrivalCity(schedule.getRoute().getArrivalCity());
         routeDTO.setDistance(schedule.getRoute().getDistance());
+        dto.setDuration(schedule.calculateDuration());
+
 
         dto.setRoute(routeDTO);
 
@@ -57,5 +60,14 @@ public class ScheduleController {
     public ResponseEntity<?> deleteSchedule(@PathVariable Long id) {
         scheduleService.deleteSchedule(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/route/{routeId}")
+    public ResponseEntity<List<ScheduleDTO>> getSchedulesByRouteId(@PathVariable Long routeId) {
+        List<Schedule> schedules = scheduleService.findByRouteId(routeId);
+        List<ScheduleDTO> scheduleDTOs = schedules.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(scheduleDTOs);
     }
 }

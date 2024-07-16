@@ -61,16 +61,20 @@ export class RoutesPageComponent implements OnInit {
     this.schedules = [];
     this.searchPerformed = true;
 
+    console.log('Searching for routes:', this.departureCity, this.arrivalCity, this.travelDate);
+
     this.routeService.findByDepartureAndArrival(this.departureCity, this.arrivalCity).subscribe({
       next: (routes) => {
+        console.log('Routes found:', routes);
         if (routes.length === 0) {
           this.noRoutesFound = true;
+          this.isLoading = false;
         } else {
           this.loadSchedulesForRoutes(routes);
         }
-        this.isLoading = false;
       },
       error: (error) => {
+        console.error('Error fetching routes:', error);
         this.handleError(error);
       }
     });
@@ -83,25 +87,27 @@ export class RoutesPageComponent implements OnInit {
 
     forkJoin(scheduleObservables).subscribe({
       next: (scheduleArrays) => {
+        console.log('All schedules:', scheduleArrays);
         this.schedules = scheduleArrays.flat().filter(schedule =>
           this.isSameDay(new Date(schedule.departureTime), new Date(this.travelDate))
         );
+        console.log('Filtered schedules:', this.schedules);
         if (this.schedules.length === 0) {
           this.noRoutesFound = true;
         }
+        this.isLoading = false;
       },
       error: (error) => {
+        console.error('Error fetching schedules:', error);
         this.handleError(error);
       }
     });
   }
-
   private isSameDay(date1: Date, date2: Date): boolean {
     return date1.getFullYear() === date2.getFullYear() &&
       date1.getMonth() === date2.getMonth() &&
       date1.getDate() === date2.getDate();
   }
-
   formatTime(dateTimeString: string): string {
     const date = new Date(dateTimeString);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -111,6 +117,11 @@ export class RoutesPageComponent implements OnInit {
     this.isLoading = false;
     this.errorMessage = 'An error occurred while fetching data. Please try again.';
     console.error('Error:', error);
+  }
+
+  formatDuration(duration: string): string {
+    const [hours, minutes] = duration.split(':');
+    return `${hours}h ${minutes}min`;
   }
 }
 

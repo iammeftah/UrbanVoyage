@@ -14,4 +14,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     @Query("SELECT s FROM Schedule s WHERE s.route.routeID = :routeId AND s.departureTime > CURRENT_TIMESTAMP")
     List<Schedule> findActiveSchedulesByRouteId(Long routeId);
 
+    List<Schedule> findByRouteRouteID(Long routeId);
 }

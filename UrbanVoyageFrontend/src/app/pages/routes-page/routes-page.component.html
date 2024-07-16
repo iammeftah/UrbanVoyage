@@ -14,10 +14,10 @@
       <form class="p-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
         <!-- Departure Location -->
         <div>
-          <label class="text-sm font-medium mb-1 block" for="departure">
+          <label class="text-sm font-medium mb-1 block" for="departureCity">
             Departure
           </label>
-          <select [(ngModel)]="departureCity" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+          <select id="departureCity" [(ngModel)]="departureCity" name="departureCity" class="pr-2 flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
             <option value="">Select Departure City</option>
             <option *ngFor="let location of locations" [value]="location.name">{{ location.name }}</option>
           </select>
@@ -25,10 +25,10 @@
         </div>
         <!-- Destination Location -->
         <div>
-          <label class="text-sm font-medium mb-1 block" for="destination">
+          <label class="text-sm font-medium mb-1 block" for="arrivalCity">
             Destination
           </label>
-          <select [(ngModel)]="arrivalCity" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+          <select id="arrivalCity" [(ngModel)]="arrivalCity" name="arrivalCity" class="pr-2 flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
             <option value="">Select Arrival City</option>
             <option *ngFor="let location of locations" [value]="location.name">{{ location.name }}</option>
           </select>
@@ -54,7 +54,7 @@
 
         <div class="grid grid-cols-1  gap-4 mb-6">
           <label for="travel-date" class="block text-sm font-medium mb-1">Travel Date</label>
-          <input [(ngModel)]="travelDate" type="date" id="travel-date" class="w-full h-10 px-3 py-2 border border-gray-300 dark:border-gray-600 cursor-pointer bg-white dark:bg-gray-700 rounded-md focus:ring-cyan-500 focus:border-cyan-500 custom-date-input">
+          <input [(ngModel)]="travelDate" name="travelDate" type="date" id="travel-date" class="w-full h-10 px-3 py-2 border border-gray-300 dark:border-gray-600 cursor-pointer bg-white dark:bg-gray-700 rounded-md focus:ring-cyan-500 focus:border-cyan-500 custom-date-input">
         </div>
         <div class="grid grid-cols-1  gap-4 mb-6" [ngClass]="{'hidden': isOneWay}">
           <label for="return-date" class="block text-sm font-medium mb-1">Return Date</label>
@@ -141,29 +141,31 @@
 
 
     <!-- Schedules list -->
-    <div *ngIf="searchPerformed && !isLoading && !noRoutesFound" class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
-      <div *ngFor="let schedule of schedules" class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm" aos="fade-up">
+    <div *ngIf="searchPerformed && !isLoading" class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div *ngFor="let schedule of schedules" class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm" data-aos="fade-up">
         <div class="p-6 grid grid-cols-2 gap-4">
           <div>
-            <p class="text-xl font-bold">{{ formatTime(schedule.departureTime) }}</p>
-            <p class="text-gray-600 dark:text-gray-300">Departure</p>
-            <p class="text-sm text-gray-500 dark:text-gray-400">From: {{ schedule.route.departureCity }}</p>
+            <p class="text-lg font-semibold">{{ formatTime(schedule.departureTime) }}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Departure</p>
+            <p class="flex items-start justify-start gap-2 text-xl md:text-2xl  font-bold"><span class="text-sm text-cyan-500">From: </span>{{ schedule.route.departureCity }}</p>
           </div>
           <div>
-            <p class="text-xl font-bold">{{ formatTime(schedule.arrivalTime) }}</p>
-            <p class="text-gray-600 dark:text-gray-300">Arrival</p>
-            <p class="text-sm text-gray-500 dark:text-gray-400">To: {{ schedule.route.arrivalCity }}</p>
+            <p class="text-lg font-semibold">{{ formatTime(schedule.arrivalTime) }}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Arrival</p>
+            <p class="flex items-start justify-start gap-2 text-xl md:text-2xl font-bold"><span class="text-sm text-cyan-500">To: </span> {{ schedule.route.arrivalCity }}</p>
           </div>
           <div>
-            <p class="text-xl font-bold">{{ schedule.duration }}</p>
-            <p class="text-gray-600 dark:text-gray-300">Duration</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Duration</p>
+            <p class="text-sm">{{ formatDuration(schedule.duration) }}</p>
           </div>
           <div>
-            <p class="text-xl font-bold">$22.00</p>
-            <p class="text-gray-600 dark:text-gray-300">Price</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Price</p>
+            <p class="text-sm">$22.00</p>
           </div>
-          <div class="col-span-2">
-            <button class="w-full px-4 py-2 bg-green-500 text-white rounded-lg">Book</button>
+          <div class="flex justify-end col-span-2">
+            <button class="w-32 bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">
+              Book
+            </button>
           </div>
         </div>
       </div>

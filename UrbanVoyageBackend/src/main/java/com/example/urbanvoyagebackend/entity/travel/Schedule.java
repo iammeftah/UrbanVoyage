@@ -4,6 +4,9 @@ package com.example.urbanvoyagebackend.entity.travel;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
 import java.util.Date;
 
 @Entity
@@ -18,20 +21,23 @@ public class Schedule {
     @JsonBackReference
     private Route route;
 
-    @Column(nullable = false)
-    private Date departureTime;
+    @Column(nullable = false , columnDefinition = "TIMESTAMP")
+    private LocalDateTime departureTime;
 
-    @Column(nullable = false)
-    private Date arrivalTime;
+    @Column(nullable = false , columnDefinition = "TIMESTAMP")
+    private LocalDateTime arrivalTime;
 
     @Column(nullable = false)
     private int availableSeats;
+
+    private String duration;
+
 
     // Constructors, getters, and setters
 
     public Schedule() {}
 
-    public Schedule(Route route, Date departureTime, Date arrivalTime, int availableSeats) {
+    public Schedule(Route route, LocalDateTime departureTime, LocalDateTime arrivalTime, int availableSeats) {
         this.route = route;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
@@ -65,19 +71,19 @@ public class Schedule {
         this.route = route;
     }
 
-    public Date getDepartureTime() {
+    public LocalDateTime getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(Date departureTime) {
+    public void setDepartureTime(LocalDateTime departureTime) {
         this.departureTime = departureTime;
     }
 
-    public Date getArrivalTime() {
+    public LocalDateTime getArrivalTime() {
         return arrivalTime;
     }
 
-    public void setArrivalTime(Date arrivalTime) {
+    public void setArrivalTime(LocalDateTime arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
 
@@ -87,5 +93,23 @@ public class Schedule {
 
     public void setAvailableSeats(int availableSeats) {
         this.availableSeats = availableSeats;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
+    public String calculateDuration() {
+        if (departureTime == null || arrivalTime == null) {
+            return "N/A";
+        }
+        Duration duration = Duration.between(departureTime, arrivalTime);
+        long hours = duration.toHours();
+        long minutes = duration.toMinutesPart();
+        return String.format("%d:%02d", hours, minutes);
     }
 }

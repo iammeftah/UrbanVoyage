@@ -1,13 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Schedule } from 'src/app/models/schedule.model';
+import { ScheduleService } from 'src/app/services/schedule.service';
 
-interface Schedule {
-  departure: { time: string; location: string };
-  arrival: { time: string; location: string };
-  destination: { city: string; state: string };
-  travelType: string;
-  duration: string;
-  price: number;
-}
 
 @Component({
   selector: 'app-schedules-page',
@@ -15,56 +9,29 @@ interface Schedule {
   styleUrls: ['./schedules-page.component.css']
 })
 export class SchedulesPageComponent implements OnInit {
-  schedules: Schedule[] = [
-    {
-      departure: { time: '8:00 AM', location: 'San Francisco' },
-      arrival: { time: '11:30 AM', location: 'Los Angeles' },
-      destination: { city: 'Los Angeles', state: 'California' },
-      travelType: 'Bus',
-      duration: '3h 30m',
-      price: 50
-    },
-    {
-      departure: { time: '10:00 AM', location: 'New York' },
-      arrival: { time: '2:30 PM', location: 'Boston' },
-      destination: { city: 'Boston', state: 'Massachusetts' },
-      travelType: 'Train',
-      duration: '4h 30m',
-      price: 80
-    },
-    {
-      departure: { time: '1:00 PM', location: 'Chicago' },
-      arrival: { time: '5:30 PM', location: 'Detroit' },
-      destination: { city: 'Detroit', state: 'Michigan' },
-      travelType: 'Van',
-      duration: '1h 30m',
-      price: 120
-    },
-    {
-      departure: { time: '10:30 AM', location: 'Chicago' },
-      arrival: { time: '2:00 PM', location: 'Dallas' },
-      destination: { city: 'Dallas', state: 'Texas' },
-      travelType: 'Train',
-      duration: '4h 30m',
-      price: 90
-    },
-    {
-      departure: { time: '1:00 PM', location: 'Miami' },
-      arrival: { time: '5:30 PM', location: 'Orlando' },
-      destination: { city: 'Orlando', state: 'Florida' },
-      travelType: 'Van',
-      duration: '2h 30m',
-      price: 120
-    }
-  ];
-
+  schedules: Schedule[] = [];
   filteredSchedules: Schedule[] = [];
   sortColumn: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
   filterText: string = '';
 
+  constructor(private scheduleService: ScheduleService) {}
+
   ngOnInit() {
-    this.filteredSchedules = [...this.schedules];
+    this.loadSchedules();
+  }
+
+  loadSchedules() {
+    this.scheduleService.getSchedules().subscribe({
+      next: (data) => {
+        this.schedules = data;
+        this.filteredSchedules = [...this.schedules];
+        this.sortSchedules();
+      },
+      error: (error) => {
+        console.error('Error fetching schedules:', error);
+      }
+    });
   }
 
   toggleSort(column: string) {
@@ -93,9 +60,8 @@ export class SchedulesPageComponent implements OnInit {
 
   applyFilter() {
     this.filteredSchedules = this.schedules.filter(schedule =>
-      schedule.destination.city.toLowerCase().includes(this.filterText.toLowerCase()) ||
-      schedule.destination.state.toLowerCase().includes(this.filterText.toLowerCase()) ||
-      schedule.travelType.toLowerCase().includes(this.filterText.toLowerCase())
+      schedule.route.departureCity.toLowerCase().includes(this.filterText.toLowerCase()) ||
+      schedule.route.arrivalCity.toLowerCase().includes(this.filterText.toLowerCase())
     );
     this.sortSchedules();
   }
