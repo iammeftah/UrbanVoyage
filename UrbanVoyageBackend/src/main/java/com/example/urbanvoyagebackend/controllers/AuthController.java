@@ -110,6 +110,7 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         System.out.println("Controller: Received signin request for email: " + loginRequest.getEmail());
+        System.out.println("Controller: Received signin request for password: " + loginRequest.getPassword() );
 
         try {
             LoginResponse response = authService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
