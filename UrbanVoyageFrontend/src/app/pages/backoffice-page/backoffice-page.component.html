@@ -42,6 +42,7 @@
           <button (click)="addRoute()" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">Add Route</button>
         </div>
 
+
         <div class="overflow-x-auto">
           <table class="w-full caption-bottom text-sm rounded-lg overflow-hidden">
             <thead class="bg-gray-50 dark:bg-gray-700">
@@ -62,6 +63,15 @@
                 <button (click)="deleteRoute(route.routeID)" class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-cyan-500 dark:hover:text-cyan-500 disabled:opacity-50 duration-300">Delete</button>
               </td>
             </tr>
+            <!--
+            <ng-template #noRoutes>
+              <tr class="border-b transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+                <td colspan="6" class="p-6 text-center text-muted-foreground">
+                  There are no available routes at the moment.
+                </td>
+              </tr>
+            </ng-template>
+            -->
             </tbody>
           </table>
         </div>
