@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -13,9 +14,28 @@ export class HeaderComponent {
   message: string | null = null;
   messageType: 'success' | 'error' = 'success';
 
+  isAdmin: boolean = false;
+  private adminSubscription: Subscription | undefined;
+
   constructor(private authService: AuthService, private router: Router) {
     this.isLoggedIn = this.authService.isLoggedIn();
   }
+
+  ngOnInit() {
+    this.adminSubscription = this.authService.getAdminStatus().subscribe(
+      isAdmin => {
+        this.isAdmin = isAdmin;
+      }
+    );
+  }
+
+  ngOnDestroy() {
+    if (this.adminSubscription) {
+      this.adminSubscription.unsubscribe();
+    }
+  }
+
+
 
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;

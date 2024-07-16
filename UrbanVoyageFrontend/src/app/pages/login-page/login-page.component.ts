@@ -59,10 +59,13 @@ export class LoginPageComponent {
 
         // Convert roles array to a list for easier iteration
         const rolesList = response.roles;
+        let isAdmin = rolesList.includes("ROLE_ADMIN");
+        this.authService.setAdminStatus(isAdmin); // <---------- this one
+
 
         // Determine the redirection route based on the presence of "ROLE_ADMIN"
         let redirectTo = '/routes'; // Default route for non-admins
-        if (rolesList.includes("ROLE_ADMIN")) {
+        if (isAdmin) {
           redirectTo = '/backoffice';
         }
 

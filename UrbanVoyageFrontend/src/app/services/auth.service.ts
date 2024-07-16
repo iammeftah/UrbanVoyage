@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {catchError, Observable, throwError} from 'rxjs';
+import {BehaviorSubject, catchError, Observable, throwError} from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 @Injectable({
@@ -11,6 +11,16 @@ export class AuthService {
   private apiUrl = 'http://localhost:8080/api/auth';
 
   constructor(private http: HttpClient) {}
+
+  private isAdminSubject = new BehaviorSubject<boolean>(false);
+
+  setAdminStatus(isAdmin: boolean) {
+    this.isAdminSubject.next(isAdmin);
+  }
+
+  getAdminStatus(): Observable<boolean> {
+    return this.isAdminSubject.asObservable();
+  }
 
   register(user: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, user).pipe(
@@ -38,6 +48,7 @@ export class AuthService {
           throw error; // Re-throw the error to be handled by the caller
         })
       );
+
   }
 
 
