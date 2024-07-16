@@ -20,19 +20,12 @@ export class HeaderComponent {
   constructor(private authService: AuthService, private router: Router) {
     this.isLoggedIn = this.authService.isLoggedIn();
   }
-
+  
   ngOnInit() {
-    this.adminSubscription = this.authService.getAdminStatus().subscribe(
-      isAdmin => {
-        this.isAdmin = isAdmin;
-      }
-    );
-  }
-
-  ngOnDestroy() {
-    if (this.adminSubscription) {
-      this.adminSubscription.unsubscribe();
-    }
+    this.isAdmin = this.authService.isAdmin();
+    this.authService.getAdminStatus().subscribe(status => {
+      this.isAdmin = status;
+    });
   }
 
 

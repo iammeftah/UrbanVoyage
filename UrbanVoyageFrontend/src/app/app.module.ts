@@ -27,6 +27,7 @@ import { MessageComponent } from './components/message/message.component';
 import { LoadingSpinnerComponent } from './objects/loading-spinner/loading-spinner.component';
 import { BackofficePageComponent } from './pages/backoffice-page/backoffice-page.component';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { UnauthorizedPageComponent } from './pages/unauthorized-page/unauthorized-page.component';
 
 export function initializeApp() {
   return () => {
@@ -60,6 +61,7 @@ export function initializeApp() {
     MessageComponent,
     LoadingSpinnerComponent,
     BackofficePageComponent,
+    UnauthorizedPageComponent,
   ],
   imports: [
     BrowserModule,

@@ -12,15 +12,30 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  private isAdminSubject = new BehaviorSubject<boolean>(false);
+  private isAdminSubject = new BehaviorSubject<boolean>(this.getStoredAdminStatus());
+
+  private getStoredAdminStatus(): boolean {
+    return JSON.parse(localStorage.getItem('isAdmin') || 'false');
+  }
+
+
+  resetAdminStatus() {
+    this.setAdminStatus(false);
+  }
 
   setAdminStatus(isAdmin: boolean) {
+    localStorage.setItem('isAdmin', JSON.stringify(isAdmin));
     this.isAdminSubject.next(isAdmin);
   }
 
   getAdminStatus(): Observable<boolean> {
     return this.isAdminSubject.asObservable();
   }
+
+  isAdmin(): boolean {
+    return this.getStoredAdminStatus();
+  }
+
 
   register(user: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, user).pipe(
@@ -55,6 +70,7 @@ export class AuthService {
 
   logout(): Observable<any> {
     localStorage.removeItem('token');
+    this.setAdminStatus(false);
     return this.http.post(`${this.apiUrl}/signout`, {});
   }
 

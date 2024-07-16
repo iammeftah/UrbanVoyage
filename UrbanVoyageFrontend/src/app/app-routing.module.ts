@@ -12,6 +12,8 @@ import {RegisterPageComponent} from "./pages/register-page/register-page.compone
 import {LoginPageComponent} from "./pages/login-page/login-page.component";
 import {VerifyEmailComponent} from "./pages/verify-email/verify-email.component";
 import {BackofficePageComponent} from "./pages/backoffice-page/backoffice-page.component";
+import { AdminGuard } from './guards/admin.guard';
+import { UnauthorizedPageComponent } from './pages/unauthorized-page/unauthorized-page.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -26,7 +28,14 @@ const routes: Routes = [
   { path: 'auth', component: AuthPageComponent },
   { path: 'register', component: RegisterPageComponent },
   { path: 'verify-email', component: VerifyEmailComponent },
-  { path: 'backoffice', component: BackofficePageComponent },
+  {
+    path: 'backoffice',
+    component: BackofficePageComponent,
+    canActivate: [AdminGuard]
+  },
+
+  { path: 'unauthorized', component: UnauthorizedPageComponent },
+
 
 
   // autres routes...

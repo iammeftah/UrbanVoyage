@@ -88,7 +88,9 @@ export class LoginPageComponent {
     this.authService.logout();
     this.isLoggedIn = false;
     this.showMessage('Logged out successfully!', 'success');
+    
     this.router.navigate(['/login']);
+
   }
 
   forgotPassword(): void {
