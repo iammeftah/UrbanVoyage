@@ -1,6 +1,8 @@
 export interface User {
-  id: number;
+  userID: number;
   firstName: string;
   lastName: string;
+  email: string;
+  username:string;
   hasReservations: boolean; // Add any other fields as necessary
 }

@@ -1,6 +1,7 @@
 package com.example.urbanvoyagebackend.entity.travel;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.Set;
@@ -25,8 +26,11 @@ public class Route {
     @JsonManagedReference
     private Set<Schedule> schedules;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "route")
     private Set<Reservation> reservations;
+
+
 
     // Constructors, getters, and setters
 

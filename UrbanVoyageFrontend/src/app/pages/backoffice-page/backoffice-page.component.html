@@ -5,9 +5,9 @@
   <app-header></app-header>
 
 
-  <div class="flex flex-col md:flex-row  min-h-screen text-lightText dark:text-darkText bg-lightBackground dark:bg-darkBackground">
+  <div class="flex flex-col md:flex-row flex-grow text-lightText dark:text-darkText bg-lightBackground dark:bg-darkBackground">
     <!-- Sidebar -->
-    <div class="w-full  md:w-64 bg-lightBgColor dark:bg-darkBgColor p-4 transition-all duration-200 ">
+    <div class="w-full  md:w-1/4 bg-lightBgColor dark:bg-darkBgColor border-r border-gray-500 p-4 transition-all duration-200 ">
       <nav>
         <ul class="w-full flex flex-row md:flex-col items-center justify-around md:items-start md:justify-start ">
           <li *ngFor="let tab of tabs"
@@ -45,7 +45,7 @@
 
         <div class="overflow-x-auto">
           <table class="w-full caption-bottom text-sm rounded-lg overflow-hidden">
-            <thead class="bg-gray-50 dark:bg-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-800">
             <tr class="transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
               <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Departure City</th>
               <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Arrival City</th>
@@ -98,8 +98,8 @@
 
         <div class="overflow-x-auto">
           <table class="w-full caption-bottom text-sm rounded-lg overflow-hidden">
-            <thead class="[&_tr]:border-b bg-gray-50 dark:bg-gray-700">
-            <tr class="w-full border-b transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+            <thead class=" bg-gray-50 dark:bg-gray-800">
+            <tr class="w-full  transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
               <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Route</th>
               <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Departure Time</th>
               <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Arrival Time</th>
@@ -108,7 +108,7 @@
             </tr>
             </thead>
             <tbody class="[&_tr:last-child]:border-0">
-            <tr *ngFor="let schedule of schedules" class="border-b transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+            <tr *ngFor="let schedule of schedules" class="transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 flex items-center justify-center gap-8">{{ schedule.route.departureCity }} <i class='bx bx-sort rotate-90 text-xl' ></i> {{ schedule.route.arrivalCity }}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ schedule.departureTime | date:'medium' }}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ schedule.arrivalTime | date:'medium' }}</td>
@@ -129,9 +129,9 @@
 
         <!-- Reservations Table -->
         <div class="overflow-x-auto">
-          <table class="min-w-full bg-white dark:bg-gray-800">
-            <thead>
-            <tr>
+          <table class="w-full caption-bottom text-sm rounded-lg overflow-hidden">
+            <thead class="bg-gray-50 dark:bg-gray-800">
+            <tr class="w-full h-10 transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
               <th class="px-4 py-2">User</th>
               <th class="px-4 py-2">Route</th>
               <th class="px-4 py-2">Reservation Date</th>
@@ -140,23 +140,23 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let reservation of reservations">
-              <td class="border px-4 py-2 font-medium">{{ reservation.user.name }}</td>
-              <td class="border px-4 py-2">{{ reservation.route.departureCity }} - {{ reservation.route.arrivalCity }}</td>
-              <td class="border px-4 py-2">{{ reservation.reservationDate | date:'mediumDate' }}</td>
-              <td class="border px-4 py-2">
-                  <span class="status-pill" [ngClass]="{
-                    'bg-green-600 text-white': reservation.status === 'CONFIRMED',
-                    'bg-yellow-600 text-white': reservation.status === 'PENDING',
+            <tr *ngFor="let reservation of reservations" class="transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ reservation.user.username }}</td>
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 flex items-center justify-center gap-8">{{ reservation.route.departureCity }} <i class='bx bx-sort rotate-90 text-xl' ></i> {{ reservation.route.arrivalCity }}</td>
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ reservation.reservationDate | date:'mediumDate' }}</td>
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                  <span class="status-pill px-2 py-1 rounded-md" [ngClass]="{
+                    'bg-green-700 text-white': reservation.status === 'CONFIRMED',
+                    'bg-yellow-700 text-white': reservation.status === 'PENDING',
                     'bg-red-600 text-white': reservation.status === 'CANCELLED'
                   }">
                     {{ reservation.status }}
                   </span>
               </td>
-              <td class="border px-4 py-2">
+              <td class=" px-4 py-2">
                 <div class="flex flex-row gap-2 items-center justify-center">
-                  <button (click)="updateReservationStatus(reservation.reservationID, 'CONFIRMED')" class="bg-green-500 text-white p-1 rounded">Confirm</button>
-                  <button (click)="updateReservationStatus(reservation.reservationID, 'CANCELLED')" class="bg-red-500 text-white p-1 rounded">Cancel</button>
+                  <button (click)="updateReservationStatus(reservation.reservationID, 'CONFIRMED')" class="bg-green-600 hover:bg-green-700 inline-flex items-center justify-center rounded-md px-4 py-1 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">Confirm</button>
+                  <button (click)="updateReservationStatus(reservation.reservationID, 'CANCELLED')" class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-1 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-red-500 dark:hover:text-red-600  disabled:opacity-50 duration-300">Cancel</button>
                 </div>
               </td>
             </tr>
@@ -180,9 +180,6 @@
       </div>
     </div>
   </div>
-
-  <app-footer></app-footer>
-
 </div>
 
 

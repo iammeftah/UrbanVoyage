@@ -94,6 +94,7 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
     this.loadSchedules();
     this.loadStatistics();
     this.initializeGoogleMaps();
+    this.loadReservations();
   }
 
   ngAfterViewInit(): void {
@@ -524,15 +525,22 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
   }
 
   loadReservations(): void {
+    console.log("loadReservations method triggered!");
     this.reservationService.getReservations().subscribe({
       next: (reservations) => {
-        this.reservations = reservations;
-        this.cdr.detectChanges();
+        console.log("Received reservations:", JSON.stringify(reservations, null, 2));
+        this.reservations = reservations.map(reservation => {
+          console.log("Processing reservation:", reservation);
+          return {
+            ...reservation,
+            userID: reservation.userId || 'N/A',
+            routeID: reservation.routeId || 'N/A'
+          };
+        });
+        console.log("After processing, this.reservations:", JSON.stringify(this.reservations, null, 2));
       },
       error: (error) => {
         console.error('Error loading reservations:', error);
-        this.message = 'Error loading reservations: ' + error.message ;
-        this.messageType="error";
       }
     });
   }

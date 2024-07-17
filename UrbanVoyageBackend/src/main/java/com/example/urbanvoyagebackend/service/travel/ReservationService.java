@@ -4,6 +4,7 @@ package com.example.urbanvoyagebackend.service.travel;
 import com.example.urbanvoyagebackend.entity.travel.Reservation;
 import com.example.urbanvoyagebackend.entity.users.User;
 import com.example.urbanvoyagebackend.repository.travel.ReservationRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ public class ReservationService {
     }
 
     public List<Reservation> getUserReservations(User user) {
+        System.out.println("ReservationService: Reservertion found (" + user.getReservations() + ")");
         return reservationRepository.findByUser(user);
     }
 
@@ -28,8 +30,12 @@ public class ReservationService {
     }
 
 
+
     public List<Reservation> getAllReservations() {
-        return reservationRepository.findAll();
+        System.out.println("ReservationService: getAllReservations method called");
+        List<Reservation> reservations = reservationRepository.findAll();
+        System.out.println("ReservationService: Number of reservations found: " + reservations.size());
+        return reservations;
     }
 
     public Reservation updateReservationStatus(Long id, String status) {

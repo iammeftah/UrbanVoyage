@@ -1,6 +1,7 @@
 package com.example.urbanvoyagebackend.entity.users;
 
 import com.example.urbanvoyagebackend.entity.travel.Reservation;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,6 +37,8 @@ public abstract class User {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles = new HashSet<>();
 
+
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Reservation> reservations = new HashSet<>();
 

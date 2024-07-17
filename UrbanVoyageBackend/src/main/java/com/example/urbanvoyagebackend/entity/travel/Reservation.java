@@ -2,6 +2,7 @@ package com.example.urbanvoyagebackend.entity.travel;
 
 
 import com.example.urbanvoyagebackend.entity.users.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.Date;
 
@@ -14,11 +15,14 @@ public class Reservation {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties("reservations")
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "route_id", nullable = false)
+    @JsonIgnoreProperties("reservations")
     private Route route;
+
 
     @Column(nullable = false)
     private Date reservationDate;
