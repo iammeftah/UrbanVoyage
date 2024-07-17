@@ -2,9 +2,6 @@
   <app-header></app-header>
 
   <app-carousel></app-carousel>
-
-
-
   <div class="flex-grow bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText">
     <div class="flex justify-center gap-16 w-full px-4 py-8 sm:px-6 lg:px-32 ">
       <!-- Find ur next text -->
@@ -153,7 +150,7 @@
 
 
       <!-- No routes found message -->
-      <div *ngIf="searchPerformed && noRoutesFound" class="mt-8 text-center">
+      <div *ngIf="searchPerformed && noRoutesFound" data-aos="fade-left" class="mt-8 text-center">
         <p>No routes found for the selected cities and date.</p>
       </div>
     </div>
