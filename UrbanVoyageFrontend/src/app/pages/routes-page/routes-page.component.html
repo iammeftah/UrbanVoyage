@@ -1,147 +1,121 @@
 <div class="flex flex-col min-h-screen">
   <app-header></app-header>
 
-  <!-- Carousel khas tkon tahya f component bohdha -->
   <app-carousel></app-carousel>
 
-  <div class="flex-grow w-full px-4 py-8 sm:px-6 lg:px-32 bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText">
-    <div class="mb-8" data-aos="fade-up">
-      <h1 class="text-3xl font-bold mb-2">Find your next trip</h1>
-      <p class="text-gray-600 dark:text-gray-300">Search for autocar routes to your destination.</p>
-    </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm" data-aos="fade-up">
-      <form class="p-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <!-- Departure Location -->
-        <div>
-          <label class="text-sm font-medium mb-1 block" for="departureCity">
-            Departure
-          </label>
-          <select id="departureCity" [(ngModel)]="departureCity" name="departureCity" class="pr-2 flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
-            <option value="">Select Departure City</option>
-            <option *ngFor="let location of locations" [value]="location.name">{{ location.name }}</option>
-          </select>
 
-        </div>
-        <!-- Destination Location -->
-        <div>
-          <label class="text-sm font-medium mb-1 block" for="arrivalCity">
-            Destination
-          </label>
-          <select id="arrivalCity" [(ngModel)]="arrivalCity" name="arrivalCity" class="pr-2 flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
-            <option value="">Select Arrival City</option>
-            <option *ngFor="let location of locations" [value]="location.name">{{ location.name }}</option>
-          </select>
-        </div>
-        <!-- Trip Type: One-Way or Round Trip -->
-        <div class="mb-6">
-          <label class="block text-sm font-medium mb-1">Trip Type</label>
-          <div class="flex justify-around bg-white border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg w-full md:w-fit relative">
-            <div class="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-t from-cyan-600 to-cyan-500 rounded-md transition-all duration-300 ease-in-out"
-                 [ngStyle]="{'transform': isOneWay ? 'translateX(0)' : 'translateX(100%)'}">
+  <div class="flex-grow bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText">
+    <div class="flex justify-center gap-16 w-full px-4 py-8 sm:px-6 lg:px-32 ">
+      <!-- Find ur next text -->
+      <div class="mb-8" data-aos="fade-up">
+        <h1 class="text-3xl font-bold mb-2">Find your next trip</h1>
+        <p class="text-gray-600 dark:text-gray-300">Search for autocar routes to your destination.</p>
+      </div>
+
+      <!-- Route picker card -->
+      <div class="bg-white dark:bg-transparent rounded-lg shadow-sm w-1/2 " data-aos="fade-up">
+        <form class="p-6 grid grid-cols-1 ">
+          <div class="flex flex-col gap-4 items-center justify-center w-full">
+            <div class="grid grid-cols-1 w-full">
+
+              <div class="relative z-50">
+                <label class="text-sm font-medium mb-1 block" for="arrivalCity">
+                  Travel Date
+                </label>
+                <button
+                  (click)="openDatePicker()"
+                  class="w-full px-3 py-2 text-left border border-gray-300 dark:border-gray-600 rounded-md focus:ring-cyan-500 focus:border-cyan-500 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 flex items-center justify-between"
+                >
+                  <span>{{ travelDate | date:'mediumDate' }}</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </button>
+
+                <!-- Custom Date Picker -->
+                <div *ngIf="showDatePicker" class="absolute z-30 mt-1 w-64 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700">
+                  <div class="p-2">
+                    <div class="flex justify-between items-center mb-2">
+                      <button (click)="prevMonth()" class="text-cyan-600 hover:text-cyan-700">&lt;</button>
+                      <span>{{ currentMonth | date:'MMMM yyyy' }}</span>
+                      <button (click)="nextMonth()" class="text-cyan-600 hover:text-cyan-700">&gt;</button>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-center">
+                      <div *ngFor="let day of daysOfWeek" class="text-gray-500 text-xs font-medium">
+                        {{ day }}
+                      </div>
+                      <ng-container *ngFor="let day of calendarDays">
+                        <div
+                          *ngIf="day !== 0"
+                          (click)="selectDate(day)"
+                          [ngClass]="{
+                'bg-cyan-100 dark:bg-cyan-800': isSelectedDate(day),
+                'text-gray-300 dark:text-gray-600': !isCurrentMonth(day),
+                'hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer': isCurrentMonth(day)
+              }"
+                          class="p-1 text-sm rounded-full"
+                        >
+                          {{ day }}
+                        </div>
+                        <div *ngIf="day === 0"></div>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <button class="px-6 py-2 h-10 rounded-md transition-colors relative z-10"
-                    [ngClass]="{'text-white': isOneWay, 'text-gray-500': !isOneWay}"
-                    (click)="isOneWay = true">One-Way</button>
-            <button class="px-6 py-2 h-10 rounded-md transition-colors ml-1 relative z-10"
-                    [ngClass]="{'text-white': !isOneWay, 'text-gray-500': isOneWay}"
-                    (click)="isOneWay = false">Round Trip</button>
+
+            <div class="flex flex-row gap-4 w-full">
+              <!-- Departure Location -->
+              <div class="w-full">
+                <label class="text-sm font-medium mb-1 block" for="departureCity">
+                  Departure
+                </label>
+                <select id="departureCity" [(ngModel)]="departureCity" name="departureCity" class="pr-2 flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+                  <option value="">Select Departure City</option>
+                  <option *ngFor="let location of locations" [value]="location.name">{{ location.name }}</option>
+                </select>
+              </div>
+              <!-- Destination Location -->
+              <div class="w-full">
+                <label class="text-sm font-medium mb-1 block" for="arrivalCity">
+                  Destination
+                </label>
+                <select id="arrivalCity" [(ngModel)]="arrivalCity" name="arrivalCity" class="pr-2 flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+                  <option value="">Select Arrival City</option>
+                  <option *ngFor="let location of locations" [value]="location.name">{{ location.name }}</option>
+                </select>
+              </div>
+            </div>
+
           </div>
-        </div>
+
+          <!-- Travel Date and Return Date -->
 
 
-        <!-- Travel Date and Return Date -->
 
-        <div class="grid grid-cols-1  gap-4 mb-6">
-          <label for="travel-date" class="block text-sm font-medium mb-1">Travel Date</label>
-          <input [(ngModel)]="travelDate" name="travelDate" type="date" id="travel-date" class="w-full h-10 px-3 py-2 border border-gray-300 dark:border-gray-600 cursor-pointer bg-white dark:bg-gray-700 rounded-md focus:ring-cyan-500 focus:border-cyan-500 custom-date-input">
-        </div>
-        <div class="grid grid-cols-1  gap-4 mb-6" [ngClass]="{'hidden': isOneWay}">
-          <label for="return-date" class="block text-sm font-medium mb-1">Return Date</label>
-          <input type="date" id="return-date" class="w-full h-10 px-3 py-2 border border-gray-300 dark:border-gray-600 cursor-pointer bg-white dark:bg-gray-700 rounded-md focus:ring-cyan-500 focus:border-cyan-500 custom-date-input">
-        </div>
-        <!-- Number of Travelers (Adults / Children) -->
-        <div class="sm:col-span-3 w-full md:w-2/3">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="text-sm font-medium mb-1 block" for="adults">
-                Adults
-              </label>
-              <input
-                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
-                id="adults"
-                type="number"
-                min="1"
-                placeholder="Number of adults"
-              />
-            </div>
-            <div>
-              <label class="text-sm font-medium mb-1 block" for="children">
-                Children
-              </label>
-              <input
-                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
-                id="children"
-                type="number"
-                min="0"
-                placeholder="Number of children"
-              />
-            </div>
+          <!-- Search Button -->
+          <div class="w-full mt-4 flex justify-end sm:col-span-3" data-aos="fade-left">
+            <button
+              (click)="searchRoutes()"
+              class="inline-flex items-center justify-center rounded-md bg-cyan-600 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-gray-900"
+              type="submit"
+            >
+              Search
+            </button>
           </div>
-        </div>
-        <!-- Pet Option -->
-        <div class="mb-6">
-          <label class="block text-sm font-medium mb-1">Traveling with a Pet?</label>
-          <div class="flex border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg w-fit relative">
-            <div class="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-t from-cyan-600 to-cyan-500 rounded-md transition-all duration-300 ease-in-out"
-                 [ngStyle]="{'transform': travelingWithPet ? 'translateX(0)' : 'translateX(100%)'}">
-            </div>
-            <button class="px-4 py-2 h-10 rounded-md transition-colors relative z-10"
-                    [ngClass]="{'text-white': travelingWithPet, 'text-gray-500': !travelingWithPet}"
-                    (click)="travelingWithPet = true">Yes</button>
-            <button class="px-4 py-2 h-10 rounded-md transition-colors ml-1 relative z-10"
-                    [ngClass]="{'text-white': !travelingWithPet, 'text-gray-500': travelingWithPet}"
-                    (click)="travelingWithPet = false">No</button>
-          </div>
-        </div>
-        <!-- Search Button -->
-        <div class="w-full flex justify-end sm:col-span-3" data-aos="fade-left">
-          <button
-            (click)="searchRoutes()"
-            class="inline-flex items-center justify-center rounded-md bg-cyan-600 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-gray-900"
-            type="submit"
-          >
-            Search
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
+
+
+
+      <!-- Rest of the content remains unchanged -->
+
+
     </div>
-
-    <!-- Rest of the content remains unchanged -->
-
-    <!-- Loading indicator -->
-    <div *ngIf="isLoading" class="mt-8 text-center">
-      <p>Loading...</p>
-    </div>
-
-    <!-- Error message -->
-    <div *ngIf="errorMessage" class="mt-8 text-center text-red-500">
-      {{ errorMessage }}
-    </div>
-
-    <!-- No routes found message -->
-    <div *ngIf="searchPerformed && noRoutesFound" class="mt-8 text-center">
-      <p>No routes found for the selected cities and date.</p>
-    </div>
-
-
-
-
-
-
-
     <!-- Schedules list -->
-    <div *ngIf="searchPerformed && !isLoading" class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div *ngIf="searchPerformed && !isLoading" class="relative z-0 mt-8 w-full px-32 flex justify-content grid grid-cols-1 md:grid-cols-2 gap-6">
       <div *ngFor="let schedule of schedules" class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm" data-aos="fade-up">
         <div class="p-6 grid grid-cols-2 gap-4">
           <div>
@@ -169,8 +143,20 @@
           </div>
         </div>
       </div>
-    </div>
+      <!-- Loading indicator -->
+      <div *ngIf="isLoading" class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-gray-200 bg-opacity-20 backdrop-blur-lg z-50">
+        <app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
+      </div>
 
+      <!-- Error message -->
+      <app-message [message]="message" [type]="messageType"></app-message>
+
+
+      <!-- No routes found message -->
+      <div *ngIf="searchPerformed && noRoutesFound" class="mt-8 text-center">
+        <p>No routes found for the selected cities and date.</p>
+      </div>
+    </div>
   </div>
 
   <app-footer></app-footer>

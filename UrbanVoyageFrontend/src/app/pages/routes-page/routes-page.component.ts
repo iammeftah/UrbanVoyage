@@ -26,12 +26,16 @@ export class RoutesPageComponent implements OnInit {
   travelingWithPet: boolean = false;
   departureCity: string = '';
   arrivalCity: string = '';
-  travelDate: string = '';
+
   schedules: Schedule[] = [];
   noRoutesFound: boolean = false;
   isLoading: boolean = false;
   errorMessage: string = '';
   searchPerformed: boolean = false;
+
+  message:string | null = null ;
+  messageType: 'success' | 'error' = 'success';
+
 
   locations: AgencyLocation[] = [
     { name: 'Casablanca', address: '123 Avenue Mohammed V, Casablanca', lat: 33.5731, lng: -7.5898 },
@@ -43,7 +47,22 @@ export class RoutesPageComponent implements OnInit {
     { name: 'Meknes', address: '234 Avenue des F.A.R., Meknes', lat: 33.8935, lng: -5.5364 },
     { name: 'Oujda', address: '543 Avenue Mohammed V, Oujda', lat: 34.6819, lng: -1.9086 },
     { name: 'Chefchaouen', address: '876 Place Outa el Hammam, Chefchaouen', lat: 35.1688, lng: -5.2688 },
-    { name: 'Essaouira', address: '109 Avenue de l\'Istiqlal, Essaouira', lat: 31.5085, lng: -9.7595 }
+    { name: 'Essaouira', address: '109 Avenue de l\'Istiqlal, Essaouira', lat: 31.5085, lng: -9.7595 },
+    { name: 'Tetouan', address: '123 Avenue Moulay El Abbas, Tetouan', lat: 35.5770, lng: -5.3684 },
+    { name: 'Nador', address: '456 Rue Ibn Rochd, Nador', lat: 35.1686, lng: -2.9335 },
+    { name: 'El Jadida', address: '789 Boulevard Mohammed VI, El Jadida', lat: 33.2540, lng: -8.5060 },
+    { name: 'Kenitra', address: '321 Avenue Mohamed Diouri, Kenitra', lat: 34.2610, lng: -6.5802 },
+    { name: 'Safi', address: '567 Rue Oued Cherrat, Safi', lat: 32.2994, lng: -9.2372 },
+    { name: 'Beni Mellal', address: '890 Avenue Hassan II, Beni Mellal', lat: 32.3372, lng: -6.3498 },
+    { name: 'Laayoune', address: '234 Boulevard Mekka, Laayoune', lat: 27.1253, lng: -13.1625 },
+    { name: 'Dakhla', address: '543 Rue de la Dakhla, Dakhla', lat: 23.6847, lng: -15.9563 },
+    { name: 'Al Hoceima', address: '876 Rue Mohamed Zerktouni, Al Hoceima', lat: 35.2517, lng: -3.9372 },
+    { name: 'Taroudant', address: '109 Avenue Moulay Ismail, Taroudant', lat: 30.4700, lng: -8.8760 },
+    { name: 'Guelmim', address: '123 Avenue des F.A.R., Guelmim', lat: 28.9864, lng: -10.0571 },
+    { name: 'Sidi Ifni', address: '456 Rue de la Plage, Sidi Ifni', lat: 29.3808, lng: -10.1723 },
+    { name: 'Zagora', address: '789 Rue des Oasis, Zagora', lat: 30.3473, lng: -5.8393 },
+    { name: 'Taza', address: '321 Avenue Allal Al Fassi, Taza', lat: 34.2086, lng: -3.9733 },
+    { name: 'Errachidia', address: '567 Rue Moulay Ali Cherif, Errachidia', lat: 31.9315, lng: -4.4247 }
   ];
 
 
@@ -52,7 +71,9 @@ export class RoutesPageComponent implements OnInit {
     private scheduleService: ScheduleService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit() {
+    this.generateCalendar();
+  }
 
   searchRoutes(): void {
     this.isLoading = true;
@@ -115,7 +136,8 @@ export class RoutesPageComponent implements OnInit {
 
   private handleError(error: any): void {
     this.isLoading = false;
-    this.errorMessage = 'An error occurred while fetching data. Please try again.';
+    this.message = "An error occurred while fetching data. Please try again.";
+    this.messageType="error";
     console.error('Error:', error);
   }
 
@@ -123,6 +145,65 @@ export class RoutesPageComponent implements OnInit {
     const [hours, minutes] = duration.split(':');
     return `${hours}h ${minutes}min`;
   }
+
+
+
+  travelDate: Date = new Date();
+  showDatePicker: boolean = false;
+  currentMonth: Date = new Date();
+  calendarDays: number[] = [];
+  daysOfWeek: string[] = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+  openDatePicker() {
+    this.showDatePicker = !this.showDatePicker;
+    if (this.showDatePicker) {
+      this.currentMonth = new Date(this.travelDate);
+      this.generateCalendar();
+    }
+  }
+
+  prevMonth() {
+    this.currentMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() - 1, 1);
+    this.generateCalendar();
+  }
+
+  nextMonth() {
+    this.currentMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() + 1, 1);
+    this.generateCalendar();
+  }
+
+  selectDate(day: number) {
+    if (this.isCurrentMonth(day)) {
+      this.travelDate = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), day);
+      this.showDatePicker = false;
+    }
+  }
+
+  isSelectedDate(day: number): boolean {
+    return this.travelDate.getDate() === day &&
+      this.travelDate.getMonth() === this.currentMonth.getMonth() &&
+      this.travelDate.getFullYear() === this.currentMonth.getFullYear();
+  }
+
+  isCurrentMonth(day: number): boolean {
+    return day !== 0;
+  }
+
+  generateCalendar() {
+    const year = this.currentMonth.getFullYear();
+    const month = this.currentMonth.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    this.calendarDays = [];
+    for (let i = 0; i < firstDay; i++) {
+      this.calendarDays.push(0);
+    }
+    for (let i = 1; i <= daysInMonth; i++) {
+      this.calendarDays.push(i);
+    }
+  }
+
 }
 
 
