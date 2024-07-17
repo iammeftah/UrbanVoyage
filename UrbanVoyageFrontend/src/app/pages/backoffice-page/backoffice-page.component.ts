@@ -525,19 +525,17 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
   }
 
   loadReservations(): void {
-    console.log("loadReservations method triggered!");
     this.reservationService.getReservations().subscribe({
       next: (reservations) => {
-        console.log("Received reservations:", JSON.stringify(reservations, null, 2));
+        console.log('Received reservations:', reservations);
         this.reservations = reservations.map(reservation => {
-          console.log("Processing reservation:", reservation);
+          console.log('Processing reservation:', reservation);
           return {
             ...reservation,
-            userID: reservation.userId || 'N/A',
-            routeID: reservation.routeId || 'N/A'
+            id: reservation.id || reservation.reservationID // Check if the ID is under a different property name
           };
         });
-        console.log("After processing, this.reservations:", JSON.stringify(this.reservations, null, 2));
+        console.log('Processed reservations:', this.reservations);
       },
       error: (error) => {
         console.error('Error loading reservations:', error);
@@ -545,20 +543,20 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
     });
   }
 
-  updateReservationStatus(reservationId: number, newStatus: string): void {
-    this.reservationService.updateReservationStatus(reservationId, newStatus).subscribe({
+  updateReservationStatus(reservation: Reservation, newStatus: string): void {
+    this.reservationService.updateReservationStatus(reservation.reservationID, newStatus).subscribe({
       next: (updatedReservation) => {
+        console.log('Reservation updated successfully:', updatedReservation);
+        // Update the reservation in your local array
         const index = this.reservations.findIndex(r => r.reservationID === updatedReservation.reservationID);
         if (index !== -1) {
           this.reservations[index] = updatedReservation;
         }
-        this.message = 'Reservation status updated successfully.' ;
-        this.messageType="success";
+        this.showMessage(`Reservation ${newStatus.toLowerCase()} successfully`, 'success');
       },
       error: (error) => {
-        console.error('Error updating reservation status:', error);
-        this.message = 'Error updating reservation status: ' + error.message ;
-        this.messageType="error";
+        console.error('Error updating reservation:', error);
+        this.showMessage(error.message, 'error');
       }
     });
   }

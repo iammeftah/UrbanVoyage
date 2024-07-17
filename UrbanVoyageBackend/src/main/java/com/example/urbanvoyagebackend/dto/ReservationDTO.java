@@ -7,7 +7,7 @@ import com.example.urbanvoyagebackend.entity.users.User;
 import java.util.Date;
 
 public class ReservationDTO {
-    private Long id;
+    private Long reservationID;
     private Date reservationDate;
     private Reservation.ReservationStatus status;
     private Long userId;
@@ -21,20 +21,20 @@ public class ReservationDTO {
     public ReservationDTO() {
     }
 
-    public ReservationDTO(Long id, Date reservationDate, Reservation.ReservationStatus status, Long userId, Long routeId) {
-        this.id = id;
+    public ReservationDTO(Long reservationID, Date reservationDate, Reservation.ReservationStatus status, Long userId, Long routeId) {
+        this.reservationID = reservationID;
         this.reservationDate = reservationDate;
         this.status = status;
         this.userId = userId;
         this.routeId = routeId;
     }
 
-    public Long getId() {
-        return id;
+    public Long getReservationID() {
+        return reservationID;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setReservationID(Long reservationID) {
+        this.reservationID = reservationID;
     }
 
     public Date getReservationDate() {

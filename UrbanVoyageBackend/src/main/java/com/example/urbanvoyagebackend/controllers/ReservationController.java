@@ -54,7 +54,7 @@ public class ReservationController {
     private ReservationDTO convertToDTO(Reservation reservation) {
         System.out.println("ReservationController: Converting reservation to DTO: " + reservation.getReservationID());
         ReservationDTO dto = new ReservationDTO();
-        dto.setId(reservation.getReservationID());
+        dto.setReservationID(reservation.getReservationID());
         dto.setReservationDate(reservation.getReservationDate());
         dto.setUserId(reservation.getUser().getUserID());
         dto.setUser(reservation.getUser());
@@ -65,7 +65,7 @@ public class ReservationController {
         dto.setArrival(reservation.getRoute().getArrivalCity());
 
 
-        System.out.println("ReservationDTO: ID=" + dto.getId()
+        System.out.println("ReservationDTO: ID=" + dto.getReservationID()
                 + ", Date=" + dto.getReservationDate()
                 + ", Status=" + dto.getStatus()
                 + ", UserID=" + dto.getUserId()
@@ -90,9 +90,19 @@ public class ReservationController {
     }
 
     @PatchMapping("/{id}/status")
-    public Reservation updateReservationStatus(@PathVariable Long id, @RequestBody String status) {
-        return reservationService.updateReservationStatus(id, status);
+    public ResponseEntity<?> updateReservationStatus(@PathVariable Long id, @RequestBody String status) {
+        try {
+            Reservation updatedReservation = reservationService.updateReservationStatus(id, status);
+            return ResponseEntity.ok(updatedReservation);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while updating the reservation.");
+        }
     }
+
     @PostMapping
     public Reservation createReservation(@RequestBody Reservation reservation) {
         return reservationService.createReservation(reservation);

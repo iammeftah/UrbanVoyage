@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, tap, throwError } from 'rxjs';
+import { Reservation } from '../models/reservation.model';
 
 
 
@@ -30,8 +31,21 @@ export class ReservationService {
     );
   }
 
-  updateReservationStatus(id: number, status: string): Observable<any> {
-    return this.http.patch<any>(`${this.apiUrl}/${id}/status`, { status });
+  updateReservationStatus(reservationID: number, newStatus: string): Observable<Reservation> {
+    return this.http.patch<Reservation>(`${this.apiUrl}/${reservationID}/status`, newStatus).pipe(
+      catchError(error => {
+        if (error.status === 409) {
+          // Conflict - invalid status change
+          return throwError(() => new Error(error.error));
+        } else if (error.status === 400) {
+          // Bad request - invalid status
+          return throwError(() => new Error(error.error));
+        }
+        // Other errors
+        console.error('Error updating reservation status:', error);
+        return throwError(() => new Error('Failed to update reservation status'));
+      })
+    );
   }
 
 

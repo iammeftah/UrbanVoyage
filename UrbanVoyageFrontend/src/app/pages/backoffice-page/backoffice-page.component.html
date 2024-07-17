@@ -47,14 +47,16 @@
           <table class="w-full caption-bottom text-sm rounded-lg overflow-hidden">
             <thead class="bg-gray-50 dark:bg-gray-800">
             <tr class="transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
-              <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Departure City</th>
-              <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Arrival City</th>
-              <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Distance (km)</th>
-              <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Actions</th>
+              <th class=" h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Route ID</th>
+              <th class=" h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Departure City</th>
+              <th class=" h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Arrival City</th>
+              <th class=" h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Distance (km)</th>
+              <th class=" h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Actions</th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let route of routes; let last = last" class="transition-colors hover:bg-gray-100 dark:hover:bg-gray-600" [ngClass]="{'border-b': !last}">
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">R-{{ route.routeID }}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ route.departureCity }}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ route.arrivalCity }}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ route.distance | number:'1.0-0' }}</td>
@@ -109,7 +111,7 @@
             </thead>
             <tbody class="[&_tr:last-child]:border-0">
             <tr *ngFor="let schedule of schedules" class="transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 flex items-center justify-center gap-8">{{ schedule.route.departureCity }} <i class='bx bx-sort rotate-90 text-xl' ></i> {{ schedule.route.arrivalCity }}</td>
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 flex items-center justify-center gap-8">{{ schedule.route.departureCity }} <i class='bx bx-sort rotate-90 text-xl text-cyan-500' ></i> {{ schedule.route.arrivalCity }}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ schedule.departureTime | date:'medium' }}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ schedule.arrivalTime | date:'medium' }}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ schedule.availableSeats}}</td>
@@ -132,6 +134,7 @@
           <table class="w-full caption-bottom text-sm rounded-lg overflow-hidden">
             <thead class="bg-gray-50 dark:bg-gray-800">
             <tr class="w-full h-10 transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+              <th class="px-4 py-2">User ID</th>
               <th class="px-4 py-2">User</th>
               <th class="px-4 py-2">Route</th>
               <th class="px-4 py-2">Reservation Date</th>
@@ -141,22 +144,47 @@
             </thead>
             <tbody>
             <tr *ngFor="let reservation of reservations" class="transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ reservation.user.userID }}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ reservation.user.username }}</td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 flex items-center justify-center gap-8">{{ reservation.route.departureCity }} <i class='bx bx-sort rotate-90 text-xl' ></i> {{ reservation.route.arrivalCity }}</td>
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 flex items-center justify-center gap-8">{{ reservation.route.departureCity }} <i class='bx bx-sort rotate-90 text-xl text-cyan-500' ></i> {{ reservation.route.arrivalCity }}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ reservation.reservationDate | date:'mediumDate' }}</td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                  <span class="status-pill px-2 py-1 rounded-md" [ngClass]="{
-                    'bg-green-700 text-white': reservation.status === 'CONFIRMED',
-                    'bg-yellow-700 text-white': reservation.status === 'PENDING',
-                    'bg-red-600 text-white': reservation.status === 'CANCELLED'
-                  }">
+              <td class="align-middle flex justify-center items-center [&:has([role=checkbox])]:pr-0">
+                <span class="inline-flex items-center justify-center rounded-md px-2 py-1 font-medium text-white shadow transition-colors  disabled:opacity-50 duration-300" [ngClass]="{
+                  'bg-green-600 dark:bg-green-700 !text-white': reservation.status === 'CONFIRMED',
+                  'bg-yellow-600 dark:bg-yellow-700 !text-white': reservation.status === 'PENDING',
+                  'bg-red-600 dark:bg-red-700 !text-white': reservation.status === 'CANCELLED'
+                }">
+                  <ng-container class="mr-1" *ngIf="reservation.status === 'CONFIRMED'">
+                    <i class='bx bx-check'></i>
+                  </ng-container>
+                  <ng-container class="mr-1" *ngIf="reservation.status === 'PENDING'">
+                    <i class='bx bx-time-five'></i>
+                  </ng-container>
+                  <ng-container class="mr-1" *ngIf="reservation.status === 'CANCELLED'">
+                    <i class='bx bx-x'></i>
+                  </ng-container>
+                  <span class="ml-1">
                     {{ reservation.status }}
                   </span>
+                </span>
               </td>
+
+
               <td class=" px-4 py-2">
                 <div class="flex flex-row gap-2 items-center justify-center">
-                  <button (click)="updateReservationStatus(reservation.reservationID, 'CONFIRMED')" class="bg-green-600 hover:bg-green-700 inline-flex items-center justify-center rounded-md px-4 py-1 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">Confirm</button>
-                  <button (click)="updateReservationStatus(reservation.reservationID, 'CANCELLED')" class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-1 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-red-500 dark:hover:text-red-600  disabled:opacity-50 duration-300">Cancel</button>
+                  <ng-container [ngSwitch]="reservation.status">
+                    <button *ngSwitchCase="'PENDING'"
+                            (click)="updateReservationStatus(reservation, 'CONFIRMED')"
+                            class="bg-green-600 hover:bg-green-700 inline-flex items-center justify-center rounded-md px-4 py-1 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">
+                      Confirm
+                    </button>
+                    <button *ngSwitchCase="'CONFIRMED'"
+                            (click)="updateReservationStatus(reservation, 'CANCELLED')"
+                            class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-1 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-red-500 dark:hover:text-red-600  disabled:opacity-50 duration-300">
+                      Cancel
+                    </button>
+                    <span class="text-gray-500" *ngSwitchCase="'CANCELLED'">Cancelled</span>
+                  </ng-container>
                 </div>
               </td>
             </tr>

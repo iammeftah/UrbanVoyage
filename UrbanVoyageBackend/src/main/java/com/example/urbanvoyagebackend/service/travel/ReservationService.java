@@ -38,10 +38,32 @@ public class ReservationService {
         return reservations;
     }
 
-    public Reservation updateReservationStatus(Long id, String status) {
+    @Transactional
+    public Reservation updateReservationStatus(Long id, String newStatus) {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Reservation not found"));
-        reservation.setStatus(Reservation.ReservationStatus.valueOf(status));
+
+        Reservation.ReservationStatus currentStatus = reservation.getStatus();
+        Reservation.ReservationStatus updatedStatus = Reservation.ReservationStatus.valueOf(newStatus);
+
+        switch (currentStatus) {
+            case PENDING:
+                if (updatedStatus != Reservation.ReservationStatus.CONFIRMED) {
+                    throw new IllegalStateException("Pending reservations can only be confirmed.");
+                }
+                break;
+            case CONFIRMED:
+                if (updatedStatus != Reservation.ReservationStatus.CANCELLED) {
+                    throw new IllegalStateException("Confirmed reservations can only be cancelled.");
+                }
+                break;
+            case CANCELLED:
+                throw new IllegalStateException("Cancelled reservations cannot be modified.");
+            default:
+                throw new IllegalStateException("Invalid current status.");
+        }
+
+        reservation.setStatus(updatedStatus);
         return reservationRepository.save(reservation);
     }
 
