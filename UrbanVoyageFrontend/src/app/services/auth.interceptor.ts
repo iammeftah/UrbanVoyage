@@ -1,13 +1,13 @@
 // auth.interceptor.ts
 
-import { Injectable } from '@angular/core';
+import { forwardRef, Inject, Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService) {}
+  constructor(@Inject(forwardRef(() => AuthService)) private authService: AuthService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.authService.getToken();
@@ -21,5 +21,3 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(request);
   }
 }
-
-

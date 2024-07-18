@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Schedule } from 'src/app/models/schedule.model';
 import { SharedDataService } from 'src/app/services/shared-data.service';
+import {ReservationService} from "../../services/reservation.service";
+import {AuthService} from "../../services/auth.service";
+import {of, switchMap, tap} from "rxjs";
+import {User} from "../../models/user.model";
 
 @Component({
   selector: 'app-booking-page',
@@ -13,6 +17,7 @@ export class BookingPageComponent implements OnInit {
   selectedSeatTypeIndex: number | null = null;
 
   selectedSchedule: Schedule | null = null;
+  bookingUser: User | null = null;
 
   passengerInfo = {
     firstName: '',
@@ -29,10 +34,17 @@ export class BookingPageComponent implements OnInit {
   };
 
 
-  constructor(private router: Router, private sharedDataService: SharedDataService) {}
+  constructor(
+    private router: Router,
+    private sharedDataService: SharedDataService,
+    private reservationService: ReservationService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.selectedSchedule = this.sharedDataService.getSelectedSchedule();
+    this.bookingUser = this.sharedDataService.getBookingUser();
+
     if (!this.selectedSchedule) {
       console.log('No schedule selected, redirecting to routes page');
       this.router.navigate(['/routes']);
@@ -85,6 +97,9 @@ export class BookingPageComponent implements OnInit {
   proceedToPayment() {
     console.log("Proceed to payment")
   }
+
+
+
 
 
 }

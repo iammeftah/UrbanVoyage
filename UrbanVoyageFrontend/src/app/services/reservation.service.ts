@@ -49,4 +49,15 @@ export class ReservationService {
   }
 
 
+  createReservation(reservationDTO: any): Observable<any> {
+    console.log('Creating reservation:', reservationDTO);
+    return this.http.post<any>(`${this.apiUrl}/create`, reservationDTO).pipe(
+      tap(response => console.log('Reservation creation response:', response)),
+      catchError(error => {
+        console.error('Error creating reservation:', error);
+        return throwError(error);
+      })
+    );
+  }
+
 }

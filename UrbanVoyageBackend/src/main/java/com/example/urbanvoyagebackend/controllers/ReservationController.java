@@ -103,10 +103,19 @@ public class ReservationController {
         }
     }
 
-    @PostMapping
-    public Reservation createReservation(@RequestBody Reservation reservation) {
-        return reservationService.createReservation(reservation);
+    @PostMapping("/create")
+    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationDTO reservationDTO) {
+        try {
+            Reservation newReservation = reservationService.createReservation(reservationDTO);
+            System.out.println("ReservationController: Reservation created");
+            return ResponseEntity.ok(newReservation);
+        } catch (Exception e) {
+            System.out.println("ReservationController: Reservation creation fails");
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteReservation(@PathVariable Long id) {

@@ -11,6 +11,15 @@ public class UserDTO {
     private String password;
     private String verificationCode;
 
+    public UserDTO(){}
+
+    public UserDTO(Long userID, String email, String firstName, String lastName) {
+        this.userID = userID;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     // Getters and setters
     public String getFirstName() {
         return firstName;
@@ -62,4 +71,12 @@ public class UserDTO {
 
     public String getVerificationCode() {return verificationCode;}
     public void setVerificationCode(String verificationCode) {this.verificationCode = verificationCode; }
+
+    public Long getUserID() {
+        return userID;
+    }
+
+    public void setUserID(Long userID) {
+        this.userID = userID;
+    }
 }

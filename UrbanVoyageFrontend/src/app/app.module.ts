@@ -28,6 +28,7 @@ import { LoadingSpinnerComponent } from './objects/loading-spinner/loading-spinn
 import { BackofficePageComponent } from './pages/backoffice-page/backoffice-page.component';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { UnauthorizedPageComponent } from './pages/unauthorized-page/unauthorized-page.component';
+import {AuthService} from "./services/auth.service";
 
 export function initializeApp() {
   return () => {
@@ -72,11 +73,14 @@ export function initializeApp() {
     RouterOutlet,
     GoogleMapsModule
   ],
+
+
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
+      deps: [AuthService],
       multi: true
     },
 

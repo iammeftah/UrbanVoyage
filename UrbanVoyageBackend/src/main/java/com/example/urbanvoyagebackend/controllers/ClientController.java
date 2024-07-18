@@ -1,6 +1,7 @@
 package com.example.urbanvoyagebackend.controllers;
 
 
+import com.example.urbanvoyagebackend.dto.ReservationDTO;
 import com.example.urbanvoyagebackend.entity.travel.Reservation;
 import com.example.urbanvoyagebackend.entity.travel.Schedule;
 import com.example.urbanvoyagebackend.entity.users.User;
@@ -34,10 +35,10 @@ public class ClientController {
     }
 
     @PostMapping("/book")
-    public ResponseEntity<?> bookTicket(@RequestBody Reservation reservation, Authentication authentication) {
+    public ResponseEntity<?> bookTicket(@RequestBody ReservationDTO reservationDTO, Authentication authentication) {
         // Set the user from the authentication object
         // Create the reservation
-        Reservation createdReservation = reservationService.createReservation(reservation);
+        Reservation createdReservation = reservationService.createReservation(reservationDTO);
         return ResponseEntity.ok(createdReservation);
     }
 

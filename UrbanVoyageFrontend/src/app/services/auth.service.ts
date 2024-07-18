@@ -1,23 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {BehaviorSubject, catchError, Observable, throwError} from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-
   private apiUrl = 'http://localhost:8080/api/auth';
+  private currentUserSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private isAdminSubject = new BehaviorSubject<boolean>(this.getStoredAdminStatus());
 
   constructor(private http: HttpClient) {}
-
-  private isAdminSubject = new BehaviorSubject<boolean>(this.getStoredAdminStatus());
 
   private getStoredAdminStatus(): boolean {
     return JSON.parse(localStorage.getItem('isAdmin') || 'false');
   }
-
 
   resetAdminStatus() {
     this.setAdminStatus(false);
@@ -36,7 +35,6 @@ export class AuthService {
     return this.getStoredAdminStatus();
   }
 
-
   register(user: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, user).pipe(
       catchError(error => {
@@ -51,22 +49,18 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/signin`, { email, password })
-      .pipe(
-        tap((response: any) => {
-          if (response.token) {
-            localStorage.setItem('token', response.token);
-          }
-        }),
-        catchError((error) => {
-          console.error('Error during login:', error);
-          throw error; // Re-throw the error to be handled by the caller
-        })
-      );
-
+    return this.http.post(`${this.apiUrl}/signin`, { email, password }).pipe(
+      tap((response: any) => {
+        if (response.token) {
+          localStorage.setItem('token', response.token);
+        }
+      }),
+      catchError((error) => {
+        console.error('Error during login:', error);
+        return throwError(error);
+      })
+    );
   }
-
-
 
   logout(): Observable<any> {
     localStorage.removeItem('token');
@@ -74,9 +68,8 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/signout`, {});
   }
 
-
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    return !!this.getToken();
   }
 
   getToken(): string | null {
@@ -92,9 +85,57 @@ export class AuthService {
     );
   }
 
+  getCurrentUserEmail(): string | null {
+    const token = this.getToken();
+    if (token) {
+      try {
+        const decodedToken: any = jwtDecode(token);
+        return decodedToken.sub;
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        return null;
+      }
+    }
+    return null;
+  }
 
+  loadCurrentUser(): void {
+    const email = this.getCurrentUserEmail();
+    if (email) {
+      this.getUserDetails(email).subscribe(
+        user => this.currentUserSubject.next(user),
+        error => console.error('Error loading user details:', error)
+      );
+    }
+  }
 
+  getCurrentUser(): Observable<any> {
+    if (!this.currentUserSubject.getValue()) {
+      this.loadCurrentUser();
+    }
+    return this.currentUserSubject.asObservable();
+  }
 
+  getCurrentUserId(): Observable<number | null> {
+    const email = this.getCurrentUserEmail();
+    if (email) {
+      return this.getUserDetails(email).pipe(
+        map(user => user ? user.userID : null),
+        catchError(error => {
+          console.error('Error getting user details:', error);
+          return of(null);
+        })
+      );
+    }
+    return of(null);
+  }
 
-
+  getUserDetails(email: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/user-details?email=${email}`).pipe(
+      catchError(error => {
+        console.error('Error fetching user details:', error);
+        return throwError(error);
+      })
+    );
+  }
 }

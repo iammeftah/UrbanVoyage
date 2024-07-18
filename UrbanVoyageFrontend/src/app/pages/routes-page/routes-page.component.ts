@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { forkJoin } from 'rxjs';
+import {forkJoin, of, switchMap, tap} from 'rxjs';
 import { Schedule } from 'src/app/models/schedule.model';
 import { Route } from 'src/app/models/route.model';
 import { RouteService } from 'src/app/services/route.service';
@@ -7,6 +7,7 @@ import { ScheduleService } from 'src/app/services/schedule.service';
 import { Router } from '@angular/router';
 import { SharedDataService } from 'src/app/services/shared-data.service';
 import {AuthService} from "../../services/auth.service";
+import {ReservationService} from "../../services/reservation.service";
 
 
 interface AgencyLocation {
@@ -71,10 +72,13 @@ export class RoutesPageComponent implements OnInit {
     { name: 'Errachidia', address: '567 Rue Moulay Ali Cherif, Errachidia', lat: 31.9315, lng: -4.4247 }
   ];
 
+  selectedSchedule: Schedule | null = null;
+
 
   constructor(
     private routeService: RouteService,
     private scheduleService: ScheduleService,
+    private reservationService: ReservationService,
     private router: Router,
     private sharedDataService: SharedDataService,
     private authService: AuthService
@@ -82,6 +86,7 @@ export class RoutesPageComponent implements OnInit {
 
 
   ngOnInit() {
+    this.selectedSchedule = this.sharedDataService.getSelectedSchedule();
     this.generateCalendar();
   }
 
@@ -217,23 +222,60 @@ export class RoutesPageComponent implements OnInit {
 
 
   // route-page.component.ts
-  bookSchedule(schedule: Schedule): void {
-    if (this.authService.isLoggedIn()) {
-      if (schedule) {
-        console.log('route-page: Selected Schedule->', schedule);
-        this.sharedDataService.setSelectedSchedule(schedule);
-        this.router.navigate(['/booking']);
-      } else {
-        console.error('Attempted to book a null schedule');
-      }
-    } else {
+  bookScheduleAndCreateReservation(schedule: Schedule): void {
+    if (!this.authService.isLoggedIn()) {
       this.message = "Please log in to book a trip.";
       this.messageType = "error";
       setTimeout(() => {
         this.router.navigate(['/login']);
       }, 2000);
+      return;
     }
+
+    if (!schedule) {
+      console.error('Attempted to book a null schedule');
+      return;
+    }
+
+    console.log('route-page: Selected Schedule->', schedule);
+    this.sharedDataService.setSelectedSchedule(schedule);
+
+    this.authService.getCurrentUserId().pipe(
+      tap(userId => console.log('User ID:', userId)),
+      switchMap(userId => {
+        if (!userId) {
+          console.error('User not logged in');
+          this.router.navigate(['/login']);
+          return of(null);
+        }
+        const reservationDTO = {
+          userId: userId,
+          routeId: schedule.route.routeID
+        };
+        console.log('Reservation DTO:', reservationDTO);
+        return this.reservationService.createReservation(reservationDTO);
+      })
+    ).subscribe({
+      next: (reservation) => {
+        if (reservation) {
+          console.log('Reservation created:', reservation);
+          this.router.navigate(['/booking']);
+        } else {
+          console.error('No reservation returned');
+          // Optionally navigate to /routes if reservation creation fails
+          // this.router.navigate(['/routes']);
+        }
+      },
+      error: (error) => {
+        console.error('Error creating reservation:', error);
+        // Show an error message to the user
+        // Optionally navigate to /routes if reservation creation fails
+        // this.router.navigate(['/routes']);
+      }
+    });
   }
+
+
 }
 
 

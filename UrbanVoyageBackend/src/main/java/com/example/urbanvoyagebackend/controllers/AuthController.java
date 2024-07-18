@@ -173,4 +173,16 @@ public class AuthController {
         response.put("message", message);
         return response;
     }
+
+    @GetMapping("/user-details")
+    public ResponseEntity<UserDTO> getUserDetails(@RequestParam String email) {
+        User user = userService.findByEmail(email);
+        if (user == null) {
+            System.out.println("AuthController: User not found");
+            return ResponseEntity.notFound().build();
+        }
+        System.out.println("AuthController: User found - " + user.getEmail());
+        UserDTO userDTO = new UserDTO(user.getUserID(), user.getEmail(), user.getFirstName(), user.getLastName());
+        return ResponseEntity.ok(userDTO);
+    }
 }

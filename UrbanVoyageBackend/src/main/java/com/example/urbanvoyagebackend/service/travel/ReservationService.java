@@ -1,13 +1,18 @@
 package com.example.urbanvoyagebackend.service.travel;
 
 
+import com.example.urbanvoyagebackend.dto.ReservationDTO;
 import com.example.urbanvoyagebackend.entity.travel.Reservation;
+import com.example.urbanvoyagebackend.entity.travel.Route;
 import com.example.urbanvoyagebackend.entity.users.User;
 import com.example.urbanvoyagebackend.repository.travel.ReservationRepository;
+import com.example.urbanvoyagebackend.repository.travel.RouteRepository;
+import com.example.urbanvoyagebackend.repository.users.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -15,7 +20,28 @@ public class ReservationService {
     @Autowired
     private ReservationRepository reservationRepository;
 
-    public Reservation createReservation(Reservation reservation) {
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RouteRepository routeRepository;
+
+
+    @Transactional
+    public Reservation createReservation(ReservationDTO reservationDTO) {
+        User user = userRepository.findById(reservationDTO.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Route route = routeRepository.findById(reservationDTO.getRouteId())
+                .orElseThrow(() -> new RuntimeException("Route not found"));
+
+        Reservation reservation = new Reservation();
+        reservation.setUser(user);
+        reservation.setRoute(route);
+        reservation.setReservationDate(new Date());
+        reservation.setStatus(Reservation.ReservationStatus.PENDING);
+
+        System.out.println("ReservationService: Reservation created");
+
         return reservationRepository.save(reservation);
     }
 

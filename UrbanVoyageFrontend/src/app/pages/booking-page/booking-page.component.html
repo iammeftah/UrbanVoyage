@@ -12,7 +12,7 @@
         <h1 class="text-2xl font-bold">Book Your Seat</h1>
         <p class="text-muted-foreground text-cyan-600">Select your preferred route and seats.</p>
       </div>
-      <div class="flex flex-row gap-8 w-full">
+      <div class="flex flex-col md:flex-row gap-8 w-full">
         <div class="flex flex-col gap-8 w-full">
           <div data-aos="fade-up" class="rounded-lg bg-white dark:bg-gray-800 text-card-foreground shadow-sm" data-v0-t="card">
             <div class="flex flex-col space-y-1.5 p-6">
@@ -156,10 +156,10 @@
           <div class="flex flex-col space-y-1.5 p-6">
             <h3 class="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight">Booking Summary</h3>
           </div>
-          <div class="p-6 grid gap-4">
+          <div class="p-6 grid gap-4" *ngIf="selectedSchedule; else noSchedule">
             <div class="flex items-center justify-between">
               <div class="text-muted-foreground">Route</div>
-              <div class="font-medium">New York, NY to Los Angeles, CA</div>
+              <div class="font-medium">{{ selectedSchedule.route.departureCity }} to {{ selectedSchedule.route.arrivalCity }}</div>
             </div>
             <div class="flex items-center justify-between">
               <div class="text-muted-foreground">Seat</div>
