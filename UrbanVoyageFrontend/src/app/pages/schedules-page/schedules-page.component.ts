@@ -14,6 +14,8 @@ export class SchedulesPageComponent implements OnInit {
   sortColumn: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
   filterText: string = '';
+  loading: boolean = false;
+
 
   constructor(private scheduleService: ScheduleService) {}
 
@@ -22,13 +24,16 @@ export class SchedulesPageComponent implements OnInit {
   }
 
   loadSchedules() {
+    this.loading=true;
     this.scheduleService.getSchedules().subscribe({
       next: (data) => {
+        this.loading=false;
         this.schedules = data;
         this.filteredSchedules = [...this.schedules];
         this.sortSchedules();
       },
       error: (error) => {
+        this.loading=false;
         console.error('Error fetching schedules:', error);
       }
     });

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, ElementRef, HostListener, Renderer2} from '@angular/core';
 
 @Component({
   selector: 'app-home-page',

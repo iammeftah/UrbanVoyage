@@ -1,6 +1,10 @@
 <div class="flex flex-col min-h-screen">
   <app-header></app-header>
 
+  <div *ngIf="loading" class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-gray-200 bg-opacity-20 backdrop-blur-lg z-50">
+    <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+  </div>
+
   <div class="flex-grow w-full mx-auto px-4 md:px-32 py-8 md:py-12 bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText flex flex-col">
     <div class="flex-grow">
       <div class="flex items-center justify-between mb-6">

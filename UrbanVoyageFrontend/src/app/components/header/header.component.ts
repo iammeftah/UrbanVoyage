@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import {Component, ElementRef, HostListener, Input, Renderer2} from '@angular/core';
 import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
 import { Subscription } from 'rxjs';
@@ -20,7 +20,7 @@ export class HeaderComponent {
   constructor(private authService: AuthService, private router: Router) {
     this.isLoggedIn = this.authService.isLoggedIn();
   }
-  
+
   ngOnInit() {
     this.isAdmin = this.authService.isAdmin();
     this.authService.getAdminStatus().subscribe(status => {
@@ -55,5 +55,8 @@ export class HeaderComponent {
     this.closeSidebar();
     this.logout();
   }
+
+
+
 
 }
