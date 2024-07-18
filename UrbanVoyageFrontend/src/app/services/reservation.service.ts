@@ -60,4 +60,18 @@ export class ReservationService {
     );
   }
 
+  updateReservationSeatType(reservationID: number, newSeatType: string): Observable<Reservation> {
+    return this.http.patch<Reservation>(`${this.apiUrl}/${reservationID}/seatType`, newSeatType).pipe(
+      catchError(error => {
+        if (error.status === 400) {
+          // Bad request - invalid seat type
+          return throwError(() => new Error(error.error));
+        }
+        // Other errors
+        console.error('Error updating reservation seat type:', error);
+        return throwError(() => new Error('Failed to update reservation seat type'));
+      })
+    );
+  }
+
 }

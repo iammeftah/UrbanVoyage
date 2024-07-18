@@ -3,13 +3,14 @@
 import { Injectable } from '@angular/core';
 import { Schedule } from '../models/schedule.model';
 import {User} from "../models/user.model";
+import {Reservation} from "../models/reservation.model";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SharedDataService {
   private selectedSchedule: Schedule | null = null;
-  private bookingUser: User | null = null;
+  private selectedReservation: Reservation | null = null;
 
   setSelectedSchedule(schedule: Schedule) {
     this.selectedSchedule = schedule;
@@ -23,14 +24,16 @@ export class SharedDataService {
     this.selectedSchedule = null;
   }
 
-  setBookingUser(user: User | null): void {
-    this.bookingUser = user;
+  setSelectedReservation(reservation: Reservation) {
+    this.selectedReservation = reservation;
   }
-  getBookingUser():User | null {
-    return this.bookingUser;
+
+  getSelectedReservation(): Reservation | null {
+    return this.selectedReservation;
   }
-  clearBookingUser():void {
-    this.bookingUser = null;
+
+  clearSelectedReservation() {
+    this.selectedReservation = null;
   }
 
 }

@@ -30,6 +30,9 @@ public class Reservation {
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 
+    @Enumerated(EnumType.STRING)
+    private SeatType seatType;
+
     // Constructors, getters, and setters
 
     public Reservation() {}
@@ -39,6 +42,8 @@ public class Reservation {
         this.route = route;
         this.reservationDate = reservationDate;
         this.status = ReservationStatus.PENDING;
+        this.seatType = SeatType.STANDARD;
+
     }
 
     // Getters and setters for all fields
@@ -55,6 +60,10 @@ public class Reservation {
 
     public enum ReservationStatus {
         PENDING, CONFIRMED, CANCELLED
+    }
+
+    public enum SeatType {
+        STANDARD, PREMIUM, VIP
     }
 
 
@@ -96,5 +105,13 @@ public class Reservation {
 
     public void setStatus(ReservationStatus status) {
         this.status = status;
+    }
+
+    public SeatType getSeatType() {
+        return seatType;
+    }
+
+    public void setSeatType(SeatType seatType) {
+        this.seatType = seatType;
     }
 }

@@ -45,19 +45,18 @@
             </div>
           </div>
 
-          <div data-aos="fade-up" data-aos-delay="100" class="rounded-lg h-full  bg-white dark:bg-gray-800 text-card-foreground shadow-sm p-6">
+          <div class="rounded-lg h-full bg-white dark:bg-gray-800 text-card-foreground shadow-sm p-6" aos="fade-up" aos-delay="100">
             <h3 class="text-2xl font-semibold mb-4">Seat Selection</h3>
-            <div class="text-sm text-gray-600 dark:text-gray-400 mt-4">Choose your preferred seat type.</div>
-
+            <div class="text-sm text-gray-600 dark:text-gray-400 mt-4">
+              Choose your preferred seat type.
+            </div>
             <div class="flex flex-col h-full sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4">
-
-              <button
-                *ngFor="let seatType of seatTypes; let i = index"
-                (click)="selectSeatType(i)"
-                [class]="getSeatTypeButtonClass(i)"
-              >
-                <span class="mr-2">{{ i + 1 }}</span>
-                {{ seatType }}
+              <button *ngFor="let seatType of ['STANDARD', 'PREMIUM', 'VIP']; let i = index"
+                      (click)="updateSeatType(seatType)"
+                      [class]="getSeatTypeButtonClass(i)"
+                      [class.bg-cyan-500]="selectedReservation?.seatType === seatType"
+                      class="px-4 py-2 rounded-md text-white bg-cyan-500 hover:bg-gray-600 transition-colors">
+                {{ i + 1 }} {{ seatType }}
               </button>
             </div>
           </div>
@@ -163,7 +162,7 @@
             </div>
             <div class="flex items-center justify-between">
               <div class="text-muted-foreground">Seat</div>
-              <div class="font-medium">2B</div>
+              <div class="font-medium">{{selectedReservation?.seatType}}</div>
             </div>
             <div class="flex items-center justify-between">
               <div class="text-muted-foreground">Passenger</div>

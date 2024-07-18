@@ -45,6 +45,22 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
+    public Reservation updateReservationSeatType(Long id, String seatType) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+        if (reservation == null) {
+            throw new IllegalArgumentException("Reservation not found");
+        }
+
+        try {
+            Reservation.SeatType newSeatType = Reservation.SeatType.valueOf(seatType.toUpperCase());
+            reservation.setSeatType(newSeatType);
+            return reservationRepository.save(reservation);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid seat type");
+        }
+    }
+
     public List<Reservation> getUserReservations(User user) {
         System.out.println("ReservationService: Reservertion found (" + user.getReservations() + ")");
         return reservationRepository.findByUser(user);

@@ -4,8 +4,8 @@ import { Schedule } from 'src/app/models/schedule.model';
 import { SharedDataService } from 'src/app/services/shared-data.service';
 import {ReservationService} from "../../services/reservation.service";
 import {AuthService} from "../../services/auth.service";
-import {of, switchMap, tap} from "rxjs";
 import {User} from "../../models/user.model";
+import {Reservation} from "../../models/reservation.model";
 
 @Component({
   selector: 'app-booking-page',
@@ -13,7 +13,6 @@ import {User} from "../../models/user.model";
   styleUrls: ['./booking-page.component.css']
 })
 export class BookingPageComponent implements OnInit {
-  seatTypes: string[] = ['Standard Seat', 'Premium Seat', 'VIP Seat'];
   selectedSeatTypeIndex: number | null = null;
 
   selectedSchedule: Schedule | null = null;
@@ -33,21 +32,36 @@ export class BookingPageComponent implements OnInit {
     cvv: ''
   };
 
+  selectedReservation: Reservation | null = null;
+  seatTypes = ['STANDARD', 'PREMIUM', 'VIP'];
 
   constructor(
     private router: Router,
     private sharedDataService: SharedDataService,
     private reservationService: ReservationService,
     private authService: AuthService
+
   ) {}
 
   ngOnInit() {
     this.selectedSchedule = this.sharedDataService.getSelectedSchedule();
-    this.bookingUser = this.sharedDataService.getBookingUser();
+    this.selectedReservation = this.sharedDataService.getSelectedReservation();
 
-    if (!this.selectedSchedule) {
-      console.log('No schedule selected, redirecting to routes page');
+    if (!this.selectedSchedule || !this.selectedReservation) {
+      console.log('No schedule or reservation selected, redirecting to routes page');
       this.router.navigate(['/routes']);
+    } else {
+      console.log('Selected Reservation:', this.selectedReservation);
+
+      // Initialize seatType to 'STANDARD' if not set
+      if (!this.selectedReservation.seatType) {
+        this.selectedReservation.seatType = 'STANDARD';
+        // Optionally update the reservation on the server
+        this.updateSeatType('STANDARD');
+      }
+
+      // Set the initial seat type index based on the reservation's seat type
+      this.selectedSeatTypeIndex = this.seatTypes.indexOf(this.selectedReservation.seatType);
     }
   }
 
@@ -65,20 +79,13 @@ export class BookingPageComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    // Clear the selected schedule when leaving the booking page
+    // Clear the selected schedule and reservation when leaving the booking page
     this.sharedDataService.clearSelectedSchedule();
+    this.sharedDataService.clearSelectedReservation();
   }
 
   selectSeatType(index: number): void {
     this.selectedSeatTypeIndex = index;
-  }
-
-  getSeatTypeButtonClass(index: number): string {
-    const baseClasses = 'w-full flex-1 py-2 px-4 rounded-full text-sm font-medium transition-all duration-300 focus:outline-none ';
-    const activeClasses = 'w-full bg-cyan-600 text-white hover:bg-cyan-700 ';
-    const inactiveClasses = 'w-full bg-gray-200 text-gray-700 hover:bg-gray-300 focus:ring-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600';
-
-    return `${baseClasses} ${this.selectedSeatTypeIndex === index ? activeClasses : inactiveClasses}`;
   }
 
   formatTime(dateTimeString: string): string {
@@ -99,6 +106,41 @@ export class BookingPageComponent implements OnInit {
   }
 
 
+  updateSeatType(seatType: string) {
+    if (!this.selectedReservation) {
+      console.error('No reservation selected');
+      return;
+    }
+
+    this.reservationService.updateReservationSeatType(this.selectedReservation.reservationID, seatType)
+      .subscribe({
+        next: (updatedReservation) => {
+          console.log('Seat type updated successfully:', updatedReservation);
+          this.selectedReservation = updatedReservation;
+          //this.updateTotalPrice();
+        },
+        error: (error) => {
+          console.error('Error updating seat type:', error);
+          // Handle the error (e.g., show an error message to the user)
+        }
+      });
+  }
+
+  updateTotalPrice() {
+    // Implement logic to update the total price based on the selected seat type
+  }
+
+  setSelectedReservation(reservation: Reservation) {
+    this.selectedReservation = reservation;
+  }
+
+  getSeatTypeButtonClass(index: number): string {
+    const baseClasses = 'w-full flex-1 py-2 px-4 rounded-full text-sm font-medium transition-all duration-300 focus:outline-none ';
+    const activeClasses = 'bg-cyan-600 text-white hover:bg-cyan-700 ';
+    const inactiveClasses = 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600';
+
+    return `${baseClasses} ${this.selectedReservation?.seatType === this.seatTypes[index] ? activeClasses : inactiveClasses}`;
+  }
 
 
 

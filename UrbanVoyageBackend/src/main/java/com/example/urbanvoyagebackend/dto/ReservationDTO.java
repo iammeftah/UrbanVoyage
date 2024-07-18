@@ -16,17 +16,18 @@ public class ReservationDTO {
     private Route route;
     private String departure ;
     private String arrival;
-
+    private Reservation.SeatType seatType;
 
     public ReservationDTO() {
     }
 
-    public ReservationDTO(Long reservationID, Date reservationDate, Reservation.ReservationStatus status, Long userId, Long routeId) {
+    public ReservationDTO(Long reservationID, Date reservationDate, Reservation.ReservationStatus status, Long userId, Long routeId , Reservation.SeatType seatType) {
         this.reservationID = reservationID;
         this.reservationDate = reservationDate;
         this.status = status;
         this.userId = userId;
         this.routeId = routeId;
+        this.seatType = seatType;
     }
 
     public Long getReservationID() {
@@ -99,6 +100,14 @@ public class ReservationDTO {
 
     public void setRoute(Route route) {
         this.route = route;
+    }
+
+    public Reservation.SeatType getSeatType() {
+        return seatType;
+    }
+
+    public void setSeatType(Reservation.SeatType seatType) {
+        this.seatType = seatType;
     }
 
     // Getters and setters

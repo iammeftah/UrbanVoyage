@@ -11,4 +11,5 @@ export interface Reservation {
   status: 'PENDING' | 'CONFIRMED' | 'CANCELLED';
   departure: string;
   arrival: string;
+  seatType: 'STANDARD' | 'PREMIUM' | 'VIP';
 }

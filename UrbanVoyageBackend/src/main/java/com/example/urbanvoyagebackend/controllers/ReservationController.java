@@ -63,6 +63,7 @@ public class ReservationController {
         dto.setStatus(reservation.getStatus());
         dto.setDeparture(reservation.getRoute().getDepartureCity());
         dto.setArrival(reservation.getRoute().getArrivalCity());
+        dto.setSeatType(Reservation.SeatType.STANDARD);
 
 
         System.out.println("ReservationDTO: ID=" + dto.getReservationID()
@@ -87,6 +88,18 @@ public class ReservationController {
             dto.setRouteId(null);
         }
         return dto;
+    }
+
+    @PatchMapping("/{id}/seatType")
+    public ResponseEntity<?> updateReservationSeatType(@PathVariable Long id, @RequestBody String seatType) {
+        try {
+            Reservation updatedReservation = reservationService.updateReservationSeatType(id, seatType);
+            return ResponseEntity.ok(updatedReservation);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while updating the seat type.");
+        }
     }
 
     @PatchMapping("/{id}/status")

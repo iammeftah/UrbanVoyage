@@ -240,6 +240,7 @@ export class RoutesPageComponent implements OnInit {
     console.log('route-page: Selected Schedule->', schedule);
     this.sharedDataService.setSelectedSchedule(schedule);
 
+
     this.authService.getCurrentUserId().pipe(
       tap(userId => console.log('User ID:', userId)),
       switchMap(userId => {
@@ -259,6 +260,7 @@ export class RoutesPageComponent implements OnInit {
       next: (reservation) => {
         if (reservation) {
           console.log('Reservation created:', reservation);
+          this.sharedDataService.setSelectedReservation(reservation);
           this.router.navigate(['/booking']);
         } else {
           console.error('No reservation returned');
