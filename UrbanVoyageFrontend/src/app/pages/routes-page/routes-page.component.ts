@@ -6,6 +6,7 @@ import { RouteService } from 'src/app/services/route.service';
 import { ScheduleService } from 'src/app/services/schedule.service';
 import { Router } from '@angular/router';
 import { SharedDataService } from 'src/app/services/shared-data.service';
+import {AuthService} from "../../services/auth.service";
 
 
 interface AgencyLocation {
@@ -74,10 +75,11 @@ export class RoutesPageComponent implements OnInit {
   constructor(
     private routeService: RouteService,
     private scheduleService: ScheduleService,
-    private router: Router ,
-    private sharedDataService: SharedDataService
-
+    private router: Router,
+    private sharedDataService: SharedDataService,
+    private authService: AuthService
   ) {}
+
 
   ngOnInit() {
     this.generateCalendar();
@@ -216,12 +218,20 @@ export class RoutesPageComponent implements OnInit {
 
   // route-page.component.ts
   bookSchedule(schedule: Schedule): void {
-    if (schedule) {
-      console.log('route-page: Selected Schedule->', schedule);
-      this.sharedDataService.setSelectedSchedule(schedule);
-      this.router.navigate(['/booking']);
+    if (this.authService.isLoggedIn()) {
+      if (schedule) {
+        console.log('route-page: Selected Schedule->', schedule);
+        this.sharedDataService.setSelectedSchedule(schedule);
+        this.router.navigate(['/booking']);
+      } else {
+        console.error('Attempted to book a null schedule');
+      }
     } else {
-      console.error('Attempted to book a null schedule');
+      this.message = "Please log in to book a trip.";
+      this.messageType = "error";
+      setTimeout(() => {
+        this.router.navigate(['/login']);
+      }, 2000);
     }
   }
 }

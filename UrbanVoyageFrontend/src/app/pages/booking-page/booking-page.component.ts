@@ -14,6 +14,21 @@ export class BookingPageComponent implements OnInit {
 
   selectedSchedule: Schedule | null = null;
 
+  passengerInfo = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    specialRequests: ''
+  };
+
+  paymentInfo = {
+    cardNumber: '',
+    expiryDate: '',
+    cvv: ''
+  };
+
+
   constructor(private router: Router, private sharedDataService: SharedDataService) {}
 
   ngOnInit() {
@@ -23,6 +38,7 @@ export class BookingPageComponent implements OnInit {
       this.router.navigate(['/routes']);
     }
   }
+
 
   calculateDuration(): string {
     if (!this.selectedSchedule) return '';
@@ -62,5 +78,13 @@ export class BookingPageComponent implements OnInit {
     const [hours, minutes] = duration.split(':');
     return `${hours}h ${minutes}m`;
   }
+
+
+
+
+  proceedToPayment() {
+    console.log("Proceed to payment")
+  }
+
 
 }
