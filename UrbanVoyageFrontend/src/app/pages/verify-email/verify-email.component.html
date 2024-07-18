@@ -13,7 +13,7 @@
       <p>We've sent a 6-digit verification code to {{this.email}} . Please enter the code below to verify your email and continue.</p>
     </div>
 
-    <form [formGroup]="verifyForm" (ngSubmit)="verifyEmail()" class="mt-6">
+    <form [formGroup]="verifyForm" class="mt-6">
       <div class="flex items-center justify-center gap-2 ">
         <input type="text" formControlName="digit1" maxlength="1" (input)="onDigitInput($event, digit2)" #digit1 class="w-12 h-12 text-center text-2xl border border-gray-500 rounded-md bg-white dark:bg-[#444444] text-lightText dark:text-darkText hover:border-cyan-500 duration-200 ">
         <input type="text" formControlName="digit2" maxlength="1" (input)="onDigitInput($event, digit3)" #digit2 class="w-12 h-12 text-center text-2xl border border-gray-500 rounded-md bg-white dark:bg-[#444444] text-lightText dark:text-darkText hover:border-cyan-500 duration-200 ">
@@ -24,7 +24,7 @@
       </div>
 
       <div class="mt-6">
-        <button type="submit" class="w-full bg-cyan-500 text-white py-2 px-4 rounded-md hover:bg-cyan-600 duration-200">Verify</button>
+        <button (click)="verifyEmail()" class="w-full bg-cyan-500 text-white py-2 px-4 rounded-md hover:bg-cyan-600 duration-200">Verify</button>
       </div>
     </form>
   </div>

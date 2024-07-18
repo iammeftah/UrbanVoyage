@@ -89,7 +89,7 @@
 
           <input type="datetime-local" [(ngModel)]="newSchedule.departureTime" name="departureTime" required
                  class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
-          
+
 
 
           <input type="number" [(ngModel)]="newSchedule.availableSeats" name="availableSeats" placeholder="Available Seats" max="60" min="0" required
@@ -280,4 +280,10 @@
       </button>
     </div>
   </div>
+</div>
+
+
+
+<div *ngIf="loading" class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-gray-200 bg-opacity-20 backdrop-blur-lg z-50">
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
 </div>

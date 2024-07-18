@@ -51,6 +51,9 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
   showDateTimePicker: 'new' | 'edit' | null = null;
   selectedTime: string = '';
 
+  loading: boolean = false;
+
+
   openDateTimePicker(type: 'new' | 'edit'): void {
     this.showDateTimePicker = type;
     const currentDate = type === 'new' ? this.newSchedule.departureTime : this.editingSchedule?.departureTime;
@@ -207,12 +210,15 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
 
 
   loadRoutes(): void {
+    this.loading = true;
     this.routeService.getRoutes().subscribe({
       next: (routes) => {
+        this.loading=false;
         this.routes = routes;
         this.cdr.detectChanges();
       },
       error: (error) => {
+        this.loading=false;
         console.error('Error loading routes:', error);
         this.showMessage('Error loading routes: ' + (error.message || 'Unknown error'), 'error');
       }
@@ -220,12 +226,15 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
   }
 
   loadSchedules(): void {
+    this.loading=true;
     this.scheduleService.getSchedules().subscribe({
       next: (schedules) => {
+        this.loading=false;
         this.schedules = schedules;
         this.cdr.detectChanges();
       },
       error: (error) => {
+        this.loading=false;
         console.error('Error loading schedules:', error);
         this.showMessage('Error loading schedules: ' + (error.message || 'Unknown error'), 'error');
       }
@@ -233,8 +242,12 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
   }
 
   loadStatistics(): void {
+    this.loading=true;
     this.userService.getAllUsers().subscribe({
+
       next: (users) => {
+        this.loading=false;
+
         this.statistics.totalUsers = users.length;
         this.statistics.totalPassengers = users.filter(user => user.hasReservations).length;
 
@@ -247,6 +260,8 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
         this.cdr.detectChanges();
       },
       error: (error) => {
+        this.loading=false;
+
         this.showMessage('Error loading statistics: ' + error.message, 'error');
       }
     });
@@ -341,6 +356,7 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
     this.newRoute.distance = distance;
 
     this.routeService.addRoute(this.newRoute as Route).subscribe({
+
       next: (route) => {
         this.routes.push(route);
         this.newRoute = {};

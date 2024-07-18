@@ -1,13 +1,45 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Schedule } from 'src/app/models/schedule.model';
+import { SharedDataService } from 'src/app/services/shared-data.service';
 
 @Component({
   selector: 'app-booking-page',
   templateUrl: './booking-page.component.html',
   styleUrls: ['./booking-page.component.css']
 })
-export class BookingPageComponent {
+export class BookingPageComponent implements OnInit {
   seatTypes: string[] = ['Standard Seat', 'Premium Seat', 'VIP Seat'];
   selectedSeatTypeIndex: number | null = null;
+
+  selectedSchedule: Schedule | null = null;
+
+  constructor(private router: Router, private sharedDataService: SharedDataService) {}
+
+  ngOnInit() {
+    this.selectedSchedule = this.sharedDataService.getSelectedSchedule();
+    if (!this.selectedSchedule) {
+      console.log('No schedule selected, redirecting to routes page');
+      this.router.navigate(['/routes']);
+    }
+  }
+
+  calculateDuration(): string {
+    if (!this.selectedSchedule) return '';
+
+    const departure = new Date(this.selectedSchedule.departureTime);
+    const arrival = new Date(this.selectedSchedule.arrivalTime);
+    const durationMs = arrival.getTime() - departure.getTime();
+    const hours = Math.floor(durationMs / (1000 * 60 * 60));
+    const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
+
+    return `${hours}h ${minutes}m`;
+  }
+
+  ngOnDestroy() {
+    // Clear the selected schedule when leaving the booking page
+    this.sharedDataService.clearSelectedSchedule();
+  }
 
   selectSeatType(index: number): void {
     this.selectedSeatTypeIndex = index;
@@ -20,4 +52,15 @@ export class BookingPageComponent {
 
     return `${baseClasses} ${this.selectedSeatTypeIndex === index ? activeClasses : inactiveClasses}`;
   }
+
+  formatTime(dateTimeString: string): string {
+    const date = new Date(dateTimeString);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  formatDuration(duration: string): string {
+    const [hours, minutes] = duration.split(':');
+    return `${hours}h ${minutes}m`;
+  }
+
 }

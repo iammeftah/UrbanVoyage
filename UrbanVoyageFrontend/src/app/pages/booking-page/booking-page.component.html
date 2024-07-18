@@ -12,31 +12,34 @@
         <h1 class="text-2xl font-bold">Book Your Seat</h1>
         <p class="text-muted-foreground text-cyan-600">Select your preferred route and seats.</p>
       </div>
-      <div data-aos="fade-up" class="rounded-lg bg-white dark:bg-gray-800 text-card-foreground shadow-sm " data-v0-t="card">
+      <div data-aos="fade-up" class="rounded-lg bg-white dark:bg-gray-800 text-card-foreground shadow-sm" data-v0-t="card">
         <div class="flex flex-col space-y-1.5 p-6">
           <h3 class="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight">Route Details</h3>
         </div>
         <div class="p-6">
-          <div class="grid gap-4">
+          <div class="grid gap-4" *ngIf="selectedSchedule; else noSchedule">
             <div class="flex items-center justify-between">
               <div class="text-muted-foreground">Departure</div>
               <div>
-                <div class="font-medium">New York, NY</div>
-                <div class="text-sm text-muted-foreground text-gray-500">10:00 AM</div>
+                <div class="font-medium">{{ selectedSchedule.route.departureCity }}</div>
+                <div class="text-sm text-muted-foreground text-gray-500">{{ selectedSchedule.departureTime | date:'shortTime' }}</div>
               </div>
             </div>
             <div class="flex items-center justify-between">
               <div class="text-muted-foreground">Arrival</div>
               <div>
-                <div class="font-medium">Los Angeles, CA</div>
-                <div class="text-sm text-muted-foreground text-gray-500">1:30 PM</div>
+                <div class="font-medium">{{ selectedSchedule.route.arrivalCity }}</div>
+                <div class="text-sm text-muted-foreground text-gray-500">{{ selectedSchedule.arrivalTime | date:'shortTime' }}</div>
               </div>
             </div>
             <div class="flex items-center justify-between">
               <div class="text-muted-foreground">Duration</div>
-              <div class="font-medium">3h 30m</div>
+              <div class="font-medium">{{ calculateDuration() }}</div>
             </div>
           </div>
+          <ng-template #noSchedule>
+            <div class="text-center text-muted-foreground">No schedule selected</div>
+          </ng-template>
         </div>
       </div>
 

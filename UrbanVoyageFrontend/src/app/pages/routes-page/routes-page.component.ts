@@ -4,6 +4,8 @@ import { Schedule } from 'src/app/models/schedule.model';
 import { Route } from 'src/app/models/route.model';
 import { RouteService } from 'src/app/services/route.service';
 import { ScheduleService } from 'src/app/services/schedule.service';
+import { Router } from '@angular/router';
+import { SharedDataService } from 'src/app/services/shared-data.service';
 
 
 interface AgencyLocation {
@@ -35,6 +37,9 @@ export class RoutesPageComponent implements OnInit {
 
   message:string | null = null ;
   messageType: 'success' | 'error' = 'success';
+
+  loading: boolean = false;
+
 
 
   locations: AgencyLocation[] = [
@@ -68,7 +73,10 @@ export class RoutesPageComponent implements OnInit {
 
   constructor(
     private routeService: RouteService,
-    private scheduleService: ScheduleService
+    private scheduleService: ScheduleService,
+    private router: Router ,
+    private sharedDataService: SharedDataService
+
   ) {}
 
   ngOnInit() {
@@ -76,7 +84,7 @@ export class RoutesPageComponent implements OnInit {
   }
 
   searchRoutes(): void {
-    this.isLoading = true;
+    this.loading = true;
     this.errorMessage = '';
     this.noRoutesFound = false;
     this.schedules = [];
@@ -89,7 +97,7 @@ export class RoutesPageComponent implements OnInit {
         console.log('Routes found:', routes);
         if (routes.length === 0) {
           this.noRoutesFound = true;
-          this.isLoading = false;
+          this.loading = false;
         } else {
           this.loadSchedulesForRoutes(routes);
         }
@@ -116,7 +124,7 @@ export class RoutesPageComponent implements OnInit {
         if (this.schedules.length === 0) {
           this.noRoutesFound = true;
         }
-        this.isLoading = false;
+        this.loading = false;
       },
       error: (error) => {
         console.error('Error fetching schedules:', error);
@@ -135,7 +143,7 @@ export class RoutesPageComponent implements OnInit {
   }
 
   private handleError(error: any): void {
-    this.isLoading = false;
+    this.loading = false;
     this.message = "An error occurred while fetching data. Please try again.";
     this.messageType="error";
     console.error('Error:', error);
@@ -204,6 +212,18 @@ export class RoutesPageComponent implements OnInit {
     }
   }
 
+
+
+  // route-page.component.ts
+  bookSchedule(schedule: Schedule): void {
+    if (schedule) {
+      console.log('route-page: Selected Schedule->', schedule);
+      this.sharedDataService.setSelectedSchedule(schedule);
+      this.router.navigate(['/booking']);
+    } else {
+      console.error('Attempted to book a null schedule');
+    }
+  }
 }
 
 

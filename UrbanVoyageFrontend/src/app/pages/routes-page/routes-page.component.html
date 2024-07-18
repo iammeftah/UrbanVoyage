@@ -3,7 +3,7 @@
 
   <app-carousel></app-carousel>
   <div class="flex-grow bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText">
-    <div class="flex justify-center gap-16 w-full px-4 py-8 sm:px-6 lg:px-32 ">
+    <div class="flex justify-center flex-col md:flex-row gap-16 w-full px-4 py-8 sm:px-6 lg:px-32 ">
       <!-- Find ur next text -->
       <div class="mb-8" data-aos="fade-up">
         <h1 class="text-3xl font-bold mb-2">Find your next trip</h1>
@@ -11,7 +11,7 @@
       </div>
 
       <!-- Route picker card -->
-      <div class="bg-white dark:bg-transparent rounded-lg shadow-sm w-1/2 " data-aos="fade-up">
+      <div class="bg-white dark:bg-transparent rounded-lg shadow-sm w-full md:w-1/2 " data-aos="fade-up">
         <form class="p-6 grid grid-cols-1 ">
           <div class="flex flex-col gap-4 items-center justify-center w-full">
             <div class="grid grid-cols-1 w-full">
@@ -112,7 +112,7 @@
 
     </div>
     <!-- Schedules list -->
-    <div *ngIf="searchPerformed && !isLoading" class="relative z-0 mt-8 w-full px-32 flex justify-content grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div *ngIf="searchPerformed && !isLoading" class="relative z-0 mt-8 w-full px-6 md:px-32 flex justify-content grid grid-cols-1 md:grid-cols-2 gap-6">
       <div *ngFor="let schedule of schedules" class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm" data-aos="fade-up">
         <div class="p-6 grid grid-cols-2 gap-4">
           <div>
@@ -134,7 +134,7 @@
             <p class="text-sm">$22.00</p>
           </div>
           <div class="flex justify-end col-span-2">
-            <button class="w-32 bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">
+            <button (click)="bookSchedule(schedule)" class="w-32 bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">
               Book
             </button>
           </div>
@@ -157,4 +157,10 @@
   </div>
 
   <app-footer></app-footer>
+</div>
+
+
+
+<div *ngIf="loading" class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-gray-200 bg-opacity-20 backdrop-blur-lg z-50">
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
 </div>
