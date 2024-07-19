@@ -3,6 +3,7 @@ export interface User {
   firstName: string;
   lastName: string;
   email: string;
+  phoneNumber:string;
   username:string;
   hasReservations: boolean; // Add any other fields as necessary
 }

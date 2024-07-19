@@ -22,7 +22,7 @@ export class BookingPageComponent implements OnInit {
     firstName: '',
     lastName: '',
     email: '',
-    phone: '',
+    phoneNumber: '',
     specialRequests: ''
   };
 
@@ -36,16 +36,18 @@ export class BookingPageComponent implements OnInit {
   seatTypes = ['STANDARD', 'PREMIUM', 'VIP'];
   isLoading: boolean = false;
 
+  currentUser: User | null = null;
+
 
   constructor(
     private router: Router,
     private sharedDataService: SharedDataService,
     private reservationService: ReservationService,
     private authService: AuthService
-
   ) {}
 
   ngOnInit() {
+
     this.selectedSchedule = this.sharedDataService.getSelectedSchedule();
     this.selectedReservation = this.sharedDataService.getSelectedReservation();
 
@@ -65,6 +67,17 @@ export class BookingPageComponent implements OnInit {
       // Set the initial seat type index based on the reservation's seat type
       this.selectedSeatTypeIndex = this.seatTypes.indexOf(this.selectedReservation.seatType);
     }
+
+    // Fetch current user details
+    this.authService.getCurrentUser().subscribe(
+      (user: User) => {
+        this.currentUser = user;
+        console.log('Current user:', this.currentUser);
+      },
+      (error) => {
+        console.error('Error fetching current user:', error);
+      }
+    );
   }
 
 
