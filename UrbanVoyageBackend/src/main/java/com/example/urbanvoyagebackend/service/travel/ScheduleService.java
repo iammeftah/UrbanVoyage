@@ -4,6 +4,8 @@ package com.example.urbanvoyagebackend.service.travel;
 
 import com.example.urbanvoyagebackend.entity.travel.Schedule;
 import com.example.urbanvoyagebackend.repository.travel.ScheduleRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,5 +40,13 @@ public class ScheduleService {
 
     public List<Schedule> findByRouteId(Long routeId) {
         return scheduleRepository.findByRouteRouteID(routeId);
+    }
+
+    @Transactional
+    public Schedule updateAvailableSeats(Long id, int newAvailableSeats) {
+        Schedule schedule = scheduleRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Schedule not found"));
+        schedule.setAvailableSeats(newAvailableSeats);
+        return scheduleRepository.save(schedule);
     }
 }

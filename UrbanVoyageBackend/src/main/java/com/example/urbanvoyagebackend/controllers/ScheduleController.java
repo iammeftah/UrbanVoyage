@@ -4,11 +4,13 @@ import com.example.urbanvoyagebackend.dto.RouteDTO;
 import com.example.urbanvoyagebackend.dto.ScheduleDTO;
 import com.example.urbanvoyagebackend.entity.travel.Schedule;
 import com.example.urbanvoyagebackend.service.travel.ScheduleService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -69,5 +71,21 @@ public class ScheduleController {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(scheduleDTOs);
+    }
+
+    // In ScheduleController.java
+
+    @PatchMapping("/{id}/availableSeats")
+    public ResponseEntity<Schedule> updateAvailableSeats(@PathVariable Long id, @RequestBody Map<String, Integer> payload) {
+        Integer newAvailableSeats = payload.get("availableSeats");
+        if (newAvailableSeats == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        try {
+            Schedule updatedSchedule = scheduleService.updateAvailableSeats(id, newAvailableSeats);
+            return ResponseEntity.ok(updatedSchedule);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

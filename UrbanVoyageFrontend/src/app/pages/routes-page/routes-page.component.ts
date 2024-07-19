@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { SharedDataService } from 'src/app/services/shared-data.service';
 import {AuthService} from "../../services/auth.service";
 import {ReservationService} from "../../services/reservation.service";
+import {map} from "rxjs/operators";
 
 
 interface AgencyLocation {
@@ -223,12 +224,9 @@ export class RoutesPageComponent implements OnInit {
 
   // route-page.component.ts
   bookScheduleAndCreateReservation(schedule: Schedule): void {
-
     if (!this.authService.isLoggedIn()) {
-
       this.message = "Please log in to book a trip.";
       this.messageType = "error";
-
       setTimeout(() => {
         this.router.navigate(['/login']);
       }, 2000);
@@ -243,9 +241,7 @@ export class RoutesPageComponent implements OnInit {
     console.log('route-page: Selected Schedule->', schedule);
     this.sharedDataService.setSelectedSchedule(schedule);
 
-
     this.authService.getCurrentUserId().pipe(
-      tap(userId => console.log('User ID:', userId)),
       switchMap(userId => {
         if (!userId) {
           console.error('User not logged in');
@@ -254,7 +250,8 @@ export class RoutesPageComponent implements OnInit {
         }
         const reservationDTO = {
           userId: userId,
-          routeId: schedule.route.routeID
+          routeId: schedule.route.routeID,
+          seatType: 'STANDARD' // Set a default seat type
         };
         console.log('Reservation DTO:', reservationDTO);
         return this.reservationService.createReservation(reservationDTO);
@@ -264,22 +261,32 @@ export class RoutesPageComponent implements OnInit {
         if (reservation) {
           console.log('Reservation created:', reservation);
           this.sharedDataService.setSelectedReservation(reservation);
-          this.router.navigate(['/booking']);
+          this.updateAvailableSeats(schedule);
         } else {
           console.error('No reservation returned');
-          // Optionally navigate to /routes if reservation creation fails
-          // this.router.navigate(['/routes']);
         }
       },
       error: (error) => {
         console.error('Error creating reservation:', error);
         // Show an error message to the user
-        // Optionally navigate to /routes if reservation creation fails
-        // this.router.navigate(['/routes']);
       }
     });
   }
 
+  private updateAvailableSeats(schedule: Schedule): void {
+    const newAvailableSeats = schedule.availableSeats - 1;
+    this.scheduleService.updateAvailableSeats(schedule.scheduleID, newAvailableSeats).subscribe({
+      next: (updatedSchedule) => {
+        console.log('Available seats updated:', updatedSchedule);
+        this.router.navigate(['/booking']);
+      },
+      error: (error) => {
+        console.error('Error updating available seats:', error);
+        // You may still want to navigate to booking, as the reservation was created
+        this.router.navigate(['/booking']);
+      }
+    });
+  }
 
 }
 

@@ -67,5 +67,8 @@ export class ScheduleService {
     return throwError(() => new Error(errorMessage));
   }
 
-  
+  updateAvailableSeats(scheduleId: number, newAvailableSeats: number): Observable<Schedule> {
+    return this.http.patch<Schedule>(`${this.apiUrl}/${scheduleId}/availableSeats`, { availableSeats: newAvailableSeats });
+  }
+
 }

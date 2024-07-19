@@ -39,6 +39,8 @@ public class ReservationService {
         reservation.setRoute(route);
         reservation.setReservationDate(new Date());
         reservation.setStatus(Reservation.ReservationStatus.PENDING);
+        reservation.setSeatType(reservationDTO.getSeatType() != null ? reservationDTO.getSeatType() : Reservation.SeatType.STANDARD);
+
 
 
         System.out.println("ReservationService: Reservation created");
