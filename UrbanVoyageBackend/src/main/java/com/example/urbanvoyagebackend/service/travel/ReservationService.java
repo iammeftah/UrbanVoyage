@@ -40,6 +40,7 @@ public class ReservationService {
         reservation.setReservationDate(new Date());
         reservation.setStatus(Reservation.ReservationStatus.PENDING);
 
+
         System.out.println("ReservationService: Reservation created");
 
         return reservationRepository.save(reservation);

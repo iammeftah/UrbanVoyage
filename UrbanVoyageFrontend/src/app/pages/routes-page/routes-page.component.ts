@@ -223,9 +223,12 @@ export class RoutesPageComponent implements OnInit {
 
   // route-page.component.ts
   bookScheduleAndCreateReservation(schedule: Schedule): void {
+
     if (!this.authService.isLoggedIn()) {
+
       this.message = "Please log in to book a trip.";
       this.messageType = "error";
+
       setTimeout(() => {
         this.router.navigate(['/login']);
       }, 2000);

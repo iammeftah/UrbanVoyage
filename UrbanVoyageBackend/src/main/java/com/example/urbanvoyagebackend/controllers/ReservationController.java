@@ -65,7 +65,6 @@ public class ReservationController {
         dto.setArrival(reservation.getRoute().getArrivalCity());
         dto.setSeatType(Reservation.SeatType.STANDARD);
 
-
         System.out.println("ReservationDTO: ID=" + dto.getReservationID()
                 + ", Date=" + dto.getReservationDate()
                 + ", Status=" + dto.getStatus()
