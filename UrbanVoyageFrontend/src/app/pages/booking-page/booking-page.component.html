@@ -78,7 +78,7 @@
               </h3>
             </div>
             <div class="p-6">
-              <form class="grid gap-4">
+              <form (ngSubmit)="onSubmit()" #passengerForm="ngForm" class="grid gap-4">
                 <div class="grid md:grid-cols-2 gap-4">
                   <div class="space-y-2">
                     <label
@@ -92,7 +92,7 @@
                       type="text"
                       id="firstName"
                       name="firstName"
-                      [(ngModel)]="passengerInfo.firstName"
+                      [(ngModel)]="passenger.firstName"
                       [placeholder]="currentUser?.firstName || 'Enter first name'"
                       fdprocessedid="ve1lg"
                     />
@@ -108,7 +108,7 @@
                       class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-cyan-500 dark:hover:border-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500"
                       type="text"
                       id="lastName"
-                      [(ngModel)]="passengerInfo.lastName"
+                      [(ngModel)]="passenger.lastName"
                       name="lastName"
                       [placeholder]="currentUser?.lastName || 'Enter last name'"
                       fdprocessedid="ijtzp"
@@ -126,7 +126,7 @@
                     class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-cyan-500 dark:hover:border-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500"
                     type="email"
                     id="email"
-                    [(ngModel)]="passengerInfo.email"
+                    [(ngModel)]="passenger.email"
                     name="email"
                     [placeholder]="currentUser?.email || 'Enter email'"
                     fdprocessedid="z9uon"
@@ -143,7 +143,7 @@
                     class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-cyan-500 dark:hover:border-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500"
                     id="phoneNumber"
                     name="phoneNumber"
-                    [(ngModel)]="passengerInfo.phoneNumber"
+                    [(ngModel)]="passenger.phoneNumber"
                     [placeholder]="currentUser?.phoneNumber || 'Enter Phone'"
                     type="tel"
                     fdprocessedid="zbvjce"
@@ -157,12 +157,18 @@
                     Special Requests
                   </label>
                   <textarea
-                    [(ngModel)]="passengerInfo.specialRequests"
+                    [(ngModel)]="passenger.specialRequests"
                     name="specialResquests"
                     class="flex h-36 resize-none w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-cyan-500 dark:hover:border-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500"
                     id="specialRequests"
                     placeholder="e.g. Wheelchair assistance, dietary restrictions"
                   ></textarea>
+                  <input type="hidden" [(ngModel)]="passenger.departureCity" name="departureCity">
+                  <input type="hidden" [(ngModel)]="passenger.arrivalCity" name="arrivalCity">
+                  <input type="hidden" [(ngModel)]="passenger.departureTime" name="departureTime">
+                  <input type="hidden" [(ngModel)]="passenger.arrivalTime" name="arrivalTime">
+                  <input type="hidden" [(ngModel)]="passenger.seatType" name="seatType">
+                  <input type="hidden" [(ngModel)]="passenger.schedulePrice" name="schedulePrice">
                 </div>
               </form>
             </div>
@@ -193,13 +199,13 @@
             </div>
             <div class="flex items-center justify-between">
               <div class="text-muted-foreground">Total</div>
-              <div class="text-3xl font-bold text-cyan-500">$250.00</div>
+              <div class="text-3xl font-bold text-cyan-500">${{selectedSchedule.schedulePrice}}</div>
             </div>
           </div>
         </div>
 
         <div class="w-full flex justify-end gap-6" data-aos="fade-up" data-aos-delay="100">
-          <button (click)="proceedToPayment()" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md dark:bg-cyan-600 dark:hover:bg-cyan-700  px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 duration-300">
+          <button  type="submit" [disabled]="!passengerForm.form.valid" (click)="onSubmit()" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md dark:bg-cyan-600 dark:hover:bg-cyan-700  px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 duration-300">
             Proceed to Payment
           </button>
         </div>

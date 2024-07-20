@@ -488,7 +488,8 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
         departureTime: departureTime.toISOString(),
         arrivalTime: arrivalTime.toISOString(),
         availableSeats: this.newSchedule.availableSeats || 50,
-        duration:null
+        duration:null,
+        schedulePrice:22.00
       };
 
       this.scheduleService.addSchedule(scheduleToAdd).subscribe({
@@ -551,7 +552,8 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
         departureTime: departureTime.toISOString(),
         arrivalTime: arrivalTime.toISOString(),
         availableSeats: this.editingSchedule!.availableSeats,
-        duration: null  // Assuming selectedSchedule has a duration property
+        duration: null, // Assuming selectedSchedule has a duration property
+        schedulePrice:15.00
       };
 
       this.scheduleService.updateSchedule(scheduleToUpdate).subscribe({

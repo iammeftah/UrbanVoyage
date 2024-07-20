@@ -13,7 +13,7 @@ export interface Schedule {
     distance: number;
   };
   availableSeats: number;
-  price:number;
+  schedulePrice: number;
 
 
   // other fields...
