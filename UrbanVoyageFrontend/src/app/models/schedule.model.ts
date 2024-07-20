@@ -1,4 +1,5 @@
 import {Route} from "./route.model";
+import {Reservation} from "./reservation.model";
 
 
 export interface Schedule {
@@ -14,6 +15,7 @@ export interface Schedule {
   };
   availableSeats: number;
   schedulePrice: number;
+  seatType: 'STANDARD' | 'PREMIUM' | 'VIP';
 
 
   // other fields...

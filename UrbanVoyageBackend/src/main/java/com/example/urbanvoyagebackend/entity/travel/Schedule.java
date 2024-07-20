@@ -4,6 +4,7 @@ package com.example.urbanvoyagebackend.entity.travel;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
@@ -30,7 +31,10 @@ public class Schedule {
     @Column(nullable = false)
     private int availableSeats;
 
+
     private String duration;
+
+    private BigDecimal schedulePrice;
 
 
     // Constructors, getters, and setters
@@ -111,5 +115,13 @@ public class Schedule {
         long hours = duration.toHours();
         long minutes = duration.toMinutesPart();
         return String.format("%d:%02d", hours, minutes);
+    }
+
+    public BigDecimal getSchedulePrice() {
+        return schedulePrice;
+    }
+
+    public void setSchedulePrice(BigDecimal schedulePrice) {
+        this.schedulePrice = schedulePrice;
     }
 }

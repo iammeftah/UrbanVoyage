@@ -7,6 +7,8 @@ import { UserService } from '../../services/user.service';
 import { Route } from '../../models/route.model';
 import { Schedule } from '../../models/schedule.model';
 import { Reservation } from "../../models/reservation.model";
+import {DistanceService} from "../../services/distance.service";
+import {PricingService} from "../../services/pricing.service";
 
 declare var google: any;
 
@@ -47,6 +49,8 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
   isEditingSchedule: boolean = false;
   editingRoute: Route | null = null;
   editingSchedule: Schedule | null = null;
+
+  seatType: 'STANDARD' | 'PREMIUM' | 'VIP' = 'STANDARD' ;
 
   showDateTimePicker: 'new' | 'edit' | null = null;
   selectedTime: string = '';
@@ -124,7 +128,9 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
     private scheduleService: ScheduleService,
     private reservationService: ReservationService,
     private userService: UserService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private distanceService: DistanceService,
+    private pricingService: PricingService
   ) {
     this.initializeCityDistances();
     this.newSchedule = {
@@ -201,7 +207,7 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
       this.cityDistances[city1.name] = {};
       this.locations.forEach(city2 => {
         if (city1.name !== city2.name) {
-          const distance = this.calculateDistance(city1.lat, city1.lng, city2.lat, city2.lng);
+          const distance = this.distanceService.calculateDistance(city1.lat, city1.lng, city2.lat, city2.lng);
           this.cityDistances[city1.name][city2.name] = Math.round(distance);
         }
       });
@@ -483,13 +489,19 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
       const departureTime = new Date(this.newSchedule.departureTime!);
       const arrivalTime = new Date(departureTime.getTime() + travelTimeSeconds * 1000);
 
+      // Calculate schedule price based on the selected route
+      const distanceFromDepartureToArrival = this.cityDistances[route.departureCity][route.arrivalCity];
+      const schedulePrice = this.pricingService.calculateTicketPrice(distanceFromDepartureToArrival , this.seatType);
+
+
       const scheduleToAdd: Omit<Schedule, 'scheduleID'> = {
         route: { routeID: routeId } as Route,
         departureTime: departureTime.toISOString(),
         arrivalTime: arrivalTime.toISOString(),
         availableSeats: this.newSchedule.availableSeats || 50,
         duration:null,
-        schedulePrice:22.00
+        schedulePrice: schedulePrice,
+        seatType:'STANDARD'
       };
 
       this.scheduleService.addSchedule(scheduleToAdd).subscribe({
@@ -497,6 +509,7 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
           this.schedules.push(schedule);
           this.newSchedule = {
             departureTime: new Date().toISOString(),
+
             availableSeats: 50
           };
           this.message = "Schedule added successfully";
@@ -545,6 +558,9 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
     this.calculateTravelTime(route.departureCity, route.arrivalCity).then(travelTimeSeconds => {
       const departureTime = new Date(this.editingSchedule!.departureTime);
       const arrivalTime = new Date(departureTime.getTime() + travelTimeSeconds * 1000);
+      // Calculate schedule price based on the selected route
+      const distanceFromDepartureToArrival = this.cityDistances[route.departureCity][route.arrivalCity];
+      const schedulePrice = this.pricingService.calculateTicketPrice(distanceFromDepartureToArrival , this.seatType);
 
       const scheduleToUpdate: Schedule = {
         scheduleID: this.editingSchedule!.scheduleID,
@@ -553,7 +569,8 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
         arrivalTime: arrivalTime.toISOString(),
         availableSeats: this.editingSchedule!.availableSeats,
         duration: null, // Assuming selectedSchedule has a duration property
-        schedulePrice:15.00
+        schedulePrice:schedulePrice,
+        seatType:'STANDARD'
       };
 
       this.scheduleService.updateSchedule(scheduleToUpdate).subscribe({
@@ -728,7 +745,7 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      const distance = this.calculateDistance(
+      const distance = this.distanceService.calculateDistance(
         originLocation.lat, originLocation.lng,
         destLocation.lat, destLocation.lng
       );
@@ -741,28 +758,5 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
       resolve(travelTimeSeconds);
     });
   }
-
-  calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-    const R = 6371; // Radius of the earth in km
-    const dLat = this.deg2rad(lat2 - lat1);
-    const dLon = this.deg2rad(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const d = R * c; // Distance in km
-    return d;
-  }
-
-  deg2rad(deg: number): number {
-    return deg * (Math.PI / 180);
-  }
-
-
-
-
-
-
 
 }

@@ -40,6 +40,7 @@ public class ScheduleController {
         routeDTO.setArrivalCity(schedule.getRoute().getArrivalCity());
         routeDTO.setDistance(schedule.getRoute().getDistance());
         dto.setDuration(schedule.calculateDuration());
+        dto.setSchedulePrice(schedule.getSchedulePrice());
 
 
         dto.setRoute(routeDTO);

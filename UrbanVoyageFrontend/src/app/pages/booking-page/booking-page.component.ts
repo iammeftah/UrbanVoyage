@@ -8,6 +8,8 @@ import { User } from "../../models/user.model";
 import { Reservation } from "../../models/reservation.model";
 import { PassengerService } from "../../services/passenger.service";
 import { Passenger } from "../../models/passenger.model";
+import {PricingService} from "../../services/pricing.service";
+import {DistanceService} from "../../services/distance.service";
 
 @Component({
   selector: 'app-booking-page',
@@ -42,8 +44,11 @@ export class BookingPageComponent implements OnInit {
     private sharedDataService: SharedDataService,
     private reservationService: ReservationService,
     private authService: AuthService,
-    private passengerService: PassengerService
+    private passengerService: PassengerService,
+    private pricingService: PricingService,
+    private distanceService: DistanceService
   ) {}
+
 
   ngOnInit() {
     this.selectedSchedule = this.sharedDataService.getSelectedSchedule();
@@ -78,7 +83,7 @@ export class BookingPageComponent implements OnInit {
       this.passenger.arrivalCity = this.selectedSchedule.route.arrivalCity || '';
       this.passenger.departureTime = this.selectedSchedule.departureTime || '';
       this.passenger.arrivalTime = this.selectedSchedule.arrivalTime || '';
-      this.passenger.schedulePrice = this.selectedSchedule.schedulePrice || 0;
+      this.passenger.schedulePrice = this.selectedSchedule.schedulePrice ;
 
       // If schedulePrice is still 0, set a default value
       if (this.passenger.schedulePrice === 0) {
@@ -144,6 +149,7 @@ export class BookingPageComponent implements OnInit {
           console.log('Seat type updated successfully:', updatedReservation);
           this.selectedReservation = updatedReservation;
           this.passenger.seatType = updatedReservation.seatType;
+
         },
         error: (error) => {
           this.isLoading = false;
@@ -211,4 +217,9 @@ export class BookingPageComponent implements OnInit {
 
     return isValid;
   }
+
+
+
+
+
 }

@@ -1,6 +1,7 @@
 package com.example.urbanvoyagebackend.dto;
 
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -11,6 +12,7 @@ public class ScheduleDTO {
     private RouteDTO route;
     private int availableSeats;
     private String duration;
+    private BigDecimal  schedulePrice;
 
     // Getters and setters
     public Long getScheduleID() { return scheduleID; }
@@ -30,5 +32,13 @@ public class ScheduleDTO {
 
     public void setDuration(String duration) {
         this.duration = duration;
+    }
+
+    public BigDecimal getSchedulePrice() {
+        return schedulePrice;
+    }
+
+    public void setSchedulePrice(BigDecimal schedulePrice) {
+        this.schedulePrice = schedulePrice;
     }
 }
