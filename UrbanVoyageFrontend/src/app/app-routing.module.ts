@@ -28,6 +28,7 @@ const routes: Routes = [
   { path: 'auth', component: AuthPageComponent },
   { path: 'register', component: RegisterPageComponent },
   { path: 'verify-email', component: VerifyEmailComponent },
+  { path: 'booking', component: BookingPageComponent },
   {
     path: 'backoffice',
     component: BackofficePageComponent,

@@ -6,6 +6,9 @@
 
   <app-header></app-header>
 
+  <app-message [message]="message" [type]="messageType"></app-message>
+
+
   <div class="w-full grow mx-auto px-4 md:px-32 py-8 md:py-12 bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText">
     <div class="w-full flex flex-col gap-8">
       <div class="mb-4">
@@ -22,14 +25,14 @@
               <div class="grid gap-4" *ngIf="selectedSchedule; else noSchedule">
                 <div class="flex items-center justify-between">
                   <div class="text-muted-foreground">Departure</div>
-                  <div>
+                  <div class="flex flex-col items-end">
                     <div class="font-medium">{{ selectedSchedule.route.departureCity }}</div>
                     <div class="text-sm text-muted-foreground text-gray-500">{{ selectedSchedule.departureTime | date:'shortTime' }}</div>
                   </div>
                 </div>
                 <div class="flex items-center justify-between">
                   <div class="text-muted-foreground">Arrival</div>
-                  <div>
+                  <div class="flex flex-col items-end">
                     <div class="font-medium">{{ selectedSchedule.route.arrivalCity }}</div>
                     <div class="text-sm text-muted-foreground text-gray-500">{{ selectedSchedule.arrivalTime | date:'shortTime' }}</div>
                   </div>
