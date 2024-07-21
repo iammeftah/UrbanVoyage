@@ -139,8 +139,9 @@ export class BookingPageComponent implements OnInit {
     this.isLoading = true;
     if (!this.selectedReservation) {
       console.error('No reservation selected');
-      this.message="Invalid passenger information";
+      this.message = "Invalid passenger information";
       this.messageType = "error";
+      this.isLoading = false;
       return;
     }
 
@@ -151,16 +152,37 @@ export class BookingPageComponent implements OnInit {
           console.log('Seat type updated successfully:', updatedReservation);
           this.selectedReservation = updatedReservation;
           this.passenger.seatType = updatedReservation.seatType;
-          this.message="Seat type updated successfully";
+
+          // Update the price based on the new seat type
+          this.updatePrice(seatType);
+
+          this.message = "Seat type updated successfully";
           this.messageType = "success";
         },
         error: (error) => {
           this.isLoading = false;
-          this.message="Invalid passenger information";
+          this.message = "Error updating seat type";
           this.messageType = "error";
           console.error('Error updating seat type:', error);
         }
       });
+  }
+
+  private updatePrice(seatType: string) {
+    const basePrice = this.selectedSchedule?.schedulePrice || 0;
+    switch (seatType) {
+      case 'STANDARD':
+        this.passenger.schedulePrice = basePrice;
+        break;
+      case 'PREMIUM':
+        this.passenger.schedulePrice = basePrice * 1.1;
+        break;
+      case 'VIP':
+        this.passenger.schedulePrice = basePrice * 1.2;
+        break;
+      default:
+        this.passenger.schedulePrice = basePrice;
+    }
   }
 
   getSeatTypeButtonClass(index: number): string {
