@@ -10,6 +10,7 @@ import { PassengerService } from "../../services/passenger.service";
 import { Passenger } from "../../models/passenger.model";
 import {PricingService} from "../../services/pricing.service";
 import {DistanceService} from "../../services/distance.service";
+import {PaymentService} from "../../services/payment.service";
 
 @Component({
   selector: 'app-booking-page',
@@ -21,6 +22,8 @@ export class BookingPageComponent implements OnInit {
   selectedSchedule: Schedule | null = null;
   selectedReservation: Reservation | null = null;
   currentUser: User | null = null;
+  paymentCard:boolean = false;
+  showPaymentComponent: boolean = false;
 
   passenger: Passenger = {
     firstName: '',
@@ -45,6 +48,7 @@ export class BookingPageComponent implements OnInit {
     private reservationService: ReservationService,
     private authService: AuthService,
     private passengerService: PassengerService,
+    private paymentService: PaymentService,
     private pricingService: PricingService,
     private distanceService: DistanceService
   ) {}
@@ -132,7 +136,27 @@ export class BookingPageComponent implements OnInit {
   }
 
   proceedToPayment() {
-    console.log("Proceed to payment");
+    console.log('Proceeding to payment');
+    if (!this.passenger || !this.passenger.schedulePrice) {
+      console.error('Invalid passenger or price information');
+      return;
+    }
+
+    const productName = `Ticket from ${this.passenger.departureCity} to ${this.passenger.arrivalCity}`;
+    const amount = this.passenger.schedulePrice;
+
+    console.log(`Creating checkout session for ${productName} with amount ${amount}`);
+    this.paymentService.createCheckoutSession(productName, amount)
+      .then(() => {
+        console.log('Successfully redirected to Stripe Checkout');
+      })
+      .catch(error => {
+        console.error('Error creating checkout session:', error);
+      });
+  }
+
+  closePayment() {
+    this.showPaymentComponent = false;
   }
 
   updateSeatType(seatType: string) {

@@ -22,4 +22,5 @@ export class PassengerService {
   updatePassenger(id: number, passenger: Passenger): Observable<Passenger> {
     return this.http.put<Passenger>(`${this.apiUrl}/${id}`, passenger);
   }
+
 }

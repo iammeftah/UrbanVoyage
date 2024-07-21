@@ -14,6 +14,8 @@ import {VerifyEmailComponent} from "./pages/verify-email/verify-email.component"
 import {BackofficePageComponent} from "./pages/backoffice-page/backoffice-page.component";
 import { AdminGuard } from './guards/admin.guard';
 import { UnauthorizedPageComponent } from './pages/unauthorized-page/unauthorized-page.component';
+import {SuccessPaymentComponent} from "./pages/success-payment/success-payment.component";
+import {CancelPaymentComponent} from "./pages/cancel-payment/cancel-payment.component";
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -36,6 +38,11 @@ const routes: Routes = [
   },
 
   { path: 'unauthorized', component: UnauthorizedPageComponent },
+  { path: 'success', component: SuccessPaymentComponent },
+
+  { path: 'cancel', component: CancelPaymentComponent },
+
+
 
 
 

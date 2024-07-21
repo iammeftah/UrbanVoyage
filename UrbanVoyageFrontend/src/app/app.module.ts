@@ -29,6 +29,9 @@ import { BackofficePageComponent } from './pages/backoffice-page/backoffice-page
 import { GoogleMapsModule } from '@angular/google-maps';
 import { UnauthorizedPageComponent } from './pages/unauthorized-page/unauthorized-page.component';
 import {AuthService} from "./services/auth.service";
+import {PaymentComponent} from "./components/payment/payment.component";
+import { SuccessPaymentComponent } from './pages/success-payment/success-payment.component';
+import { CancelPaymentComponent } from './pages/cancel-payment/cancel-payment.component';
 
 export function initializeApp() {
   return () => {
@@ -63,6 +66,9 @@ export function initializeApp() {
     LoadingSpinnerComponent,
     BackofficePageComponent,
     UnauthorizedPageComponent,
+    PaymentComponent,
+    SuccessPaymentComponent,
+    CancelPaymentComponent
   ],
   imports: [
     BrowserModule,
