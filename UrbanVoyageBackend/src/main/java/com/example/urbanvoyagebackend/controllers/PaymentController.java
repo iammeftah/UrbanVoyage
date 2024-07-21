@@ -1,6 +1,8 @@
 package com.example.urbanvoyagebackend.controllers;
 
+import com.example.urbanvoyagebackend.entity.travel.Reservation;
 import com.example.urbanvoyagebackend.models.CheckoutRequest;
+import com.example.urbanvoyagebackend.repository.travel.ReservationRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,9 @@ public class PaymentController {
     @Value("${stripe.api.key}")
     private String stripeApiKey;
 
+    public PaymentController(ReservationRepository reservationRepository) {
+    }
+
     @PostMapping("/create-checkout-session")
     public ResponseEntity<Map<String, String>> createCheckoutSession(@RequestBody CheckoutRequest checkoutRequest) throws StripeException {
         System.out.println("Received request to create checkout session");
@@ -35,7 +40,7 @@ public class PaymentController {
                         .setQuantity(1L)
                         .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
                                 .setCurrency("mad")
-                                .setUnitAmount((long) (checkoutRequest.getAmount() * 100))
+                                .setUnitAmount((long) (checkoutRequest.getAmount() * 100L))
                                 .setProductData(SessionCreateParams.LineItem.PriceData.ProductData.builder()
                                         .setName(checkoutRequest.getProductName())
                                         .build())
@@ -43,9 +48,12 @@ public class PaymentController {
                         .build())
                 .build();
 
+
         Session session = Session.create(params);
         System.out.println("Created session with ID: " + session.getId());
         System.out.println("Session URL: " + session.getUrl());
+
+
 
         Map<String, String> responseData = new HashMap<>();
         responseData.put("id", session.getId());
