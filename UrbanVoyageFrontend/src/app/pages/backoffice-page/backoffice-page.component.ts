@@ -72,14 +72,18 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
   updateDateTime(type: 'new' | 'edit'): void {
     const [hours, minutes] = this.selectedTime.split(':');
     let date = type === 'new' ? new Date(this.newSchedule.departureTime || new Date()) : new Date(this.editingSchedule?.departureTime || new Date());
-    date.setHours(parseInt(hours, 10));
-    date.setMinutes(parseInt(minutes, 10));
+
+    // Set the time while preserving the timezone offset
+    date.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+
+    // Format the date as ISO string but preserve the local time
+    const isoString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString();
 
     if (type === 'new') {
-      this.newSchedule.departureTime = date.toISOString();
+      this.newSchedule.departureTime = isoString;
     } else {
       if (this.editingSchedule) {
-        this.editingSchedule.departureTime = date.toISOString();
+        this.editingSchedule.departureTime = isoString;
       }
     }
   }
@@ -442,28 +446,9 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
   addSchedule(): void {
     if (!this.newSchedule.route || !this.newSchedule.departureTime || this.newSchedule.availableSeats === undefined) {
       this.message = "Please fill in all required fields.";
-      this.messageType="error";
-      return;
-    }
-
-    if (!this.newSchedule.availableSeats) {
-      this.message = "Please select a number of available seats.";
       this.messageType = "error";
       return;
     }
-
-    if (!this.newSchedule.route) {
-      this.message = "Please select a route.";
-      this.messageType = "error";
-      return;
-    }
-
-    if (!this.newSchedule.departureTime) {
-      this.message = "Please select a departure time.";
-      this.messageType = "error";
-      return;
-    }
-
 
     let routeId: number;
     if (typeof this.newSchedule.route === 'number') {
@@ -472,36 +457,36 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
       routeId = this.newSchedule.route.routeID;
     } else {
       this.message = "Invalid route selected.";
-      this.messageType="error";
-
-
+      this.messageType = "error";
       return;
     }
 
     const route = this.routes.find(r => r.routeID === routeId);
     if (!route) {
       this.message = "Selected route not found.";
-      this.messageType="error";
+      this.messageType = "error";
       return;
     }
 
     this.calculateTravelTime(route.departureCity, route.arrivalCity).then(travelTimeSeconds => {
       const departureTime = new Date(this.newSchedule.departureTime!);
-      const arrivalTime = new Date(departureTime.getTime() + travelTimeSeconds * 1000);
+      // Adjust for timezone offset
+      const timezoneOffset = departureTime.getTimezoneOffset() * 60000;
+      const adjustedDepartureTime = new Date(departureTime.getTime() - timezoneOffset);
 
-      // Calculate schedule price based on the selected route
+      const arrivalTime = new Date(adjustedDepartureTime.getTime() + travelTimeSeconds * 1000);
+
       const distanceFromDepartureToArrival = this.cityDistances[route.departureCity][route.arrivalCity];
-      const schedulePrice = this.pricingService.calculateTicketPrice(distanceFromDepartureToArrival , this.seatType);
-
+      const schedulePrice = this.pricingService.calculateTicketPrice(distanceFromDepartureToArrival, this.seatType);
 
       const scheduleToAdd: Omit<Schedule, 'scheduleID'> = {
         route: { routeID: routeId } as Route,
-        departureTime: departureTime.toISOString(),
+        departureTime: adjustedDepartureTime.toISOString(),
         arrivalTime: arrivalTime.toISOString(),
         availableSeats: this.newSchedule.availableSeats || 50,
-        duration:null,
+        duration: null,
         schedulePrice: schedulePrice,
-        seatType:'STANDARD'
+        seatType: 'STANDARD'
       };
 
       this.scheduleService.addSchedule(scheduleToAdd).subscribe({
@@ -509,29 +494,28 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
           this.schedules.push(schedule);
           this.newSchedule = {
             departureTime: new Date().toISOString(),
-
             availableSeats: 50
           };
           this.message = "Schedule added successfully";
-          this.messageType="success";
+          this.messageType = "success";
           this.loadSchedules();
         },
         error: (error) => {
           console.error('Error adding schedule:', error);
           this.message = 'Error adding schedule: ' + (error.message || 'Unknown error');
-          this.messageType="error";
+          this.messageType = "error";
         }
       });
     }).catch(error => {
       this.message = 'Error calculating travel time: ' + error;
-      this.messageType="error";
+      this.messageType = "error";
     });
   }
 
   updateSchedule(): void {
     if (!this.editingSchedule || !this.editingSchedule.scheduleID) {
       this.message = 'No valid schedule is currently being edited';
-      this.messageType="error";
+      this.messageType = "error";
       return;
     }
 
@@ -544,33 +528,37 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
 
     if (routeId === undefined) {
       this.message = 'Invalid route data for this schedule';
-      this.messageType="error";
+      this.messageType = "error";
       return;
     }
 
     const route = this.routes.find(r => r.routeID === routeId);
     if (!route) {
       this.message = 'Route not found for this schedule';
-      this.messageType="error";
+      this.messageType = "error";
       return;
     }
 
     this.calculateTravelTime(route.departureCity, route.arrivalCity).then(travelTimeSeconds => {
       const departureTime = new Date(this.editingSchedule!.departureTime);
-      const arrivalTime = new Date(departureTime.getTime() + travelTimeSeconds * 1000);
-      // Calculate schedule price based on the selected route
+      // Adjust for timezone offset
+      const timezoneOffset = departureTime.getTimezoneOffset() * 60000;
+      const adjustedDepartureTime = new Date(departureTime.getTime() - timezoneOffset);
+
+      const arrivalTime = new Date(adjustedDepartureTime.getTime() + travelTimeSeconds * 1000);
+
       const distanceFromDepartureToArrival = this.cityDistances[route.departureCity][route.arrivalCity];
-      const schedulePrice = this.pricingService.calculateTicketPrice(distanceFromDepartureToArrival , this.seatType);
+      const schedulePrice = this.pricingService.calculateTicketPrice(distanceFromDepartureToArrival, this.seatType);
 
       const scheduleToUpdate: Schedule = {
         scheduleID: this.editingSchedule!.scheduleID,
         route: { routeID: routeId } as Route,
-        departureTime: departureTime.toISOString(),
+        departureTime: adjustedDepartureTime.toISOString(),
         arrivalTime: arrivalTime.toISOString(),
         availableSeats: this.editingSchedule!.availableSeats,
-        duration: null, // Assuming selectedSchedule has a duration property
-        schedulePrice:schedulePrice,
-        seatType:'STANDARD'
+        duration: null,
+        schedulePrice: schedulePrice,
+        seatType: 'STANDARD'
       };
 
       this.scheduleService.updateSchedule(scheduleToUpdate).subscribe({
@@ -580,19 +568,19 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
             this.schedules[index] = updatedSchedule;
           }
           this.message = 'Schedule updated successfully';
-          this.messageType="success";
+          this.messageType = "success";
           this.closeScheduleEditForm();
           this.loadSchedules();
         },
         error: (error) => {
           console.error('Error updating schedule:', error);
           this.message = 'Error updating schedule: ' + (error.message || 'Unknown error');
-          this.messageType="error";
+          this.messageType = "error";
         }
       });
     }).catch(error => {
-      this.message = 'Error calculating travel time: ' + error ;
-      this.messageType="error";
+      this.message = 'Error calculating travel time: ' + error;
+      this.messageType = "error";
     });
   }
 
@@ -657,9 +645,7 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
   showMessage(message: string, type: 'success' | 'error'): void {
     this.message = message;
     this.messageType = type;
-    setTimeout(() => {
-      this.message = null;
-    }, 5000);
+    setTimeout(() => this.closeMessage(), 5000); // Clear message after 5 seconds
   }
 
   closeMessage(): void {
