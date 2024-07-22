@@ -33,6 +33,7 @@ public class Reservation {
     @Enumerated(EnumType.STRING)
     private SeatType seatType;
 
+
     // Constructors, getters, and setters
 
     public Reservation() {}

@@ -1,5 +1,6 @@
 package com.example.urbanvoyagebackend.entity.users;
 
+import com.example.urbanvoyagebackend.entity.travel.Passenger;
 import com.example.urbanvoyagebackend.entity.travel.Reservation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -41,6 +42,10 @@ public abstract class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Reservation> reservations = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "createdByUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Passenger> createdPassengers = new HashSet<>();
 
     private String verificationCode;
     private boolean verified;
@@ -187,6 +192,24 @@ public abstract class User {
         reservation.setUser(null);
     }
 
+    public Set<Passenger> getCreatedPassengers() {
+        return createdPassengers;
+    }
 
+    public void setCreatedPassengers(Set<Passenger> createdPassengers) {
+        this.createdPassengers = createdPassengers;
+    }
+
+    // Helper method to add a created passenger
+    public void addCreatedPassenger(Passenger passenger) {
+        this.createdPassengers.add(passenger);
+        passenger.setCreatedByUser(this);
+    }
+
+    // Helper method to remove a created passenger
+    public void removeCreatedPassenger(Passenger passenger) {
+        this.createdPassengers.remove(passenger);
+        passenger.setCreatedByUser(null);
+    }
 
 }

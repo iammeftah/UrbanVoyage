@@ -26,6 +26,8 @@ public class AuthService {
     @Value("${jwt.expiration}")
     private Long jwtExpirationInMs;
 
+
+
     @Autowired
     private UserRepository userRepository;
 
@@ -87,5 +89,9 @@ public class AuthService {
     private Key getSigningKey() {
         byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public User getCurrentUser(String email) {
+        return userRepository.findByEmail(email);
     }
 }

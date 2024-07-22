@@ -1,5 +1,6 @@
 package com.example.urbanvoyagebackend.entity.travel;
 
+import com.example.urbanvoyagebackend.entity.users.User;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
@@ -45,13 +46,18 @@ public class Passenger {
     @Column(name = "schedule_price", nullable = false)
     private BigDecimal schedulePrice;
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by_user_id")
+    private User createdByUser;
+
     // Default constructor
     public Passenger() {}
 
     // Constructor with all fields
     public Passenger(String firstName, String lastName, String email, String phoneNumber, String specialRequests,
                      String departureCity, String arrivalCity, String departureTime, String arrivalTime,
-                     String seatType, BigDecimal schedulePrice) {
+                     String seatType, BigDecimal schedulePrice , User createdByUser) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -63,6 +69,7 @@ public class Passenger {
         this.arrivalTime = arrivalTime;
         this.seatType = seatType;
         this.schedulePrice = schedulePrice;
+        this.createdByUser = createdByUser;
     }
 
     // Getters and setters for all fields
@@ -181,5 +188,13 @@ public class Passenger {
                 ", seatType='" + seatType + '\'' +
                 ", schedulePrice=" + schedulePrice +
                 '}';
+    }
+
+    public User getCreatedByUser() {
+        return createdByUser;
+    }
+
+    public void setCreatedByUser(User createdByUser) {
+        this.createdByUser = createdByUser;
     }
 }
