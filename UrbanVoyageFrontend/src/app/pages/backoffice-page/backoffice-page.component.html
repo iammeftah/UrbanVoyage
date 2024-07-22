@@ -103,6 +103,7 @@
           <table class="w-full caption-bottom text-sm rounded-lg overflow-hidden">
             <thead class=" bg-gray-50 dark:bg-gray-800">
             <tr class="w-full  transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+              <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Schedule ID</th>
               <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Route</th>
               <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Departure Time</th>
               <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Arrival Time</th>
@@ -112,6 +113,7 @@
             </thead>
             <tbody class="[&_tr:last-child]:border-0">
             <tr *ngFor="let schedule of schedules" class="transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ schedule.scheduleID}}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 flex items-center justify-center gap-8">{{ schedule.route.departureCity }} <i class='bx bx-sort rotate-90 text-xl text-cyan-500' ></i> {{ schedule.route.arrivalCity }}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ schedule.departureTime | date:'medium' }}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ schedule.arrivalTime | date:'medium' }}</td>
@@ -135,6 +137,7 @@
           <table class="w-full caption-bottom text-sm rounded-lg overflow-hidden">
             <thead class="bg-gray-50 dark:bg-gray-800">
             <tr class="w-full h-10 transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+              <th class="px-4 py-2">Reservation ID</th>
               <th class="px-4 py-2">User ID</th>
               <th class="px-4 py-2">User</th>
               <th class="px-4 py-2">Route</th>
@@ -145,6 +148,7 @@
             </thead>
             <tbody>
             <tr *ngFor="let reservation of reservations" class="transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ reservation.reservationID }}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ reservation.user.userID }}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ reservation.user.username }}</td>
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 flex items-center justify-center gap-8">{{ reservation.route.departureCity }} <i class='bx bx-sort rotate-90 text-xl text-cyan-500' ></i> {{ reservation.route.arrivalCity }}</td>

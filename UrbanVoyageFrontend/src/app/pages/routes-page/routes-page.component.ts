@@ -222,8 +222,9 @@ export class RoutesPageComponent implements OnInit {
 
 
 
-  // route-page.component.ts
-  bookScheduleAndCreateReservation(schedule: Schedule): void {
+
+
+  bookSchedule(schedule: Schedule): void {
     if (!this.authService.isLoggedIn()) {
       this.message = "Please log in to book a trip.";
       this.messageType = "error";
@@ -239,8 +240,10 @@ export class RoutesPageComponent implements OnInit {
     }
 
     console.log('route-page: Selected Schedule->', schedule);
-    this.sharedDataService.setSelectedSchedule(schedule);
+    this.createReservation(schedule);
+  }
 
+  private createReservation(schedule: Schedule): void {
     this.authService.getCurrentUserId().pipe(
       switchMap(userId => {
         if (!userId) {
@@ -251,7 +254,8 @@ export class RoutesPageComponent implements OnInit {
         const reservationDTO = {
           userId: userId,
           routeId: schedule.route.routeID,
-          seatType: 'STANDARD' // Set a default seat type
+          seatType: 'STANDARD',
+          status: 'PENDING'
         };
         console.log('Reservation DTO:', reservationDTO);
         return this.reservationService.createReservation(reservationDTO);
@@ -261,17 +265,20 @@ export class RoutesPageComponent implements OnInit {
         if (reservation) {
           console.log('Reservation created:', reservation);
           this.sharedDataService.setSelectedReservation(reservation);
-          this.updateAvailableSeats(schedule);
+          this.sharedDataService.setSelectedSchedule(schedule);
+          this.router.navigate(['/booking']);
         } else {
           console.error('No reservation returned');
         }
       },
       error: (error) => {
         console.error('Error creating reservation:', error);
-        // Show an error message to the user
+        this.message = "Error creating reservation. Please try again.";
+        this.messageType = "error";
       }
     });
   }
+
 
   private updateAvailableSeats(schedule: Schedule): void {
     const newAvailableSeats = schedule.availableSeats - 1;

@@ -135,8 +135,51 @@ export class BookingPageComponent implements OnInit {
     return `${hours}h ${minutes}m`;
   }
 
+
+  createReservation() {
+    this.authService.getCurrentUserId().subscribe(userId => {
+      if (!userId) {
+        console.error('User not logged in');
+        this.router.navigate(['/login']);
+        return;
+      }
+
+      const reservationDTO = {
+        userId: userId,
+        routeId: this.selectedSchedule?.route.routeID,
+        seatType: 'STANDARD',
+        status: 'PENDING'
+      };
+
+      this.reservationService.createReservation(reservationDTO).subscribe({
+        next: (reservation) => {
+          console.log('Reservation created:', reservation);
+          this.selectedReservation = reservation;
+          this.initiatePayment();
+        },
+        error: (error) => {
+          console.error('Error creating reservation:', error);
+          this.message = "Error creating reservation";
+          this.messageType = "error";
+        }
+      });
+    });
+  }
+
+
   proceedToPayment() {
     console.log('Proceeding to payment');
+    if (!this.validatePassengerInfo()) {
+      console.error('Invalid passenger information');
+      this.message = "Invalid passenger information";
+      this.messageType = "error";
+      return;
+    }
+
+    this.initiatePayment();
+  }
+
+  async initiatePayment() {
     if (!this.passenger || !this.passenger.schedulePrice) {
       console.error('Invalid passenger or price information');
       return;
@@ -145,14 +188,34 @@ export class BookingPageComponent implements OnInit {
     const productName = `Ticket from ${this.passenger.departureCity} to ${this.passenger.arrivalCity}`;
     const amount = this.passenger.schedulePrice;
 
-    console.log(`Creating checkout session for ${productName} with amount ${amount}`);
-    this.paymentService.createCheckoutSession(productName, amount)
-      .then(() => {
-        console.log('Successfully redirected to Stripe Checkout');
-      })
-      .catch(error => {
-        console.error('Error creating checkout session:', error);
+    try {
+      console.log(`Creating checkout session for ${productName} with amount ${amount}`);
+      const sessionId = await this.paymentService.createCheckoutSession(productName, amount);
+
+      // Store the sessionId in localStorage
+      this.paymentService.storeSessionId(sessionId);
+
+      // Redirect to Stripe checkout
+      window.location.href = `https://checkout.stripe.com/pay/${sessionId}`;
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
+      this.handlePaymentError();
+    }
+  }
+
+  handlePaymentError() {
+    if (this.selectedReservation) {
+      this.reservationService.deleteReservation(this.selectedReservation.reservationID).subscribe({
+        next: () => {
+          console.log('Reservation deleted due to payment failure');
+          this.message = "Payment failed. Your reservation has been cancelled.";
+          this.messageType = "error";
+        },
+        error: (error) => {
+          console.error('Error deleting reservation:', error);
+        }
       });
+    }
   }
 
   closePayment() {

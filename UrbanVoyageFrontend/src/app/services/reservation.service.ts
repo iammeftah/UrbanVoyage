@@ -74,4 +74,13 @@ export class ReservationService {
     );
   }
 
+  deleteReservation(reservationId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${reservationId}`).pipe(
+      catchError(error => {
+        console.error('Error deleting reservation:', error);
+        return throwError(() => new Error('Failed to delete reservation'));
+      })
+    );
+  }
+
 }

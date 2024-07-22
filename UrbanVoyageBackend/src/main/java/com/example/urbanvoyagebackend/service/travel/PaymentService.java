@@ -18,8 +18,10 @@ public class PaymentService {
         this.paymentRepository = paymentRepository;
     }
 
-    public Payment createPayment(Reservation reservation, double amount, String status) {
+    public void createPayment(Reservation reservation, double amount, String status) {
         Payment payment = new Payment(reservation, amount, new Date(), status);
-        return paymentRepository.save(payment);
+        paymentRepository.save(payment);
     }
+
+
 }
