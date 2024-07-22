@@ -124,6 +124,7 @@ export class AuthService {
     return null;
   }
 
+
   loadCurrentUser(): void {
     const email = this.getCurrentUserEmail();
     if (email) {
@@ -163,4 +164,7 @@ export class AuthService {
       })
     );
   }
+
+
+
 }

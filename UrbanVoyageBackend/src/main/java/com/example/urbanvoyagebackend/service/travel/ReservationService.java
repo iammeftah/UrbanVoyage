@@ -118,4 +118,16 @@ public class ReservationService {
         }
         reservationRepository.deleteById(id);
     }
+
+    public void requestRefund(Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found for id: " + reservationId));
+
+        // Add your refund logic here. For example, you might set a status on the reservation
+        // or call an external payment service to process the refund.
+        reservation.setStatus(Reservation.ReservationStatus.REFUND_REQUESTED);
+
+        reservationRepository.save(reservation);
+    }
+
 }

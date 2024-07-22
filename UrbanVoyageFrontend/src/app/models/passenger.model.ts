@@ -1,5 +1,6 @@
 export interface Passenger {
   id?: number;
+  reservationId: number;
   firstName: string;
   lastName: string;
   email: string;

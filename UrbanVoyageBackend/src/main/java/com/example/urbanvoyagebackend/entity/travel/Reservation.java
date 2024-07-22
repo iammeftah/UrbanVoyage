@@ -60,7 +60,7 @@ public class Reservation {
     }
 
     public enum ReservationStatus {
-        PENDING, CONFIRMED, CANCELLED
+        PENDING, CONFIRMED, CANCELLED , REFUND_REQUESTED
     }
 
     public enum SeatType {

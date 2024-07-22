@@ -197,4 +197,15 @@ public class Passenger {
     public void setCreatedByUser(User createdByUser) {
         this.createdByUser = createdByUser;
     }
+
+    @OneToOne
+    @JoinColumn(name = "reservation_id")
+    private Reservation reservation;
+
+    // Getter and setter for reservationId
+    public Long getReservationId() {
+        return reservation != null ? reservation.getReservationID() : null;
+    }
+
+
 }

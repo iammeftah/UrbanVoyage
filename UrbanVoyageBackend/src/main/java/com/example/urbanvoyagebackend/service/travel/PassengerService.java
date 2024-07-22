@@ -38,5 +38,9 @@ public class PassengerService {
         return passengerRepository.findById(id).orElse(null);
     }
 
-    // Add more methods as needed
+    public List<Passenger> getPassengersByUser(User user) {
+        return passengerRepository.findByCreatedByUser(user);
+    }
+
+
 }

@@ -23,4 +23,9 @@ export class PassengerService {
     return this.http.put<Passenger>(`${this.apiUrl}/${id}`, passenger);
   }
 
+  // In passenger.service.ts
+  getPassengersByUserId(userId: number): Observable<Passenger[]> {
+    return this.http.get<Passenger[]>(`${this.apiUrl}/user/${userId}`);
+  }
+
 }

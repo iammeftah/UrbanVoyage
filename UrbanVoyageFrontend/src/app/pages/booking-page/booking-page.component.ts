@@ -26,6 +26,7 @@ export class BookingPageComponent implements OnInit {
   showPaymentComponent: boolean = false;
 
   passenger: Passenger = {
+    reservationId: 0,
     firstName: '',
     lastName: '',
     email: '',
@@ -96,6 +97,7 @@ export class BookingPageComponent implements OnInit {
     }
 
     if (this.selectedReservation) {
+      this.passenger.reservationId = this.selectedReservation.reservationID ;
       this.passenger.seatType = this.selectedReservation.seatType || 'STANDARD';
     }
 

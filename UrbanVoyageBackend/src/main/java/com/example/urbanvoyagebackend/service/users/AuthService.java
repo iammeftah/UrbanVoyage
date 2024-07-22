@@ -94,4 +94,5 @@ public class AuthService {
     public User getCurrentUser(String email) {
         return userRepository.findByEmail(email);
     }
+
 }

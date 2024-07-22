@@ -2,7 +2,53 @@
   <app-header></app-header>
 
   <div class="flex grow">
-    <p>client-dashboard works!</p>
+    <div class="flex flex-col min-h-screen p-6">
+      <h1 class="text-3xl font-bold mb-6">Client Dashboard</h1>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Passenger Tickets -->
+        <div class="bg-white shadow-md rounded-lg p-6">
+          <h2 class="text-xl font-semibold mb-4">Your Tickets</h2>
+          <table class="w-full">
+            <thead>
+            <tr>
+              <th class="text-left">From</th>
+              <th class="text-left">To</th>
+              <th class="text-left">Date</th>
+              <th class="text-left">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let ticket of passengerTickets">
+              <td>{{ ticket.departureCity }}</td>
+              <td>{{ ticket.arrivalCity }}</td>
+              <td>{{ ticket.departureTime | date:'short' }}</td>
+              <td>
+                <button (click)="openChangeScheduleModal(ticket)" class="text-blue-600 hover:underline mr-2">Change Schedule</button>
+                <button (click)="requestRefund(ticket)" class="text-red-600 hover:underline">Request Refund</button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Change Schedule Modal -->
+        <div *ngIf="showChangeScheduleModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
+          <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
+            <h3 class="text-xl font-semibold mb-4">Change Schedule</h3>
+            <p>Current schedule: {{ selectedTicket?.departureTime | date:'short' }}</p>
+            <div class="mt-4">
+              <label for="newDate" class="block mb-2">New Date:</label>
+              <input type="datetime-local" id="newDate" [(ngModel)]="newScheduleDate" class="w-full p-2 border rounded">
+            </div>
+            <div class="mt-6 flex justify-end">
+              <button (click)="closeChangeScheduleModal()" class="bg-gray-300 text-gray-800 px-4 py-2 rounded mr-2">Cancel</button>
+              <button (click)="changeSchedule()" class="bg-blue-600 text-white px-4 py-2 rounded">Confirm Change</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <app-footer></app-footer>
