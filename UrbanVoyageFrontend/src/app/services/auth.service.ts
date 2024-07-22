@@ -12,6 +12,8 @@ export class AuthService {
   private currentUserSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private isAdminSubject = new BehaviorSubject<boolean>(this.getStoredAdminStatus());
 
+  private userRolesSubject = new BehaviorSubject<string[]>(this.getStoredRoles());
+
   constructor(private http: HttpClient) {}
 
   private getStoredAdminStatus(): boolean {
@@ -53,6 +55,7 @@ export class AuthService {
       tap((response: any) => {
         if (response.token) {
           localStorage.setItem('token', response.token);
+          this.setUserRoles(response.roles); // Assuming the backend sends roles in the response
         }
       }),
       catchError((error) => {
@@ -62,9 +65,31 @@ export class AuthService {
     );
   }
 
+  setUserRoles(roles: string[]) {
+    localStorage.setItem('userRoles', JSON.stringify(roles));
+    this.userRolesSubject.next(roles);
+  }
+
+  getStoredRoles(): string[] {
+    const storedRoles = localStorage.getItem('userRoles');
+    return storedRoles ? JSON.parse(storedRoles) : [];
+  }
+
+  getUserRoles(): Observable<string[]> {
+    return this.userRolesSubject.asObservable();
+  }
+
+  hasRole(role: string): Observable<boolean> {
+    return this.getUserRoles().pipe(
+      map(roles => roles.includes(role))
+    );
+  }
+
   logout(): Observable<any> {
     localStorage.removeItem('token');
+    localStorage.removeItem('userRoles');
     this.setAdminStatus(false);
+    this.userRolesSubject.next([]);
     return this.http.post(`${this.apiUrl}/signout`, {});
   }
 

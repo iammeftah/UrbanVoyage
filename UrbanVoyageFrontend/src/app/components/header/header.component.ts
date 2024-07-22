@@ -14,7 +14,11 @@ export class HeaderComponent {
   message: string | null = null;
   messageType: 'success' | 'error' = 'success';
 
+
+
   isAdmin: boolean = false;
+  isClient: boolean = false;
+  private clientSubscription: Subscription | undefined;
   private adminSubscription: Subscription | undefined;
 
   constructor(private authService: AuthService, private router: Router) {
@@ -26,6 +30,16 @@ export class HeaderComponent {
     this.authService.getAdminStatus().subscribe(status => {
       this.isAdmin = status;
     });
+    this.clientSubscription = this.authService.hasRole('ROLE_CLIENT').subscribe(
+      isClient => this.isClient = isClient
+    );
+  }
+
+  ngOnDestroy() {
+    if (this.clientSubscription) {
+      this.clientSubscription.unsubscribe();
+    }
+    // ... unsubscribe from other subscriptions if any ...
   }
 
 
