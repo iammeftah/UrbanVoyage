@@ -32,6 +32,7 @@ import {AuthService} from "./services/auth.service";
 import {PaymentComponent} from "./components/payment/payment.component";
 import { SuccessPaymentComponent } from './pages/success-payment/success-payment.component';
 import { CancelPaymentComponent } from './pages/cancel-payment/cancel-payment.component';
+import {ClientDashboardComponent} from "./pages/client-dashboard/client-dashboard.component";
 
 export function initializeApp() {
   return () => {
@@ -68,7 +69,8 @@ export function initializeApp() {
     UnauthorizedPageComponent,
     PaymentComponent,
     SuccessPaymentComponent,
-    CancelPaymentComponent
+    CancelPaymentComponent,
+    ClientDashboardComponent
   ],
   imports: [
     BrowserModule,
