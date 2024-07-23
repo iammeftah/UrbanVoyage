@@ -14,6 +14,8 @@ public class PassengerDTO {
     private String arrivalCity;
     private BigDecimal SchedulePrice;
     private String seatType;
+    private String departureTime;
+    private String arrivalTime;
 
     public Long getId() {
         return id;
@@ -67,6 +69,8 @@ public class PassengerDTO {
         return specialRequests;
     }
 
+
+
     public void setSpecialRequests(String specialRequests) {
         this.specialRequests = specialRequests;
     }
@@ -103,5 +107,21 @@ public class PassengerDTO {
         this.seatType = seatType;
     }
 
-    // Getters and setters
+    public String getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(String departureTime) {
+        this.departureTime = departureTime;
+    }
+
+    public String getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(String arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+
+// Getters and setters
 }

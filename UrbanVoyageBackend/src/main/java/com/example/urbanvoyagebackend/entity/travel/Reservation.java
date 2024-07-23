@@ -115,4 +115,5 @@ public class Reservation {
     public void setSeatType(SeatType seatType) {
         this.seatType = seatType;
     }
+
 }

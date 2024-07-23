@@ -4,6 +4,7 @@ import com.example.urbanvoyagebackend.entity.travel.Passenger;
 import com.example.urbanvoyagebackend.entity.users.User;
 import com.example.urbanvoyagebackend.repository.travel.PassengerRepository;
 import com.example.urbanvoyagebackend.service.users.AuthService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ public class PassengerService {
         this.authService = authService;
     }
 
+    @Transactional
     public Passenger savePassenger(Passenger passenger, String userEmail) {
         User currentUser = authService.getCurrentUser(userEmail);
         if (currentUser != null) {

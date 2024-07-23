@@ -198,14 +198,29 @@ public class Passenger {
         this.createdByUser = createdByUser;
     }
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
 
-    // Getter and setter for reservationId
-    public Long getReservationId() {
-        return reservation != null ? reservation.getReservationID() : null;
+    // ... getters and setters ...
+
+    public Reservation getReservation() {
+        return reservation;
     }
+
+    public void setReservation(Reservation reservation) {
+        this.reservation = reservation;
+    }
+
+    public void setReservationId(Long id) {
+        if (this.reservation == null) {
+            this.reservation = new Reservation();
+        }
+        this.reservation.setReservationID(id);
+    }
+
+
+
 
 
 }

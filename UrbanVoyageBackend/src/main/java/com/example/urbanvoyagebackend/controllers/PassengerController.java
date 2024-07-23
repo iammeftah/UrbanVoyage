@@ -1,9 +1,13 @@
 package com.example.urbanvoyagebackend.controllers;
 
+import com.example.urbanvoyagebackend.dto.PassengerDTO;
 import com.example.urbanvoyagebackend.entity.travel.Passenger;
+import com.example.urbanvoyagebackend.entity.travel.Reservation;
 import com.example.urbanvoyagebackend.entity.users.User;
+import com.example.urbanvoyagebackend.repository.travel.ReservationRepository;
 import com.example.urbanvoyagebackend.repository.users.UserRepository;
 import com.example.urbanvoyagebackend.service.travel.PassengerService;
+import com.example.urbanvoyagebackend.service.travel.ReservationService;
 import com.example.urbanvoyagebackend.service.users.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,16 +22,46 @@ public class PassengerController {
 
     private final PassengerService passengerService;
     private final UserRepository userRepository;
+    private final ReservationService reservationService;
 
     @Autowired
-    public PassengerController(PassengerService passengerService , AuthService authService, UserRepository userRepository) {
+    public PassengerController(PassengerService passengerService , AuthService authService, UserRepository userRepository, ReservationService reservationService) {
         this.passengerService = passengerService;
         this.userRepository = userRepository;
+        this.reservationService = reservationService;
     }
 
     @PostMapping
-    public ResponseEntity<Passenger> createPassenger(@RequestBody Passenger passenger) {
-        Passenger savedPassenger = passengerService.savePassenger(passenger , passenger.getEmail());
+    public ResponseEntity<Passenger> createPassenger(@RequestBody PassengerDTO passengerDTO) {
+        if (passengerDTO.getReservationId() == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        Reservation reservation = reservationService.getReservationById(passengerDTO.getReservationId());
+        if (reservation == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Passenger passenger = new Passenger();
+        // Map DTO fields to Passenger entity
+        passenger.setFirstName(passengerDTO.getFirstName());
+        passenger.setLastName(passengerDTO.getLastName());
+        passenger.setEmail(passengerDTO.getEmail());
+        passenger.setPhoneNumber(passengerDTO.getPhoneNumber());
+        passenger.setSpecialRequests(passengerDTO.getSpecialRequests());
+        passenger.setDepartureCity(passengerDTO.getDepartureCity());
+        passenger.setArrivalCity(passengerDTO.getArrivalCity());
+        passenger.setSeatType(passengerDTO.getSeatType());
+        passenger.setSchedulePrice(passengerDTO.getSchedulePrice());
+        passenger.setArrivalTime(passengerDTO.getArrivalTime());
+        passenger.setDepartureTime(passengerDTO.getDepartureTime());
+
+        // Set the reservation
+        passenger.setReservation(reservation);
+
+        passenger.setReservationId(reservation.getReservationID());
+
+        Passenger savedPassenger = passengerService.savePassenger(passenger, passenger.getEmail());
         System.out.println("Created passenger " + savedPassenger);
         return ResponseEntity.ok(savedPassenger);
     }

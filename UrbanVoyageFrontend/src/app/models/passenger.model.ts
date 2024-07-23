@@ -1,3 +1,5 @@
+import {Reservation} from "./reservation.model";
+
 export interface Passenger {
   id?: number;
   reservationId: number;

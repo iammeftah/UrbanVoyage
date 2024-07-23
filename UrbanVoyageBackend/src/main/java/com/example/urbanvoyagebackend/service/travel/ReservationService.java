@@ -130,4 +130,8 @@ public class ReservationService {
         reservationRepository.save(reservation);
     }
 
+    public Reservation getReservationById(Long id) {
+        return reservationRepository.findById(id).orElse(null);
+    }
+
 }
