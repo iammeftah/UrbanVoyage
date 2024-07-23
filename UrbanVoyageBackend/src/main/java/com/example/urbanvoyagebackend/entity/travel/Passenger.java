@@ -1,11 +1,13 @@
 package com.example.urbanvoyagebackend.entity.travel;
 
 import com.example.urbanvoyagebackend.entity.users.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "passengers")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Passenger {
 
     @Id
