@@ -15,6 +15,13 @@ export class ClientDashboardComponent implements OnInit {
   showChangeScheduleModal: boolean = false;
   selectedTicket: Passenger | null = null;
   newScheduleDate: string = '';
+  loading: boolean = false;
+
+  showDatePicker = false;
+  currentMonth: Date = new Date();
+  calendarDays: number[] = [];
+  daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
 
   constructor(
     private passengerService: PassengerService,
@@ -24,16 +31,20 @@ export class ClientDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.loadPassengerTickets();
+    this.generateCalendar();
   }
 
   loadPassengerTickets() {
+    this.loading=true;
     this.authService.getCurrentUserId().subscribe(userId => {
       if (userId) {
         this.passengerService.getPassengersByUserId(userId).subscribe(
           tickets => {
+            this.loading=false;
             this.passengerTickets = tickets;
           },
           error => {
+            this.loading=false;
             console.error('Error fetching passenger tickets:', error);
           }
         );
@@ -80,5 +91,69 @@ export class ClientDashboardComponent implements OnInit {
         }
       );
     }
+  }
+
+
+
+
+
+
+  openDatePicker(ticket: any) {
+    this.showDatePicker = true;
+    this.selectedTicket = ticket;
+    this.currentMonth = new Date(ticket.departureTime);
+    this.generateCalendar();
+  }
+
+  generateCalendar() {
+    const year = this.currentMonth.getFullYear();
+    const month = this.currentMonth.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    this.calendarDays = [];
+    for (let i = 0; i < firstDay; i++) {
+      this.calendarDays.push(0);
+    }
+    for (let i = 1; i <= daysInMonth; i++) {
+      this.calendarDays.push(i);
+    }
+  }
+
+  prevMonth() {
+    this.currentMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() - 1, 1);
+    this.generateCalendar();
+  }
+
+  nextMonth() {
+    this.currentMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() + 1, 1);
+    this.generateCalendar();
+  }
+
+  selectDate(day: number, ticket: any) {
+    const newDate = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), day);
+    ticket.departureTime = newDate;
+    this.showDatePicker = false;
+    // Here you would typically call a service to update the ticket's date
+    console.log(`Updated ticket ${ticket.id} to new date: ${newDate}`);
+  }
+
+  isSelectedDate(day: number): boolean {
+    if (!this.selectedTicket) return false;
+    const ticketDate = new Date(this.selectedTicket.departureTime);
+    return (
+      day === ticketDate.getDate() &&
+      this.currentMonth.getMonth() === ticketDate.getMonth() &&
+      this.currentMonth.getFullYear() === ticketDate.getFullYear()
+    );
+  }
+
+  isCurrentMonth(day: number): boolean {
+    const today = new Date();
+    return (
+      this.currentMonth.getMonth() === today.getMonth() &&
+      this.currentMonth.getFullYear() === today.getFullYear() &&
+      day >= today.getDate()
+    );
   }
 }

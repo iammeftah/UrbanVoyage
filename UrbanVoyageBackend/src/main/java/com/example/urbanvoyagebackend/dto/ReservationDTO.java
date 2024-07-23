@@ -1,5 +1,6 @@
 package com.example.urbanvoyagebackend.dto;
 
+import com.example.urbanvoyagebackend.entity.travel.Passenger;
 import com.example.urbanvoyagebackend.entity.travel.Reservation;
 import com.example.urbanvoyagebackend.entity.travel.Route;
 import com.example.urbanvoyagebackend.entity.users.User;
@@ -17,17 +18,19 @@ public class ReservationDTO {
     private String departure ;
     private String arrival;
     private Reservation.SeatType seatType;
+    private Passenger passenger ;
 
     public ReservationDTO() {
     }
 
-    public ReservationDTO(Long reservationID, Date reservationDate, Reservation.ReservationStatus status, Long userId, Long routeId , Reservation.SeatType seatType) {
+    public ReservationDTO(Long reservationID, Date reservationDate, Reservation.ReservationStatus status, Long userId, Long routeId , Reservation.SeatType seatType , Passenger passenger) {
         this.reservationID = reservationID;
         this.reservationDate = reservationDate;
         this.status = status;
         this.userId = userId;
         this.routeId = routeId;
         this.seatType = seatType;
+        this.passenger = passenger;
     }
 
     public Long getReservationID() {

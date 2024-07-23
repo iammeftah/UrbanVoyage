@@ -97,6 +97,7 @@ export class BookingPageComponent implements OnInit {
     }
 
     if (this.selectedReservation) {
+
       this.passenger.reservationId = this.selectedReservation.reservationID ;
       this.passenger.seatType = this.selectedReservation.seatType || 'STANDARD';
     }
