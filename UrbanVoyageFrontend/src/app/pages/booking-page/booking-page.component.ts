@@ -21,6 +21,7 @@ export class BookingPageComponent implements OnInit {
   selectedSeatTypeIndex: number | null = null;
   selectedSchedule: Schedule | null = null;
   selectedReservation: Reservation | null = null;
+  selectedPassenger: Passenger | null = null;
   currentUser: User | null = null;
   paymentCard:boolean = false;
   showPaymentComponent: boolean = false;
@@ -50,14 +51,13 @@ export class BookingPageComponent implements OnInit {
     private authService: AuthService,
     private passengerService: PassengerService,
     private paymentService: PaymentService,
-    private pricingService: PricingService,
-    private distanceService: DistanceService
   ) {}
 
 
   ngOnInit() {
     this.selectedSchedule = this.sharedDataService.getSelectedSchedule();
     this.selectedReservation = this.sharedDataService.getSelectedReservation();
+    this.selectedPassenger = this.sharedDataService.getSelectedPassenger();
 
     if (!this.selectedSchedule || !this.selectedReservation) {
       console.log('No schedule or reservation selected, redirecting to routes page');
@@ -301,7 +301,7 @@ export class BookingPageComponent implements OnInit {
         console.log('Passenger created:', createdPassenger);
         this.message= 'Passenger created: ' + this.passenger.firstName + ' ' + this.passenger.lastName;
         this.messageType = "success";
-
+        this.sharedDataService.setSelectedPassenger(createdPassenger);
         this.proceedToPayment();
       },
       (error) => {

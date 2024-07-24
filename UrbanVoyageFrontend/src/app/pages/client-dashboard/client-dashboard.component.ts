@@ -4,6 +4,7 @@ import { ReservationService } from '../../services/reservation.service';
 import { AuthService } from '../../services/auth.service';
 import { Passenger } from '../../models/passenger.model';
 import { Reservation } from '../../models/reservation.model';
+import {SharedDataService} from "../../services/shared-data.service";
 
 @Component({
   selector: 'app-client-dashboard',
@@ -17,6 +18,9 @@ export class ClientDashboardComponent implements OnInit {
   newScheduleDate: string = '';
   loading: boolean = false;
 
+  selectedPassenger: Passenger | null = null;
+
+
   showDatePicker = false;
   currentMonth: Date = new Date();
   calendarDays: number[] = [];
@@ -26,31 +30,37 @@ export class ClientDashboardComponent implements OnInit {
   constructor(
     private passengerService: PassengerService,
     private reservationService: ReservationService,
-    private authService: AuthService
+    private authService: AuthService,
+    private sharedDataService: SharedDataService
   ) {}
 
   ngOnInit() {
+    this.selectedPassenger = this.sharedDataService.getSelectedPassenger();
+
     this.loadPassengerTickets();
     this.generateCalendar();
   }
 
   loadPassengerTickets() {
-    this.loading=true;
+    this.loading = true;
     this.authService.getCurrentUserId().subscribe(userId => {
       if (userId) {
         this.passengerService.getPassengersByUserId(userId).subscribe(
           tickets => {
-            this.loading=false;
-            this.passengerTickets = tickets;
+            this.loading = false;
+            // Here, you should use the transformed data
+            this.passengerTickets = this.passengerService.transformPassengerData(tickets);
+            console.log("Passenger Tickets: ", this.passengerTickets);
           },
           error => {
-            this.loading=false;
+            this.loading = false;
             console.error('Error fetching passenger tickets:', error);
           }
         );
       }
     });
   }
+
 
   openChangeScheduleModal(ticket: Passenger) {
     this.selectedTicket = ticket;
@@ -80,16 +90,21 @@ export class ClientDashboardComponent implements OnInit {
   }
 
   requestRefund(ticket: Passenger) {
-    if (confirm('Are you sure you want to request a refund for this ticket?')) {
-      this.reservationService.requestRefund(ticket.reservationId).subscribe(
-        result => {
-          console.log('Refund requested:', result);
-          this.loadPassengerTickets(); // Reload tickets after refund request
-        },
-        error => {
-          console.error('Error requesting refund:', error);
-        }
-      );
+    console.log("Requesting refund for ticket:", ticket);
+    if (ticket.reservationId) {
+      if (confirm('Are you sure you want to request a refund for this ticket?')) {
+        this.reservationService.requestRefund(ticket.reservationId).subscribe(
+          result => {
+            console.log('Refund requested:', result);
+            this.loadPassengerTickets(); // Reload tickets after refund request
+          },
+          error => {
+            console.error('Error requesting refund:', error);
+          }
+        );
+      }
+    } else {
+      console.error('Cannot request refund: reservationId is missing for ticket', ticket);
     }
   }
 

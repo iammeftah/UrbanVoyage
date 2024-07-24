@@ -29,4 +29,12 @@ export class PassengerService {
     return this.http.get<Passenger[]>(`${this.apiUrl}/user/${userId}`);
   }
 
+  // Transform the data to ensure reservationId is populated correctly
+  transformPassengerData(data: any[]): Passenger[] {
+    return data.map(item => ({
+      ...item,
+      reservationId: item.reservation ? item.reservation.reservationID : null
+    }));
+  }
+
 }
