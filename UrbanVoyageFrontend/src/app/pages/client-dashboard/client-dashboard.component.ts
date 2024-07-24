@@ -96,6 +96,7 @@ export class ClientDashboardComponent implements OnInit {
         this.reservationService.requestRefund(ticket.reservationId).subscribe(
           result => {
             console.log('Refund requested:', result);
+            ticket.status = 'REFUNDED';
             alert('Refund request processed successfully.');
             console.log('Refund response:', result);
             this.loadPassengerTickets();

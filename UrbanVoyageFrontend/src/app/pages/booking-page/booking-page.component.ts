@@ -38,7 +38,8 @@ export class BookingPageComponent implements OnInit {
     departureTime: '',
     arrivalTime: '',
     seatType: 'STANDARD',
-    schedulePrice: 0
+    schedulePrice: 0 ,
+    status:'PENDING'
   };
 
   seatTypes = ['STANDARD', 'PREMIUM', 'VIP'];
