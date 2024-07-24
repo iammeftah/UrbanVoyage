@@ -37,7 +37,7 @@
             <div class="flex justify-between items-center">
               <div>
                 <p class="font-medium">Ticket Number</p>
-                <p class="font-medium italic">Passenger-{{ticket.id}}</p>
+                <p class="font-medium italic">Passenger-{{ticket.reservationId}}</p>
               </div>
               <div>
                 <p class="font-medium">Seat Type</p>
@@ -68,7 +68,7 @@
         <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-4">Change Schedule</h3>
         <input [(ngModel)]="newScheduleDate" type="datetime-local" class="shadow appearance-none cursor-pointer border hover:border-cyan-500 rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline duration-300">
         <div class="flex justify-end gap-4">
-          <button (click)="closeChangeScheduleModal()" class="border border-cyan-600 hover:border-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">Cancel</button>
+          <button (click)="closeChangeScheduleModal()" class="border border-cyan-600 hover:border-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">Cancel</button>
           <button (click)="changeSchedule()" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">Confirm</button>
         </div>
       </div>
