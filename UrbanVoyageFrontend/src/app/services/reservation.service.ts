@@ -75,6 +75,6 @@ export class ReservationService {
 
   requestRefund(reservationId: number): Observable<any> {
     console.log(`Requesting refund for reservation ID: ${reservationId}`);
-    return this.paymentService.requestRefund(reservationId);
+    return this.paymentService.refundPayment(reservationId);
   }
 }

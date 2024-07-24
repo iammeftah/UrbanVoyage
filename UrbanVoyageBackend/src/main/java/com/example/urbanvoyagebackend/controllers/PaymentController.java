@@ -6,6 +6,8 @@ import com.example.urbanvoyagebackend.models.CheckoutRequest;
 import com.example.urbanvoyagebackend.repository.travel.PaymentRepository;
 import com.example.urbanvoyagebackend.repository.travel.ReservationRepository;
 import com.example.urbanvoyagebackend.service.travel.PaymentService;
+import com.stripe.model.Charge;
+import com.stripe.model.PaymentIntent;
 import com.stripe.model.Refund;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -98,9 +100,14 @@ public class PaymentController {
                 // Retrieve the payment intent ID from the session
                 String paymentIntentId = session.getPaymentIntent();
 
-                // Create a payment record with the payment intent ID
+                // Retrieve the PaymentIntent to get the Charge ID
+                PaymentIntent paymentIntent = PaymentIntent.retrieve(paymentIntentId);
+                String chargeId = paymentIntent.getLatestCharge();
+
+                // Create a payment record with both payment intent ID and charge ID
                 Payment payment = paymentService.createPayment(reservation, session.getAmountTotal() / 100.0, "COMPLETED");
                 payment.setStripePaymentIntentId(paymentIntentId);
+                payment.setStripeChargeId(chargeId);
                 paymentService.savePayment(payment);
 
                 response.put("status", "success");
@@ -112,6 +119,7 @@ public class PaymentController {
 
             return ResponseEntity.ok(response);
         } catch (StripeException e) {
+            e.printStackTrace();
             response.put("status", "error");
             response.put("message", "Error confirming payment: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
@@ -147,50 +155,73 @@ public class PaymentController {
 
     @PostMapping("/refund")
     public ResponseEntity<?> refundPayment(@RequestBody Map<String, Long> payload) {
-        System.out.println("Refund endpoint hit. Payload: " + payload);
         Long reservationId = payload.get("reservationId");
+        if (reservationId == null) {
+            return ResponseEntity.badRequest().body("Reservation ID is required");
+        }
+
         try {
             Reservation reservation = reservationRepository.findById(reservationId)
-                    .orElseThrow(() -> new RuntimeException("Reservation not found"));
+                    .orElseThrow(() -> new RuntimeException("Reservation not found for ID: " + reservationId));
             System.out.println("Found reservation: " + reservation);
-
-            Stripe.apiKey = stripeApiKey;
 
             Payment payment = paymentService.findByReservation(reservation);
             System.out.println("Found payment: " + payment);
+            System.out.println("Stripe Payment Intent ID: " + payment.getStripePaymentIntentId());
+            System.out.println("Stripe Charge ID: " + payment.getStripeChargeId());
 
-            if (payment.getStripePaymentIntentId() == null) {
-                throw new RuntimeException("No Stripe payment intent ID found for this payment");
+            Stripe.apiKey = stripeApiKey;
+
+            // Use the Charge ID for refund, not the Payment Intent ID
+            String chargeId = payment.getStripeChargeId();
+            if (chargeId == null || chargeId.isEmpty()) {
+                throw new RuntimeException("No Stripe Charge ID found for this payment");
             }
 
+            Charge charge = Charge.retrieve(chargeId);
+
+            if (charge.getRefunded()) {
+                // The payment has already been refunded in Stripe
+                reservation.setStatus(Reservation.ReservationStatus.REFUNDED);
+                reservationRepository.save(reservation);
+
+                payment.setStatus("REFUNDED");
+                paymentService.savePayment(payment);
+
+                Map<String, String> response = new HashMap<>();
+                response.put("status", "success");
+                response.put("message", "Payment was already refunded. Local records updated.");
+                return ResponseEntity.ok(response);
+            }
+
+            // Proceed with refund if not already refunded
             RefundCreateParams params = RefundCreateParams.builder()
-                    .setPaymentIntent(payment.getStripePaymentIntentId())
+                    .setCharge(chargeId)
                     .build();
-            System.out.println("Created RefundCreateParams: " + params);
 
             Refund refund = Refund.create(params);
-            System.out.println("Created refund: " + refund);
 
             reservation.setStatus(Reservation.ReservationStatus.REFUNDED);
             reservationRepository.save(reservation);
-            System.out.println("Updated reservation status to REFUNDED");
 
             payment.setStatus("REFUNDED");
             paymentService.savePayment(payment);
-            System.out.println("Updated payment status to REFUNDED");
 
             Map<String, String> response = new HashMap<>();
             response.put("status", "success");
             response.put("message", "Refund processed successfully");
-            System.out.println("PaymentController: Refund processed successfully");
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            System.err.println("Error processing refund: " + e.getMessage());
+        } catch (StripeException e) {
             e.printStackTrace();
             Map<String, String> response = new HashMap<>();
             response.put("status", "error");
             response.put("message", "Error processing refund: " + e.getMessage());
-            System.out.println("PaymentController: Error refunding: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Map<String, String> response = new HashMap<>();
+            response.put("status", "error");
+            response.put("message", "Unexpected error: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }

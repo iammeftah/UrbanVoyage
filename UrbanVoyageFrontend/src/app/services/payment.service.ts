@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import {firstValueFrom, Observable, throwError} from 'rxjs';
 import { SharedDataService } from './shared-data.service';
@@ -84,11 +84,16 @@ export class PaymentService {
     );
   }
 
-  requestRefund(reservationId: number): Observable<any> {
+  refundPayment(reservationId: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/refund`, { reservationId }).pipe(
-      catchError(error => {
-        console.error('Error requesting refund:', error);
-        return throwError(() => new Error('Failed to request refund'));
+      catchError((error: HttpErrorResponse) => {
+        console.error('Full error response:', error);
+        if (error.error instanceof ErrorEvent) {
+          console.error('Client-side error:', error.error.message);
+        } else {
+          console.error(`Server returned code ${error.status}, body was:`, error.error);
+        }
+        return throwError(() => new Error(`Failed to request refund: ${error.error.message || error.statusText}`));
       })
     );
   }

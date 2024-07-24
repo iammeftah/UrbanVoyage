@@ -27,6 +27,10 @@ public class Payment {
     @Column(name = "stripe_payment_intent_id")
     private String stripePaymentIntentId;
 
+    @Column(name = "stripe_charge_id")
+    private String stripeChargeId;
+
+
 // Add getter and setter for this field
 
     // Constructors, getters, and setters
@@ -98,5 +102,13 @@ public class Payment {
 
     public void setStripePaymentIntentId(String stripePaymentIntentId) {
         this.stripePaymentIntentId = stripePaymentIntentId;
+    }
+
+    public String getStripeChargeId() {
+        return stripeChargeId;
+    }
+
+    public void setStripeChargeId(String stripeChargeId) {
+        this.stripeChargeId = stripeChargeId;
     }
 }

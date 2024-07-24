@@ -97,6 +97,7 @@ export class ClientDashboardComponent implements OnInit {
           result => {
             console.log('Refund requested:', result);
             alert('Refund request processed successfully.');
+            console.log('Refund response:', result);
             this.loadPassengerTickets();
           },
           error => {

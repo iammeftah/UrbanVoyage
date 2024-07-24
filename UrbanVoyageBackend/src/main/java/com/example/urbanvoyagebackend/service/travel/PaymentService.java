@@ -32,4 +32,7 @@ public class PaymentService {
         paymentRepository.save(payment);
     }
 
+    public void deletePayment(Payment payment) {
+        paymentRepository.delete(payment);
+    }
 }
