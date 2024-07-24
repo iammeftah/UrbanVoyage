@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import { Reservation } from '../models/reservation.model';
+import {PaymentService} from "./payment.service";
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { Reservation } from '../models/reservation.model';
 export class ReservationService {
   private apiUrl = 'http://localhost:8080/api/reservations';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient ,private paymentService: PaymentService) { }
 
   getReservations(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl).pipe(
@@ -74,6 +75,6 @@ export class ReservationService {
 
   requestRefund(reservationId: number): Observable<any> {
     console.log(`Requesting refund for reservation ID: ${reservationId}`);
-    return this.http.post<any>(`${this.apiUrl}/${reservationId}/refund`, {});
+    return this.paymentService.requestRefund(reservationId);
   }
 }

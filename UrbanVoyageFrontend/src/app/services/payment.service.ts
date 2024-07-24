@@ -84,4 +84,13 @@ export class PaymentService {
     );
   }
 
+  requestRefund(reservationId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/refund`, { reservationId }).pipe(
+      catchError(error => {
+        console.error('Error requesting refund:', error);
+        return throwError(() => new Error('Failed to request refund'));
+      })
+    );
+  }
+
 }

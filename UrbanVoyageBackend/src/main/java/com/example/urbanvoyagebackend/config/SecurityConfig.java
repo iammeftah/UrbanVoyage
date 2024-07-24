@@ -49,11 +49,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/auth/**", "/error").permitAll() // Allow /error endpoint
-                        .requestMatchers("/api/routes/**", "/error").permitAll() // Allow /error endpoint
+                        .requestMatchers("/api/auth/**", "/error").permitAll()
+                        .requestMatchers("/api/routes/**", "/error").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/reservations/**").permitAll()
-                        .requestMatchers("/api/users/**", "/error").permitAll() // Allow /error endpoint
-                        .requestMatchers("/api/schedules/**", "/error").permitAll() // Allow /error endpoint
+                        .requestMatchers("/api/users/**", "/error").permitAll()
+                        .requestMatchers("/api/schedules/**", "/error").permitAll()
+                        .requestMatchers("/api/payment/**", "/error").permitAll() // Add this line
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)

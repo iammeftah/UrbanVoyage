@@ -96,15 +96,19 @@ export class ClientDashboardComponent implements OnInit {
         this.reservationService.requestRefund(ticket.reservationId).subscribe(
           result => {
             console.log('Refund requested:', result);
-            this.loadPassengerTickets(); // Reload tickets after refund request
+            alert('Refund request processed successfully.');
+            this.loadPassengerTickets();
           },
           error => {
             console.error('Error requesting refund:', error);
+            console.error('Error details:', error.error);  // Log the error details
+            alert('Failed to process refund request. Please try again later.');
           }
         );
       }
     } else {
       console.error('Cannot request refund: reservationId is missing for ticket', ticket);
+      alert('Unable to process refund request. Please contact customer support.');
     }
   }
 

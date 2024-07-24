@@ -18,10 +18,18 @@ public class PaymentService {
         this.paymentRepository = paymentRepository;
     }
 
-    public void createPayment(Reservation reservation, double amount, String status) {
+    public Payment createPayment(Reservation reservation, double amount, String status) {
         Payment payment = new Payment(reservation, amount, new Date(), status);
-        paymentRepository.save(payment);
+        return paymentRepository.save(payment);
     }
 
+    public Payment findByReservation(Reservation reservation) {
+        return paymentRepository.findByReservation(reservation)
+                .orElseThrow(() -> new RuntimeException("Payment not found for reservation"));
+    }
+
+    public void savePayment(Payment payment) {
+        paymentRepository.save(payment);
+    }
 
 }

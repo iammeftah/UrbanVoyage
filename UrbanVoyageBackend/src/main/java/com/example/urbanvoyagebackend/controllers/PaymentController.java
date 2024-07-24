@@ -1,9 +1,12 @@
 package com.example.urbanvoyagebackend.controllers;
 
+import com.example.urbanvoyagebackend.entity.payment.Payment;
 import com.example.urbanvoyagebackend.entity.travel.Reservation;
 import com.example.urbanvoyagebackend.models.CheckoutRequest;
+import com.example.urbanvoyagebackend.repository.travel.PaymentRepository;
 import com.example.urbanvoyagebackend.repository.travel.ReservationRepository;
 import com.example.urbanvoyagebackend.service.travel.PaymentService;
+import com.stripe.model.Refund;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +17,8 @@ import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 import java.util.HashMap;
 import java.util.Map;
+import com.stripe.model.Refund;
+import com.stripe.param.RefundCreateParams;
 
 @RestController
 @RequestMapping("/api/payment")
@@ -25,6 +30,9 @@ public class PaymentController {
 
     @Autowired
     private ReservationRepository reservationRepository;
+
+    @Autowired
+    private PaymentRepository paymentRepository;
 
     @Autowired
     private PaymentService paymentService;
@@ -87,8 +95,13 @@ public class PaymentController {
                 reservation.setStatus(Reservation.ReservationStatus.CONFIRMED);
                 reservationRepository.save(reservation);
 
-                // Create a payment record
-                paymentService.createPayment(reservation, session.getAmountTotal() / 100.0, "COMPLETED");
+                // Retrieve the payment intent ID from the session
+                String paymentIntentId = session.getPaymentIntent();
+
+                // Create a payment record with the payment intent ID
+                Payment payment = paymentService.createPayment(reservation, session.getAmountTotal() / 100.0, "COMPLETED");
+                payment.setStripePaymentIntentId(paymentIntentId);
+                paymentService.savePayment(payment);
 
                 response.put("status", "success");
                 response.put("message", "Payment confirmed and reservation updated");
@@ -132,4 +145,53 @@ public class PaymentController {
         }
     }
 
+    @PostMapping("/refund")
+    public ResponseEntity<?> refundPayment(@RequestBody Map<String, Long> payload) {
+        System.out.println("Refund endpoint hit. Payload: " + payload);
+        Long reservationId = payload.get("reservationId");
+        try {
+            Reservation reservation = reservationRepository.findById(reservationId)
+                    .orElseThrow(() -> new RuntimeException("Reservation not found"));
+            System.out.println("Found reservation: " + reservation);
+
+            Stripe.apiKey = stripeApiKey;
+
+            Payment payment = paymentService.findByReservation(reservation);
+            System.out.println("Found payment: " + payment);
+
+            if (payment.getStripePaymentIntentId() == null) {
+                throw new RuntimeException("No Stripe payment intent ID found for this payment");
+            }
+
+            RefundCreateParams params = RefundCreateParams.builder()
+                    .setPaymentIntent(payment.getStripePaymentIntentId())
+                    .build();
+            System.out.println("Created RefundCreateParams: " + params);
+
+            Refund refund = Refund.create(params);
+            System.out.println("Created refund: " + refund);
+
+            reservation.setStatus(Reservation.ReservationStatus.REFUNDED);
+            reservationRepository.save(reservation);
+            System.out.println("Updated reservation status to REFUNDED");
+
+            payment.setStatus("REFUNDED");
+            paymentService.savePayment(payment);
+            System.out.println("Updated payment status to REFUNDED");
+
+            Map<String, String> response = new HashMap<>();
+            response.put("status", "success");
+            response.put("message", "Refund processed successfully");
+            System.out.println("PaymentController: Refund processed successfully");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            System.err.println("Error processing refund: " + e.getMessage());
+            e.printStackTrace();
+            Map<String, String> response = new HashMap<>();
+            response.put("status", "error");
+            response.put("message", "Error processing refund: " + e.getMessage());
+            System.out.println("PaymentController: Error refunding: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
 }
