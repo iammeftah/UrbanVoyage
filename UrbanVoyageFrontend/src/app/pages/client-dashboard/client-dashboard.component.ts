@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { PassengerService } from '../../services/passenger.service';
 import { ReservationService } from '../../services/reservation.service';
 import { AuthService } from '../../services/auth.service';
@@ -31,7 +31,9 @@ export class ClientDashboardComponent implements OnInit {
     private passengerService: PassengerService,
     private reservationService: ReservationService,
     private authService: AuthService,
-    private sharedDataService: SharedDataService
+    private sharedDataService: SharedDataService,
+    private cdr: ChangeDetectorRef  // Add this
+
   ) {}
 
   ngOnInit() {
@@ -48,19 +50,24 @@ export class ClientDashboardComponent implements OnInit {
         this.passengerService.getPassengersByUserId(userId).subscribe(
           tickets => {
             this.loading = false;
-            // Here, you should use the transformed data
             this.passengerTickets = this.passengerService.transformPassengerData(tickets);
-            console.log("Passenger Tickets: ", this.passengerTickets);
+            console.log('Loaded passenger tickets:', this.passengerTickets);
+            this.cdr.detectChanges();
           },
           error => {
             this.loading = false;
             console.error('Error fetching passenger tickets:', error);
+            this.cdr.detectChanges();
           }
         );
       }
     });
   }
 
+  // Add this helper method to check if the status is valid
+  private isValidStatus(status: string): status is Passenger['status'] {
+    return ['PENDING', 'CONFIRMED', 'CANCELLED', 'REFUNDED'].includes(status);
+  }
 
   openChangeScheduleModal(ticket: Passenger) {
     this.selectedTicket = ticket;
@@ -90,20 +97,24 @@ export class ClientDashboardComponent implements OnInit {
   }
 
   requestRefund(ticket: Passenger) {
-    console.log("Requesting refund for ticket:", ticket);
+    console.log('Before refund request:', ticket.status);
+    if (ticket.status === 'REFUNDED' || ticket.status === 'CANCELLED') {
+      alert('This ticket has already been refunded or cancelled.');
+      return;
+    }
+
     if (ticket.reservationId) {
       if (confirm('Are you sure you want to request a refund for this ticket?')) {
         this.reservationService.requestRefund(ticket.reservationId).subscribe(
           result => {
-            console.log('Refund requested:', result);
-            ticket.status = 'REFUNDED';
-            alert('Refund request processed successfully.');
             console.log('Refund response:', result);
-            this.loadPassengerTickets();
+            ticket.status = 'REFUNDED';
+            console.log('After status update:', ticket.status);
+            alert('Refund request processed successfully.');
+            this.cdr.detectChanges();
           },
           error => {
             console.error('Error requesting refund:', error);
-            console.error('Error details:', error.error);  // Log the error details
             alert('Failed to process refund request. Please try again later.');
           }
         );

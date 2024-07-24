@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Passenger } from '../models/passenger.model';
+import {map} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -24,17 +25,21 @@ export class PassengerService {
     return this.http.put<Passenger>(`${this.apiUrl}/${id}`, passenger);
   }
 
-  // In passenger.service.ts
   getPassengersByUserId(userId: number): Observable<Passenger[]> {
     return this.http.get<Passenger[]>(`${this.apiUrl}/user/${userId}`);
   }
 
-  // Transform the data to ensure reservationId is populated correctly
   transformPassengerData(data: any[]): Passenger[] {
     return data.map(item => ({
       ...item,
-      reservationId: item.reservation ? item.reservation.reservationID : null
+      reservationId: item.reservation ? item.reservation.reservationID : null,
+      status: this.isValidStatus(item.status) ? item.status : 'PENDING'
     }));
   }
+
+  private isValidStatus(status: string): status is Passenger['status'] {
+    return ['PENDING', 'CONFIRMED', 'CANCELLED', 'REFUNDED'].includes(status);
+  }
+
 
 }
