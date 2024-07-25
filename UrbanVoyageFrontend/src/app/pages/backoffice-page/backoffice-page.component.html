@@ -7,15 +7,15 @@
 
   <div class="flex flex-col md:flex-row flex-grow text-lightText dark:text-darkText bg-lightBackground dark:bg-darkBackground">
     <!-- Sidebar -->
-    <div class="w-full  md:w-1/4 bg-lightBgColor dark:bg-darkBgColor border-r border-gray-500 p-4 transition-all duration-200 ">
+    <div class="w-full md:w-1/4 bg-lightBgColor dark:bg-darkBgColor border-r border-gray-500 p-4 transition-all duration-200">
       <nav>
-        <ul class="w-full flex flex-row md:flex-col items-center justify-around md:items-start md:justify-start ">
+        <ul class="w-full flex flex-row md:flex-col items-center justify-around md:items-start md:justify-start">
           <li *ngFor="let tab of tabs"
               (click)="setActiveTab(tab)"
               data-aos="fade-right"
-              class="mb-2 p-2 cursor-pointer rounded flex items-center hover:text-cyan-500 duration-200 "
+              class="mb-2 p-2 cursor-pointer rounded flex items-center hover:text-cyan-500 duration-200"
               [ngClass]="{'bg-lightAccent dark:bg-darkAccent': activeTab === tab}">
-            <i class="material-icons mr-2 md:mr-4 text-3xl md:text-2xl ">{{getTabIcon(tab)}}</i>
+            <i class="material-icons mr-2 md:mr-4 text-3xl md:text-2xl">{{getTabIcon(tab)}}</i>
             <span class="hidden md:inline">{{ tab | titlecase }}</span>
           </li>
         </ul>
@@ -197,6 +197,58 @@
           </table>
         </div>
       </div>
+
+
+
+      <!-- Add this new section for refund requests -->
+      <div *ngIf="activeTab === 'refunds'" class="flex-grow p-4 md:p-8" data-aos="fade-left">
+        <h2 class="text-xl font-bold mb-4">Manage Refund Requests</h2>
+
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white dark:bg-gray-800 rounded-lg overflow-hidden">
+            <thead class="bg-gray-100 dark:bg-gray-700">
+            <tr>
+              <th class="px-4 py-2">Request ID</th>
+              <th class="px-4 py-2">Passenger</th>
+              <th class="px-4 py-2">Reservation ID</th>
+              <th class="px-4 py-2">Request Date</th>
+              <th class="px-4 py-2">Motif</th>
+              <th class="px-4 py-2">Status</th>
+              <th class="px-4 py-2">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let request of refundRequests" class="border-b border-gray-200 dark:border-gray-700">
+              <td class="px-4 py-2">{{ request.id }}</td>
+              <td class="px-4 py-2">{{ request.passengerName}}</td>
+              <td class="px-4 py-2">{{ request.reservationId }}</td>
+              <td class="px-4 py-2">{{ request.requestDate | date:'medium' }}</td>
+              <td class="px-4 py-2">{{ request.motif }}</td>
+              <td class="px-4 py-2">
+            <span [ngClass]="{
+              'bg-yellow-600 dark:bg-yellow-700': request.status === 'PENDING',
+              'bg-green-600 dark:bg-green-700': request.status === 'APPROVED',
+              'bg-red-600 dark:bg-red-700': request.status === 'REJECTED'
+            }" class="px-2 py-1 rounded-full text-white text-sm">
+              {{ request.status }}
+            </span>
+              </td>
+              <td class="px-4 py-2">
+                <button *ngIf="request.status === 'PENDING'" (click)="approveRefund(request)" class="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded mr-2">
+                  Approve
+                </button>
+                <button *ngIf="request.status === 'PENDING'" (click)="rejectRefund(request)" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">
+                  Reject
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+
 
       <div *ngIf="activeTab === 'statistics'">
         <h2 class="text-xl font-bold mb-4">Statistics</h2>

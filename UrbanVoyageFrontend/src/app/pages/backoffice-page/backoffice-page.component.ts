@@ -9,6 +9,7 @@ import { Schedule } from '../../models/schedule.model';
 import { Reservation } from "../../models/reservation.model";
 import {DistanceService} from "../../services/distance.service";
 import {PricingService} from "../../services/pricing.service";
+import {RefundService} from "../../services/refund.service";
 
 declare var google: any;
 
@@ -37,8 +38,9 @@ interface Statistics {
   styleUrls: ['./backoffice-page.component.css']
 })
 export class BackofficePageComponent implements OnInit, AfterViewInit {
-  activeTab: 'routes' | 'schedules' | 'reservations' | 'statistics' = 'routes';
-  tabs: ('routes' | 'schedules' | 'reservations' | 'statistics')[] = ['routes', 'schedules', 'reservations', 'statistics'];
+  activeTab: 'routes' | 'schedules' | 'reservations' | 'statistics' | 'refunds' = 'routes';
+  tabs: ('routes' | 'schedules' | 'reservations' | 'statistics' | 'refunds')[] = ['routes', 'schedules', 'reservations', 'statistics', 'refunds'];
+  refundRequests: any[] = [];
   routes: Route[] = [];
   schedules: Schedule[] = [];
   reservations: Reservation[] = [];
@@ -134,7 +136,8 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
     private userService: UserService,
     private cdr: ChangeDetectorRef,
     private distanceService: DistanceService,
-    private pricingService: PricingService
+    private pricingService: PricingService,
+    private refundService: RefundService
   ) {
     this.initializeCityDistances();
     this.newSchedule = {
@@ -697,10 +700,12 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
     this.isEditingSchedule = false;
   }
 
-  setActiveTab(tab: 'routes' | 'schedules' | 'reservations' | 'statistics'): void {
+  setActiveTab(tab: 'routes' | 'schedules' | 'reservations' | 'statistics' | 'refunds'): void {
     this.activeTab = tab;
     if (tab === 'statistics') {
       setTimeout(() => this.initializeCharts(), 0);
+    } else if (tab === 'refunds') {
+      this.loadRefundRequests();
     }
   }
 
@@ -714,10 +719,51 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
         return 'book';
       case 'statistics':
         return 'bar_chart';
+      case 'refunds':
+        return 'undo'; // or 'replay' or any other suitable icon
       default:
         return 'error';
     }
   }
+
+  loadRefundRequests() {
+    this.refundService.getRefundRequests().subscribe(
+      (requests) => {
+        this.refundRequests = requests;
+      },
+      (error) => {
+        console.error('Error loading refund requests', error);
+        // Handle error (show message to user, etc.)
+      }
+    );
+  }
+
+  approveRefund(request: any) {
+    this.refundService.approveRefund(request.id).subscribe(
+      () => {
+        request.status = 'APPROVED';
+        // Optionally, reload all requests or update the local array
+      },
+      (error) => {
+        console.error('Error approving refund', error);
+        // Handle error (show message to user, etc.)
+      }
+    );
+  }
+
+  rejectRefund(request: any) {
+    this.refundService.rejectRefund(request.id).subscribe(
+      () => {
+        request.status = 'REJECTED';
+        // Optionally, reload all requests or update the local array
+      },
+      (error) => {
+        console.error('Error rejecting refund', error);
+        // Handle error (show message to user, etc.)
+      }
+    );
+  }
+
 
 
 
