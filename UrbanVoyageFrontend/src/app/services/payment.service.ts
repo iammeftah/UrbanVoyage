@@ -98,4 +98,16 @@ export class PaymentService {
     );
   }
 
+
+  // In payment.service.ts
+
+  createRefundRequest(reservationId: number, motif: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/request-refund`, { reservationId, motif }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error creating refund request:', error);
+        return throwError(() => new Error(`Failed to create refund request: ${error.error.message || error.statusText}`));
+      })
+    );
+  }
+
 }

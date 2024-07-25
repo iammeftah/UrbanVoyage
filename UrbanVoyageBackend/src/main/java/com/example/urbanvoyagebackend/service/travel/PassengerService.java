@@ -1,9 +1,11 @@
 package com.example.urbanvoyagebackend.service.travel;
 
 import com.example.urbanvoyagebackend.entity.travel.Passenger;
+import com.example.urbanvoyagebackend.entity.travel.Reservation;
 import com.example.urbanvoyagebackend.entity.users.User;
 import com.example.urbanvoyagebackend.repository.travel.PassengerRepository;
 import com.example.urbanvoyagebackend.service.users.AuthService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +44,10 @@ public class PassengerService {
 
     public List<Passenger> getPassengersByUser(User user) {
         return passengerRepository.findByCreatedByUser(user);
+    }
+
+    public Passenger getPassengerByReservation(Reservation reservation) {
+        return passengerRepository.findByReservation(reservation);
     }
 
 

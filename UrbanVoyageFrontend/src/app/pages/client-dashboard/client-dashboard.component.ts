@@ -5,6 +5,7 @@ import { AuthService } from '../../services/auth.service';
 import { Passenger } from '../../models/passenger.model';
 import { Reservation } from '../../models/reservation.model';
 import {SharedDataService} from "../../services/shared-data.service";
+import {PaymentService} from "../../services/payment.service";
 
 @Component({
   selector: 'app-client-dashboard',
@@ -32,6 +33,7 @@ export class ClientDashboardComponent implements OnInit {
     private reservationService: ReservationService,
     private authService: AuthService,
     private sharedDataService: SharedDataService,
+    private paymentService: PaymentService,
     private cdr: ChangeDetectorRef  // Add this
 
   ) {}
@@ -49,7 +51,9 @@ export class ClientDashboardComponent implements OnInit {
       if (userId) {
         this.passengerService.getPassengersByUserId(userId).subscribe(
           tickets => {
+
             this.loading = false;
+            console.log('Raw tickets data:', tickets);
             this.passengerTickets = this.passengerService.transformPassengerData(tickets);
             console.log('Loaded passenger tickets:', this.passengerTickets);
             this.cdr.detectChanges();
@@ -62,6 +66,44 @@ export class ClientDashboardComponent implements OnInit {
         );
       }
     });
+  }
+
+
+  // In client-dashboard.component.ts
+
+  showRefundModal: boolean = false;
+  refundMotif: string = '';
+
+// ...
+
+  requestRefund(ticket: Passenger) {
+    this.selectedTicket = ticket;
+    this.showRefundModal = true;
+  }
+
+  submitRefundRequest() {
+    if (this.selectedTicket && this.refundMotif) {
+      this.paymentService.createRefundRequest(this.selectedTicket.reservationId, this.refundMotif).subscribe(
+        result => {
+          console.log('Refund request created:', result);
+          alert('Refund request submitted successfully. An admin will review your request.');
+          this.showRefundModal = false;
+          this.refundMotif = '';
+          this.selectedTicket = null;
+          this.loadPassengerTickets(); // Reload tickets to reflect the new status
+        },
+        error => {
+          console.error('Error creating refund request:', error);
+          alert('Failed to submit refund request. Please try again later.');
+        }
+      );
+    }
+  }
+
+  closeRefundModal() {
+    this.showRefundModal = false;
+    this.refundMotif = '';
+    this.selectedTicket = null;
   }
 
   // Add this helper method to check if the status is valid
@@ -95,37 +137,6 @@ export class ClientDashboardComponent implements OnInit {
       );
     }
   }
-
-  requestRefund(ticket: Passenger) {
-    console.log('Before refund request:', ticket.status);
-    if (ticket.status === 'REFUNDED' || ticket.status === 'CANCELLED') {
-      alert('This ticket has already been refunded or cancelled.');
-      return;
-    }
-
-    if (ticket.reservationId) {
-      if (confirm('Are you sure you want to request a refund for this ticket?')) {
-        this.reservationService.requestRefund(ticket.reservationId).subscribe(
-          result => {
-            console.log('Refund response:', result);
-            ticket.status = 'REFUNDED';
-            console.log('After status update:', ticket.status);
-            alert('Refund request processed successfully.');
-            this.cdr.detectChanges();
-          },
-          error => {
-            console.error('Error requesting refund:', error);
-            alert('Failed to process refund request. Please try again later.');
-          }
-        );
-      }
-    } else {
-      console.error('Cannot request refund: reservationId is missing for ticket', ticket);
-      alert('Unable to process refund request. Please contact customer support.');
-    }
-  }
-
-
 
 
 

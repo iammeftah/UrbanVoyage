@@ -1,10 +1,14 @@
 package com.example.urbanvoyagebackend.controllers;
 
 import com.example.urbanvoyagebackend.entity.payment.Payment;
+import com.example.urbanvoyagebackend.entity.payment.RequestRefund;
+import com.example.urbanvoyagebackend.entity.travel.Passenger;
 import com.example.urbanvoyagebackend.entity.travel.Reservation;
 import com.example.urbanvoyagebackend.models.CheckoutRequest;
 import com.example.urbanvoyagebackend.repository.travel.PaymentRepository;
+import com.example.urbanvoyagebackend.repository.travel.RefundRequestRepository;
 import com.example.urbanvoyagebackend.repository.travel.ReservationRepository;
+import com.example.urbanvoyagebackend.service.travel.PassengerService;
 import com.example.urbanvoyagebackend.service.travel.PaymentService;
 import com.stripe.model.Charge;
 import com.stripe.model.PaymentIntent;
@@ -34,10 +38,13 @@ public class PaymentController {
     private ReservationRepository reservationRepository;
 
     @Autowired
-    private PaymentRepository paymentRepository;
+    private PassengerService passengerService;
 
     @Autowired
     private PaymentService paymentService;
+
+    @Autowired
+    private RefundRequestRepository refundRequestRepository;
 
     public PaymentController(ReservationRepository reservationRepository) {
     }
@@ -223,6 +230,43 @@ public class PaymentController {
             response.put("status", "error");
             response.put("message", "Unexpected error: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+
+    @PostMapping("/request-refund")
+    public ResponseEntity<?> requestRefund(@RequestBody Map<String, Object> payload) {
+        System.out.println("Received refund request payload: " + payload);
+        Object reservationIdObj = payload.get("reservationId");
+        Object motifObj = payload.get("motif");
+
+        if (reservationIdObj == null || motifObj == null) {
+            return ResponseEntity.badRequest().body(Map.of("status", "error", "message", "reservationId and motif are required"));
+        }
+
+        try {
+            Long reservationId = reservationIdObj instanceof Number ? ((Number) reservationIdObj).longValue() : Long.parseLong(reservationIdObj.toString());
+            String motif = motifObj.toString();
+
+            Reservation reservation = reservationRepository.findById(reservationId)
+                    .orElseThrow(() -> new RuntimeException("Reservation not found"));
+
+            Passenger passenger = passengerService.getPassengerByReservation(reservation);
+
+            RequestRefund refundRequest = new RequestRefund(passenger, motif);
+            refundRequestRepository.save(refundRequest);
+
+            reservation.setStatus(Reservation.ReservationStatus.REFUND_REQUESTED);
+
+
+            reservationRepository.save(reservation);
+
+            return ResponseEntity.ok(Map.of("status", "success", "message", "Refund request submitted successfully"));
+            // ... rest of the method remains the same
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(Map.of("status", "error", "message", "Invalid reservationId format: " + reservationIdObj));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("status", "error", "message", e.getMessage()));
         }
     }
 }

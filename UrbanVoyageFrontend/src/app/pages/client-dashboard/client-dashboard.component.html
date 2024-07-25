@@ -53,12 +53,24 @@
             <button [disabled]="ticket.status === 'REFUNDED' || ticket.status === 'CANCELLED'" (click)="openChangeScheduleModal(ticket)" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">
               Change Schedule
             </button>
-            <button [disabled]="ticket.status === 'REFUNDED' || ticket.status === 'CANCELLED'" (click)="requestRefund(ticket)" class="border border-cyan-600 hover:border-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">
+            <button (click)="requestRefund(ticket)" [disabled]="ticket.status === 'REFUNDED' || ticket.status === 'CANCELLED'" class="border border-cyan-600 hover:border-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">
               Request Refund
             </button>
+            <!-- Add this modal for refund requests -->
+            <div class="absolute top-0 right-0 left-0 w-full h-screen" *ngIf="showRefundModal" >
+              <div class="flex items-center justify-center modal-content">
+                <h2>Request Refund</h2>
+                <p>Please provide a reason for your refund request:</p>
+                <textarea [(ngModel)]="refundMotif" rows="4" cols="50"></textarea>
+                <div class="modal-actions">
+                  <button (click)="submitRefundRequest()" class="btn btn-primary">Submit Request</button>
+                  <button (click)="closeRefundModal()" class="btn btn-secondary">Cancel</button>
+                </div>
+              </div>
+            </div>
           </div>
           <div *ngIf="ticket.status === 'REFUNDED' || ticket.status === 'CANCELLED'"
-               class="absolute inset-0 flex items-center justify-center rounded-lg bg-black bg-opacity-10 text-center w-full h-full">
+               class="absolute inset-0 flex items-center justify-center rounded-lg bg-black backdrop-blur-2xl bg-opacity-10 text-center w-full h-full">
             Status: <span class="text-cyan-500">{{ticket.status}}</span>
           </div>
         </div>
