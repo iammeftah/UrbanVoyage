@@ -14,6 +14,6 @@ export interface Passenger {
   arrivalTime: string;
   seatType: 'STANDARD' | 'PREMIUM' | 'VIP';
   schedulePrice: number;
-  status: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'REFUNDED';
+  status: 'PENDING' | 'CONFIRMED'| 'CANCELLED'| 'REFUND_APPROVED'| 'REFUND_REJECTED'| 'REFUND_REQUESTED'| 'REFUNDED';
 
 }

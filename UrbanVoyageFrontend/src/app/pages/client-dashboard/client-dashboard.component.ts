@@ -40,7 +40,6 @@ export class ClientDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.selectedPassenger = this.sharedDataService.getSelectedPassenger();
-
     this.loadPassengerTickets();
     this.generateCalendar();
   }
@@ -108,7 +107,7 @@ export class ClientDashboardComponent implements OnInit {
 
   // Add this helper method to check if the status is valid
   private isValidStatus(status: string): status is Passenger['status'] {
-    return ['PENDING', 'CONFIRMED', 'CANCELLED', 'REFUNDED'].includes(status);
+    return ['PENDING', 'CONFIRMED', 'CANCELLED', 'REFUND_APPROVED', 'REFUND_REJECTED', 'REFUND_REQUESTED', 'REFUNDED'].includes(status);
   }
 
   openChangeScheduleModal(ticket: Passenger) {

@@ -10,6 +10,7 @@ import { Reservation } from "../../models/reservation.model";
 import {DistanceService} from "../../services/distance.service";
 import {PricingService} from "../../services/pricing.service";
 import {RefundService} from "../../services/refund.service";
+import {Passenger} from "../../models/passenger.model";
 
 declare var google: any;
 
@@ -738,30 +739,38 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
     );
   }
 
-  approveRefund(request: any) {
-    this.refundService.approveRefund(request.id).subscribe(
-      () => {
-        request.status = 'APPROVED';
-        // Optionally, reload all requests or update the local array
-      },
-      (error) => {
-        console.error('Error approving refund', error);
-        // Handle error (show message to user, etc.)
-      }
-    );
+  approveRefund(request: Passenger) {
+    if (request.id != null) {
+      this.refundService.approveRefund(request.id).subscribe(
+        () => {
+          request.status = "REFUND_APPROVED";
+          // Optionally, reload all requests or update the local array
+        },
+        (error) => {
+          console.error('Error approving refund', error);
+          // Handle error (show message to user, etc.)
+        }
+      );
+    }else{
+      console.log("request.id = null")
+    }
   }
 
-  rejectRefund(request: any) {
-    this.refundService.rejectRefund(request.id).subscribe(
-      () => {
-        request.status = 'REJECTED';
-        // Optionally, reload all requests or update the local array
-      },
-      (error) => {
-        console.error('Error rejecting refund', error);
-        // Handle error (show message to user, etc.)
-      }
-    );
+  rejectRefund(request: Passenger) {
+    if (request.id != null) {
+      this.refundService.rejectRefund(request.id).subscribe(
+        () => {
+          request.status = 'REFUND_REJECTED';
+          // Optionally, reload all requests or update the local array
+        },
+        (error) => {
+          console.error('Error rejecting refund', error);
+          // Handle error (show message to user, etc.)
+        }
+      );
+    }else{
+      console.log("request.id = null")
+    }
   }
 
 
