@@ -1,6 +1,8 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 import * as L from 'leaflet';
+import { locations } from 'src/app/data/locations.data';
+import {AgencyLocation} from "../../models/agency-location.model";
 
 Chart.register(...registerables);
 
@@ -10,13 +12,6 @@ interface FAQ {
   isOpen: boolean;
 }
 
-// Define our own AgencyLocation interface
-interface AgencyLocation {
-  name: string;
-  address: string;
-  lat: number;
-  lng: number;
-}
 
 @Component({
   selector: 'app-contact-page',
@@ -91,18 +86,7 @@ export class ContactPageComponent implements OnInit  {
   map: any; // Declare map as any type
 
 
-  locations: AgencyLocation[] = [
-    { name: 'Casablanca', address: '123 Avenue Mohammed V, Casablanca', lat: 33.5731, lng: -7.5898 },
-    { name: 'Rabat', address: '456 Avenue Mohamed V, Rabat', lat: 34.020882, lng: -6.841650 },
-    { name: 'Marrakech', address: '789 Rue Yves Saint Laurent, Marrakech', lat: 31.6306, lng: -7.9922 },
-    { name: 'Fes', address: '321 Place R\'cif, Fes', lat: 34.0339, lng: -5.0003 },
-    { name: 'Tangier', address: '567 Place du 9 Avril 1947, Tangier', lat: 35.7721, lng: -5.8099 },
-    { name: 'Agadir', address: '890 Avenue du Prince Moulay Abdallah, Agadir', lat: 30.4210, lng: -9.5831 },
-    { name: 'Meknes', address: '234 Avenue des F.A.R., Meknes', lat: 33.8935, lng: -5.5364 },
-    { name: 'Oujda', address: '543 Avenue Mohammed V, Oujda', lat: 34.6819, lng: -1.9086 },
-    { name: 'Chefchaouen', address: '876 Place Outa el Hammam, Chefchaouen', lat: 35.1688, lng: -5.2688 },
-    { name: 'Essaouira', address: '109 Avenue de l\'Istiqlal, Essaouira', lat: 31.5085, lng: -9.7595 }
-  ];
+  locations = locations;
 
 
   initMap() {
@@ -124,8 +108,8 @@ export class ContactPageComponent implements OnInit  {
       maxZoom: 18
     });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      attribution: '© Esri World Imagery contributors'
     }).addTo(this.map);
 
     this.locations.forEach(location => {
@@ -174,7 +158,7 @@ export class ContactPageComponent implements OnInit  {
     this.userGrowthChart = new Chart(ctx,{
       type: 'line',
       data: {
-        labels: this.generateMonthLabels(), // Function to generate labels like ['Jan 2024', 'Feb 2024', ...]
+        labels: this.generateMonthLabels(),
         datasets: this.cities.map(city => {
           const growthData = this.generateCityUserGrowth(city.users);
           return {
