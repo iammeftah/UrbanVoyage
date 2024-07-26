@@ -27,6 +27,10 @@ export class ClientDashboardComponent implements OnInit {
   calendarDays: number[] = [];
   daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
+  showRefundModal: boolean = false;
+  refundMotif: string = '';
+
+
 
   constructor(
     private passengerService: PassengerService,
@@ -50,7 +54,6 @@ export class ClientDashboardComponent implements OnInit {
       if (userId) {
         this.passengerService.getPassengersByUserId(userId).subscribe(
           tickets => {
-
             this.loading = false;
             console.log('Raw tickets data:', tickets);
             this.passengerTickets = this.passengerService.transformPassengerData(tickets);
@@ -68,12 +71,8 @@ export class ClientDashboardComponent implements OnInit {
   }
 
 
-  // In client-dashboard.component.ts
 
-  showRefundModal: boolean = false;
-  refundMotif: string = '';
 
-// ...
 
   requestRefund(ticket: Passenger) {
     this.selectedTicket = ticket;

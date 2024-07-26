@@ -30,15 +30,21 @@ export class PassengerService {
   }
 
   transformPassengerData(data: any[]): Passenger[] {
-    return data.map(item => ({
-      ...item,
-      reservationId: item.reservation ? item.reservation.reservationID : null,
-      status: this.isValidStatus(item.status) ? item.status : 'PENDING'
-    }));
+    return data.map(item => {
+      const transformedItem = {
+        ...item,
+        reservationId: item.reservation ? item.reservation.reservationID : null,
+        status: item.reservation && this.isValidStatus(item.reservation.status)
+          ? item.reservation.status
+          : 'PENDING'
+      };
+      console.log('Transformed item:', transformedItem);
+      return transformedItem;
+    });
   }
 
   private isValidStatus(status: string): status is Passenger['status'] {
-    return ['PENDING', 'CONFIRMED', 'CANCELLED', 'REFUNDED'].includes(status);
+    return ['PENDING', 'CONFIRMED', 'CANCELLED', 'REFUND_APPROVED', 'REFUND_REJECTED', 'REFUND_REQUESTED', 'REFUNDED'].includes(status);
   }
 
 
