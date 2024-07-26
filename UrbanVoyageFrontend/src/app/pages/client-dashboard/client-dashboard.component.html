@@ -8,7 +8,6 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 rounded-lg gap-8">
         <div  *ngFor="let ticket of passengerTickets" data-aos="fade-up" class="rounded-lg bg-white dark:bg-gray-800 text-card-foreground shadow-sm" data-v0-t="card">
           <div class="flex flex-col space-y-1.5 p-6">
-            <p>{{ticket.status}}</p>
             <h3 class="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight">
               {{ticket.departureCity}} to {{ticket.arrivalCity}}
             </h3>
@@ -51,24 +50,12 @@
             </div>
           </div>
           <div class="items-center p-6 flex justify-end gap-2">
-            <button [disabled]="ticket.status === 'REFUNDED' || ticket.status === 'CANCELLED'" (click)="openChangeScheduleModal(ticket)" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">
+            <button [disabled]="ticket.status === 'REFUNDED' || ticket.status === 'CANCELLED'" (click)="openChangeScheduleModal(ticket)" class="border border-cyan-600 hover:border-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">
               Change Schedule
             </button>
-            <button (click)="requestRefund(ticket)" [disabled]="ticket.status === 'REFUNDED' || ticket.status === 'CANCELLED'" class="border border-cyan-600 hover:border-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">
+            <button (click)="requestRefund(ticket)" [disabled]="ticket.status === 'REFUNDED' || ticket.status === 'CANCELLED'"  class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">
               Request Refund
             </button>
-            <!-- Add this modal for refund requests -->
-            <div class="fixed inset-0 z-50 overflow-auto bg-white dark:bg-darkBackground bg-opacity-50 dark:bg-opacity-50 backdrop-blur-sm flex items-center justify-center" data-aos="fade-down" *ngIf="showRefundModal" >
-              <div class="flex items-center justify-center modal-content">
-                <h2>Request Refund</h2>
-                <p>Please provide a reason for your refund request:</p>
-                <textarea [(ngModel)]="refundMotif" rows="4" cols="50"></textarea>
-                <div class="modal-actions">
-                  <button (click)="submitRefundRequest()" class="btn btn-primary">Submit Request</button>
-                  <button (click)="closeRefundModal()" class="btn btn-secondary">Cancel</button>
-                </div>
-              </div>
-            </div>
           </div>
           <div *ngIf="ticket.status === 'REFUNDED' || ticket.status === 'REFUND_REQUESTED' || ticket.status === 'REFUND_REJECTED'"
                class="absolute inset-0 flex items-center justify-center rounded-lg bg-black backdrop-blur-sm bg-opacity-10 text-center w-full h-full">
@@ -77,9 +64,43 @@
               {{ticket.status}}
             </p>
           </div>
-
-
         </div>
+
+        <!--vercel modal-->
+        <div *ngIf="showRefundModal" class="fixed inset-0 z-50 overflow-auto bg-white dark:bg-darkBackground bg-opacity-50 dark:bg-opacity-50 backdrop-blur-sm flex items-center justify-center" data-aos="fade-down" >
+
+          <div class=" max-w-md bg-white dark:bg-gray-800  w-11/12 md:w-3/4 lg:w-1/2 xl:w-2/5 rounded-lg shadow-lg p-6 flex flex-col gap-4 text-lightText dark:text-darkText" data-v0-t="card">
+            <div class="flex flex-col">
+              <h3 class="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight">Request a Refund</h3>
+              <p class="text-sm text-muted-foreground mt-2">Provide a reason for your refund request.</p>
+            </div>
+            <div class="">
+              <div class="">
+                <label
+                  class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-cyan-50"
+                  for="reason"
+                >
+                  Reason
+                </label>
+                <textarea
+                  [(ngModel)]="refundMotif" rows="4" cols="50"
+                  class="shadow appearance-none border hover:border-cyan-500 rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline duration-300"
+                  id="reason"
+                  placeholder="Enter your reason for the refund..."
+                ></textarea>
+              </div>
+            </div>
+            <div class="items-center flex justify-end gap-2">
+              <button (click)="closeRefundModal()" class="border border-cyan-600 hover:border-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">
+                Cancel
+              </button>
+              <button  (click)="submitRefundRequest()" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- end vercel modal -->
       </div>
     </section>
 
