@@ -7,7 +7,7 @@
       <h2 class="text-2xl font-bold mb-4">Your Schedules</h2>
       <div class="grid grid-cols-1 lg:grid-cols-2 rounded-lg gap-8">
         <div  *ngFor="let ticket of passengerTickets" data-aos="fade-up" class="rounded-lg bg-white dark:bg-gray-800 text-card-foreground shadow-sm" data-v0-t="card">
-          <div *ngIf="ticket.status !== 'REFUNDED' && ticket.status !== 'CANCELLED'" class="flex flex-col space-y-1.5 p-6">
+          <div class="flex flex-col space-y-1.5 p-6">
             <p>{{ticket.status}}</p>
             <h3 class="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight">
               {{ticket.departureCity}} to {{ticket.arrivalCity}}
@@ -70,10 +70,15 @@
               </div>
             </div>
           </div>
-          <div *ngIf="ticket.status === 'REFUNDED' || ticket.status === 'CANCELLED'"
-               class="absolute inset-0 flex items-center justify-center rounded-lg bg-black backdrop-blur-2xl bg-opacity-10 text-center w-full h-full">
-            Status: <span class="text-cyan-500">{{ticket.status}}</span>
+          <div *ngIf="ticket.status === 'REFUNDED' || ticket.status === 'REFUND_REQUESTED' || ticket.status === 'REFUND_REJECTED'"
+               class="absolute inset-0 flex items-center justify-center rounded-lg bg-black backdrop-blur-sm bg-opacity-10 text-center w-full h-full">
+            <p class="text-xl italic font-medium flex flex-row items-center justify-center gap-2">
+              <i class="text-3xl" [class]="getStatusIcon(ticket.status)"></i>
+              {{ticket.status}}
+            </p>
           </div>
+
+
         </div>
       </div>
     </section>

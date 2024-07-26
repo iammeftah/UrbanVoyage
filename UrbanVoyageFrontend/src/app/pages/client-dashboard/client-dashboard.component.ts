@@ -197,4 +197,17 @@ export class ClientDashboardComponent implements OnInit {
       day >= today.getDate()
     );
   }
+
+  getStatusIcon(status: string): string {
+    switch (status) {
+      case 'REFUND_REJECTED':
+        return 'bx bx-x text-red-600';
+      case 'REFUNDED':
+        return 'bx bx-check text-green-600';
+      case 'REFUND_REQUESTED':
+        return 'bx bx-time text-yellow-600';
+      default:
+        return '';
+    }
+  }
 }
