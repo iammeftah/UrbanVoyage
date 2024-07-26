@@ -163,8 +163,10 @@ export class BookingPageComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error creating reservation:', error);
-          this.message = "Error creating reservation";
-          this.messageType = "error";
+
+
+          this.showMessage("Error creating reservation" , 'error');
+
         }
       });
     });
@@ -175,8 +177,10 @@ export class BookingPageComponent implements OnInit {
     console.log('Proceeding to payment');
     if (!this.validatePassengerInfo()) {
       console.error('Invalid passenger information');
-      this.message = "Invalid passenger information";
-      this.messageType = "error";
+
+
+      this.showMessage("Invalid passenger information" , 'error');
+
       return;
     }
 
@@ -212,8 +216,10 @@ export class BookingPageComponent implements OnInit {
       this.reservationService.deleteReservation(this.selectedReservation.reservationID).subscribe({
         next: () => {
           console.log('Reservation deleted due to payment failure');
-          this.message = "Payment failed. Your reservation has been cancelled.";
-          this.messageType = "error";
+
+          this.showMessage("Payment failed. Your reservation has been cancelled." , 'error');
+
+
         },
         error: (error) => {
           console.error('Error deleting reservation:', error);
@@ -230,8 +236,10 @@ export class BookingPageComponent implements OnInit {
     this.isLoading = true;
     if (!this.selectedReservation) {
       console.error('No reservation selected');
-      this.message = "Invalid passenger information";
-      this.messageType = "error";
+
+
+      this.showMessage("Invalid passenger information" , 'error');
+
       this.isLoading = false;
       return;
     }
@@ -247,13 +255,16 @@ export class BookingPageComponent implements OnInit {
           // Update the price based on the new seat type
           this.updatePrice(seatType);
 
-          this.message = "Seat type updated successfully";
-          this.messageType = "success";
+
+          this.showMessage("Seat type updated successfully" , 'success');
+
         },
         error: (error) => {
           this.isLoading = false;
-          this.message = "Error updating seat type";
-          this.messageType = "error";
+
+
+          this.showMessage("Error updating seat type" , 'error');
+
           console.error('Error updating seat type:', error);
         }
       });
@@ -287,12 +298,25 @@ export class BookingPageComponent implements OnInit {
   message: string | null = null;
   messageType: 'success' | 'error' = 'success';
 
+  showMessage(message: string, type: 'success' | 'error'): void {
+    this.message = message;
+    this.messageType = type;
+    setTimeout(() => this.closeMessage(), 5000); // Clear message after 5 seconds
+  }
+
+  closeMessage(): void {
+    this.message = null;
+  }
+
+
   onSubmit() {
     console.log('Submitting passenger:', JSON.stringify(this.passenger, null, 2));
     if (!this.validatePassengerInfo()) {
       console.error('Invalid passenger information');
-      this.message="Invalid passenger information";
-      this.messageType = "error";
+
+
+      this.showMessage("Invalid passenger information" , 'error');
+
       // Optionally, you can show an error message to the user here
       return;
     }
@@ -300,15 +324,18 @@ export class BookingPageComponent implements OnInit {
     this.passengerService.createPassenger(this.passenger).subscribe(
       (createdPassenger) => {
         console.log('Passenger created:', createdPassenger);
-        this.message= 'Passenger created: ' + this.passenger.firstName + ' ' + this.passenger.lastName;
-        this.messageType = "success";
+
+        this.showMessage('Passenger created: ' + this.passenger.firstName + ' ' + this.passenger.lastName , 'success');
+
         this.sharedDataService.setSelectedPassenger(createdPassenger);
         this.proceedToPayment();
       },
       (error) => {
         console.error('Error creating passenger:', error);
-        this.message='Error creating passenger:'+ error ;
-        this.messageType = "error";
+
+        this.showMessage("Error creating passenger" , 'error');
+
+
         // Optionally, you can show an error message to the user here
       }
     );

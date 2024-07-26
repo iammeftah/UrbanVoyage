@@ -226,7 +226,7 @@
               <td class="px-4 py-2">{{ request.motif }}</td>
               <td class="px-4 py-2">
             <span [ngClass]="{
-              'bg-yellow-600 dark:bg-yellow-700': request.status === 'PENDING',
+              'bg-yellow-600 dark:bg-yellow-700': request.status === 'PENDING' || request.status === 'REFUND_REJECTED',
               'bg-green-600 dark:bg-green-700': request.status === 'APPROVED',
               'bg-red-600 dark:bg-red-700': request.status === 'REJECTED'
             }" class="px-2 py-1 rounded-full text-white text-sm">

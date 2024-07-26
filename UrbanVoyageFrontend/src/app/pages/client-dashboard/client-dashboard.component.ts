@@ -30,6 +30,8 @@ export class ClientDashboardComponent implements OnInit {
   showRefundModal: boolean = false;
   refundMotif: string = '';
 
+  message: string | null = null;
+  messageType: 'success' | 'error' = 'success';
 
 
   constructor(
@@ -84,7 +86,10 @@ export class ClientDashboardComponent implements OnInit {
       this.paymentService.createRefundRequest(this.selectedTicket.reservationId, this.refundMotif).subscribe(
         result => {
           console.log('Refund request created:', result);
-          alert('Refund request submitted successfully. An admin will review your request.');
+
+
+          this.showMessage("Refund request submitted successfully. An admin will review your request." , 'success');
+
           this.showRefundModal = false;
           this.refundMotif = '';
           this.selectedTicket = null;
@@ -92,7 +97,9 @@ export class ClientDashboardComponent implements OnInit {
         },
         error => {
           console.error('Error creating refund request:', error);
-          alert('Failed to submit refund request. Please try again later.');
+
+          this.showMessage("Failed to submit refund request. Please try again later." , 'error');
+
         }
       );
     }
@@ -210,4 +217,16 @@ export class ClientDashboardComponent implements OnInit {
         return '';
     }
   }
+
+  showMessage(message: string, type: 'success' | 'error'): void {
+    this.message = message;
+    this.messageType = type;
+    setTimeout(() => this.closeMessage(), 5000); // Clear message after 5 seconds
+  }
+
+  closeMessage(): void {
+    this.message = null;
+  }
+
+
 }

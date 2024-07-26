@@ -1,5 +1,12 @@
 <div class="flex flex-col min-h-screen">
   <!-- Header remains the same -->
+
+  <app-message [message]="message" [type]="messageType" (close)="closeMessage()"></app-message>
+
+  <div *ngIf="loading" class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-gray-200 bg-opacity-20 backdrop-blur-lg z-50">
+    <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+  </div>
+
   <app-header></app-header>
 
   <main class="flex-grow w-full mx-auto px-4 md:px-32 py-8 md:py-12 bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText flex flex-col">
