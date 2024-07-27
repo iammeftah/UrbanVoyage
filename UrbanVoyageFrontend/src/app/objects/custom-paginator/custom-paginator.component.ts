@@ -2,13 +2,8 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-custom-paginator',
-  template: `
-    <div class="flex justify-center items-center space-x-2 mt-4">
-      <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1" class="px-3 py-1 rounded bg-cyan-500 text-white disabled:opacity-50">Previous</button>
-      <span>Page {{ currentPage }} of {{ totalPages }}</span>
-      <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages" class="px-3 py-1 rounded bg-cyan-500 text-white disabled:opacity-50">Next</button>
-    </div>
-  `
+  templateUrl: './custom-paginator.component.html',
+  styleUrls: ['./custom-paginator.component.css']
 })
 export class CustomPaginatorComponent {
   @Input() currentPage: number = 1;
@@ -20,9 +15,45 @@ export class CustomPaginatorComponent {
     return Math.ceil(this.totalItems / this.itemsPerPage);
   }
 
-  onPageChange(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
+  onPageChange(page: number | string): void {
+    if (typeof page === 'number' && page >= 1 && page <= this.totalPages) {
       this.pageChange.emit(page);
     }
+  }
+
+  getVisiblePages(): (number | string)[] {
+    const totalPages = this.totalPages;
+    const current = this.currentPage;
+    const delta = 1;
+    const range = [];
+    const rangeWithDots = [];
+    let l;
+
+    range.push(1);
+
+    if (totalPages <= 1) {
+      return range;
+    }
+
+    for (let i = current - delta; i <= current + delta; i++) {
+      if (i < totalPages && i > 1) {
+        range.push(i);
+      }
+    }
+    range.push(totalPages);
+
+    for (let i of range) {
+      if (l) {
+        if (i - l === 2) {
+          rangeWithDots.push(l + 1);
+        } else if (i - l !== 1) {
+          rangeWithDots.push('...');
+        }
+      }
+      rangeWithDots.push(i);
+      l = i;
+    }
+
+    return rangeWithDots;
   }
 }

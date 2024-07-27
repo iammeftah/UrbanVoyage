@@ -259,7 +259,7 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
   }
 
   onPageChange(page: number): void {
-    this.currentPage = page - 1; // Backend uses 0-based index
+    this.currentPage = page;
     this.loadRoutes();
   }
 
