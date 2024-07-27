@@ -56,4 +56,17 @@ public class RouteService {
         Pageable paging = PageRequest.of(page, size);
         return routeRepository.findAll(paging);
     }
+
+    public Page<Route> searchRoutes(String departureCity, String arrivalCity, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        if (departureCity != null && !departureCity.isEmpty() && arrivalCity != null && !arrivalCity.isEmpty()) {
+            return routeRepository.findByDepartureCityContainingIgnoreCaseAndArrivalCityContainingIgnoreCase(departureCity, arrivalCity, pageable);
+        } else if (departureCity != null && !departureCity.isEmpty()) {
+            return routeRepository.findByDepartureCityContainingIgnoreCase(departureCity, pageable);
+        } else if (arrivalCity != null && !arrivalCity.isEmpty()) {
+            return routeRepository.findByArrivalCityContainingIgnoreCase(arrivalCity, pageable);
+        } else {
+            return routeRepository.findAll(pageable);
+        }
+    }
 }

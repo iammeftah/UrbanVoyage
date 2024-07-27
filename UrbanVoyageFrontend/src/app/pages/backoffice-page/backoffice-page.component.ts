@@ -231,9 +231,17 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
   totalItems: number = 0;
   totalPages: number = 0;
 
+  searchDepartureCity: string = '';
+  searchArrivalCity: string = '';
+
+  onSearch(): void {
+    this.currentPage = 0; // Reset to first page when searching
+    this.loadRoutes();
+  }
+
   loadRoutes(): void {
     this.loading = true;
-    this.routeService.getRoutes(this.currentPage, this.itemsPerPage).subscribe({
+    this.routeService.searchRoutes(this.searchDepartureCity, this.searchArrivalCity, this.currentPage, this.itemsPerPage).subscribe({
       next: (response) => {
         this.loading = false;
         this.routes = response.routes;
@@ -244,8 +252,8 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
       },
       error: (error) => {
         this.loading = false;
-        console.error('Error loading routes:', error);
-        this.showMessage('Error loading routes: ' + (error.message || 'Unknown error'), 'error');
+        console.error('Error searching routes:', error);
+        this.showMessage('Error searching routes: ' + (error.message || 'Unknown error'), 'error');
       }
     });
   }

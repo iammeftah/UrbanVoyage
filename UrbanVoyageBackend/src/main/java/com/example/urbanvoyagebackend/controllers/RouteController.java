@@ -20,7 +20,8 @@ public class RouteController {
     private RouteService routeService;
 
 
-    @GetMapping("/search")
+
+    @GetMapping("/search-route")
     public List<Route> findByDepartureAndArrival(@RequestParam String departure, @RequestParam String arrival ) {
         List<Route> routes = routeService.findByDepartureAndArrivalCity(departure, arrival);
         System.out.println("Returning " + routes.size() + " routes");
@@ -33,6 +34,23 @@ public class RouteController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Page<Route> pageRoutes = routeService.getAllRoutesPaginated(page, size);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("routes", pageRoutes.getContent());
+        response.put("currentPage", pageRoutes.getNumber());
+        response.put("totalItems", pageRoutes.getTotalElements());
+        response.put("totalPages", pageRoutes.getTotalPages());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Map<String, Object>> searchRoutes(
+            @RequestParam(required = false) String departureCity,
+            @RequestParam(required = false) String arrivalCity,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<Route> pageRoutes = routeService.searchRoutes(departureCity, arrivalCity, page, size);
 
         Map<String, Object> response = new HashMap<>();
         response.put("routes", pageRoutes.getContent());

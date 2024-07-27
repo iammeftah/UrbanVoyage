@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Route } from "../models/route.model";
@@ -17,6 +17,21 @@ export class RouteService {
       tap(data => console.log('Raw response:', JSON.stringify(data))),
       catchError(this.handleError)
     );
+  }
+
+  searchRoutes(departureCity: string, arrivalCity: string, page: number, size: number): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    if (departureCity) {
+      params = params.set('departureCity', departureCity);
+    }
+    if (arrivalCity) {
+      params = params.set('arrivalCity', arrivalCity);
+    }
+
+    return this.http.get<any>(`${this.apiUrl}/search`, { params });
   }
 
 
@@ -65,7 +80,7 @@ export class RouteService {
   }
 
   findByDepartureAndArrival(departure: string, arrival: string ): Observable<Route[]> {
-    return this.http.get<Route[]>(`${this.apiUrl}/search`, {
+    return this.http.get<Route[]>(`${this.apiUrl}/search-route`, {
       params: { departure, arrival }
     }).pipe(
       catchError(this.handleError)

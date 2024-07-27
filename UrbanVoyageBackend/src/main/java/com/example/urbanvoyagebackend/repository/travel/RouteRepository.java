@@ -12,4 +12,8 @@ import java.util.List;
 public interface RouteRepository extends JpaRepository<Route, Long> {
     List<Route> findByDepartureCityAndArrivalCity(String departureCity, String arrivalCity);
     Page<Route> findAll(Pageable pageable);
+
+    Page<Route> findByDepartureCityContainingIgnoreCaseAndArrivalCityContainingIgnoreCase(String departureCity, String arrivalCity, Pageable pageable);
+    Page<Route> findByDepartureCityContainingIgnoreCase(String departureCity, Pageable pageable);
+    Page<Route> findByArrivalCityContainingIgnoreCase(String arrivalCity, Pageable pageable);
 }
