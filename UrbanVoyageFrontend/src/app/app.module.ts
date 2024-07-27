@@ -33,6 +33,7 @@ import {PaymentComponent} from "./components/payment/payment.component";
 import { SuccessPaymentComponent } from './pages/success-payment/success-payment.component';
 import { CancelPaymentComponent } from './pages/cancel-payment/cancel-payment.component';
 import {ClientDashboardComponent} from "./pages/client-dashboard/client-dashboard.component";
+import {CustomPaginatorComponent} from "./objects/custom-paginator/custom-paginator.component";
 
 export function initializeApp() {
   return () => {
@@ -70,7 +71,8 @@ export function initializeApp() {
     PaymentComponent,
     SuccessPaymentComponent,
     CancelPaymentComponent,
-    ClientDashboardComponent
+    ClientDashboardComponent,
+    CustomPaginatorComponent
   ],
   imports: [
     BrowserModule,

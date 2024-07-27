@@ -6,6 +6,9 @@ import com.example.urbanvoyagebackend.entity.travel.Schedule;
 import com.example.urbanvoyagebackend.repository.travel.RouteRepository;
 import com.example.urbanvoyagebackend.repository.travel.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -47,5 +50,10 @@ public class RouteService {
 
     public List<Route>  findByDepartureAndArrivalCity(String departure, String arrival) {
         return routeRepository.findByDepartureCityAndArrivalCity(departure,arrival);
+    }
+
+    public Page<Route> getAllRoutesPaginated(int page, int size) {
+        Pageable paging = PageRequest.of(page, size);
+        return routeRepository.findAll(paging);
     }
 }

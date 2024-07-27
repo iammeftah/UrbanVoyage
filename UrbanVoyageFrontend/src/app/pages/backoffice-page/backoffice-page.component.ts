@@ -200,21 +200,59 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
     });
   }
 
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+
+  // ... existing code ...
+
+  get paginatedRoutes(): Route[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.routes.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
+  get paginatedSchedules(): Schedule[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.schedules.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
+  get paginatedReservations(): Reservation[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.reservations.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
+  get paginatedRefundRequests(): any[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.refundRequests.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
+
+
+
+  totalItems: number = 0;
+  totalPages: number = 0;
 
   loadRoutes(): void {
     this.loading = true;
-    this.routeService.getRoutes().subscribe({
-      next: (routes) => {
-        this.loading=false;
-        this.routes = routes;
+    this.routeService.getRoutes(this.currentPage, this.itemsPerPage).subscribe({
+      next: (response) => {
+        this.loading = false;
+        this.routes = response.routes;
+        this.currentPage = response.currentPage;
+        this.totalItems = response.totalItems;
+        this.totalPages = response.totalPages;
         this.cdr.detectChanges();
       },
       error: (error) => {
-        this.loading=false;
+        this.loading = false;
         console.error('Error loading routes:', error);
         this.showMessage('Error loading routes: ' + (error.message || 'Unknown error'), 'error');
       }
     });
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page - 1; // Backend uses 0-based index
+    this.loadRoutes();
   }
 
   loadSchedules(): void {
@@ -223,6 +261,7 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
       next: (schedules) => {
         this.loading=false;
         this.schedules = schedules;
+        this.currentPage = 1; // Reset to first page when reloading data
         this.cdr.detectChanges();
       },
       error: (error) => {
@@ -591,6 +630,7 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
     this.reservationService.getReservations().subscribe({
       next: (reservations) => {
         console.log('Received reservations:', reservations);
+        this.currentPage = 1; // Reset to first page when reloading data
         this.reservations = reservations.map(reservation => {
           console.log('Processing reservation:', reservation);
           return {
@@ -681,6 +721,7 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
 
   setActiveTab(tab: 'routes' | 'schedules' | 'reservations' | 'statistics' | 'refunds'): void {
     this.activeTab = tab;
+    this.currentPage = 1;
     if (tab === 'statistics') {
       setTimeout(() => this.initializeCharts(), 0);
     } else if (tab === 'refunds') {

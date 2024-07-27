@@ -12,12 +12,14 @@ export class RouteService {
 
   constructor(private http: HttpClient) { }
 
-  getRoutes(): Observable<Route[]> {
-    return this.http.get<Route[]>(this.apiUrl).pipe(
+  getRoutes(page: number, size: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}?page=${page}&size=${size}`).pipe(
       tap(data => console.log('Raw response:', JSON.stringify(data))),
       catchError(this.handleError)
     );
   }
+
+
 
 
 

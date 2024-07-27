@@ -3,10 +3,13 @@ package com.example.urbanvoyagebackend.controllers;
 import com.example.urbanvoyagebackend.entity.travel.Route;
 import com.example.urbanvoyagebackend.service.travel.RouteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -26,11 +29,18 @@ public class RouteController {
     }
 
     @GetMapping
-    public List<Route> getAllRoutes() {
-        List<Route> routes = routeService.getAllRoutes();
-        System.out.println("Returning " + routes.size() + " routes");
-        System.out.println("Routes: " + routes);
-        return routes;
+    public ResponseEntity<Map<String, Object>> getAllRoutes(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<Route> pageRoutes = routeService.getAllRoutesPaginated(page, size);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("routes", pageRoutes.getContent());
+        response.put("currentPage", pageRoutes.getNumber());
+        response.put("totalItems", pageRoutes.getTotalElements());
+        response.put("totalPages", pageRoutes.getTotalPages());
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
