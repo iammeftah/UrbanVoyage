@@ -36,8 +36,8 @@ interface Statistics {
   styleUrls: ['./backoffice-page.component.css']
 })
 export class BackofficePageComponent implements OnInit, AfterViewInit {
-  activeTab: 'routes' | 'schedules' | 'reservations' | 'statistics' | 'refunds' = 'routes';
-  tabs: ('routes' | 'schedules' | 'reservations' | 'statistics' | 'refunds')[] = ['routes', 'schedules', 'reservations', 'statistics', 'refunds'];
+  activeTab: 'routes' | 'schedules' | 'reservations' | 'refunds' | 'statistics' = 'routes';
+  tabs: ('routes' | 'schedules' | 'reservations' | 'statistics' | 'refunds')[] = ['routes', 'schedules', 'reservations', 'refunds', 'statistics'];
   refundRequests: any[] = [];
   routes: Route[] = [];
   schedules: Schedule[] = [];
@@ -776,6 +776,118 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
 
       resolve(travelTimeSeconds);
     });
+  }
+
+
+  addOrUpdateRoute(): void {
+    if (!this.newRoute.departureCity || !this.newRoute.arrivalCity) {
+      this.showMessage("Please select both departure and arrival cities.", "error");
+      return;
+    }
+
+    const distance = this.cityDistances[this.newRoute.departureCity][this.newRoute.arrivalCity];
+    if (distance === undefined) {
+      this.showMessage("Distance not found for the selected cities.", "error");
+      return;
+    }
+
+    this.newRoute.distance = distance;
+
+    // Check if the route already exists
+    const existingRoute = this.routes.find(r =>
+      r.departureCity === this.newRoute.departureCity &&
+      r.arrivalCity === this.newRoute.arrivalCity
+    );
+
+    if (existingRoute) {
+      // Update existing route
+      this.routeService.updateRoute({...existingRoute, ...this.newRoute}).subscribe({
+        next: (updatedRoute) => {
+          const index = this.routes.findIndex(r => r.routeID === updatedRoute.routeID);
+          if (index !== -1) {
+            this.routes[index] = updatedRoute;
+          }
+          this.showMessage("Route updated successfully", "success");
+          this.newRoute = {};
+        },
+        error: (error) => {
+          console.error('Error updating route:', error);
+          this.showMessage("Error updating route: " + (error.message || 'Unknown error'), "error");
+        }
+      });
+    } else {
+      // Add new route
+      this.routeService.addRoute(this.newRoute as Route).subscribe({
+        next: (route) => {
+          this.routes.push(route);
+          this.showMessage("Route added successfully", "success");
+          this.newRoute = {};
+        },
+        error: (error) => {
+          console.error('Error adding route:', error);
+          this.showMessage("Error adding route: " + (error.message || 'Unknown error'), "error");
+        }
+      });
+    }
+  }
+
+
+  createAllRoutes(): void {
+    const createdRoutes: Set<string> = new Set(); // To keep track of routes already created
+
+    for (let i = 0; i < this.locations.length; i++) {
+      for (let j = i + 1; j < this.locations.length; j++) {
+        const departureCity = this.locations[i].name;
+        const arrivalCity = this.locations[j].name;
+
+        // Create a unique identifier for the route
+        const routeKey = `${departureCity}-${arrivalCity}`;
+        const reverseRouteKey = `${arrivalCity}-${departureCity}`;
+
+        // Check if this route or its reverse hasn't been created yet
+        if (!createdRoutes.has(routeKey) && !createdRoutes.has(reverseRouteKey)) {
+          const distance = this.cityDistances[departureCity][arrivalCity];
+
+          const newRoute: Partial<Route> = {
+            departureCity: departureCity,
+            arrivalCity: arrivalCity,
+            distance: distance
+          };
+
+          this.routeService.addRoute(newRoute as Route).subscribe({
+            next: (route) => {
+              console.log(`Route added: ${departureCity} to ${arrivalCity}`);
+              this.routes.push(route);
+              createdRoutes.add(routeKey);
+            },
+            error: (error) => {
+              console.error(`Error adding route from ${departureCity} to ${arrivalCity}:`, error);
+            }
+          });
+
+          // Create the reverse route as well
+          const reverseRoute: Partial<Route> = {
+            departureCity: arrivalCity,
+            arrivalCity: departureCity,
+            distance: distance
+          };
+
+          this.routeService.addRoute(reverseRoute as Route).subscribe({
+            next: (route) => {
+              console.log(`Reverse route added: ${arrivalCity} to ${departureCity}`);
+              this.routes.push(route);
+              createdRoutes.add(reverseRouteKey);
+            },
+            error: (error) => {
+              console.error(`Error adding reverse route from ${arrivalCity} to ${departureCity}:`, error);
+            }
+          });
+        }
+      }
+    }
+
+    // After all routes are created, reload the routes
+    setTimeout(() => this.loadRoutes(), 5000); // Wait for 5 seconds before reloading
   }
 
 }

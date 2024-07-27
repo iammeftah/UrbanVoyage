@@ -75,4 +75,16 @@ export class SchedulesPageComponent implements OnInit {
     if (this.sortColumn !== column) return 'bx bx-sort';
     return this.sortDirection === 'asc' ? 'bx bx-sort-up' : 'bx bx-sort-down';
   }
+
+  formatTime(dateTimeString: string): string {
+    const date = new Date(dateTimeString);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  formatDuration(duration: string): string {
+    const [hours, minutes] = duration.split(':');
+    return `${hours}h ${minutes}min`;
+  }
+
+
 }

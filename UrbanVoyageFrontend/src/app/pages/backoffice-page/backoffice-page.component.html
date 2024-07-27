@@ -40,6 +40,8 @@
             Distance: {{ newRoute.departureCity && newRoute.arrivalCity ? (cityDistances[newRoute.departureCity][newRoute.arrivalCity] | number:'1.0-0') + ' km' : 'N/A' }}
           </div>
           <button (click)="addRoute()" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">Add Route</button>
+          <!-- <button (click)="createAllRoutes()" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">Create All Routes</button> -->
+
         </div>
 
 
@@ -155,19 +157,21 @@
               <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ reservation.reservationDate | date:'mediumDate' }}</td>
               <td class="align-middle flex justify-center items-center [&:has([role=checkbox])]:pr-0">
                 <span class="inline-flex items-center justify-center rounded-md px-2 py-1 font-medium text-white shadow transition-colors  disabled:opacity-50 duration-300" [ngClass]="{
-                  'bg-green-600 dark:bg-green-700 !text-white': reservation.status === 'CONFIRMED',
-                  'bg-yellow-600 dark:bg-yellow-700 !text-white': reservation.status === 'PENDING',
-                  'bg-red-600 dark:bg-red-700 !text-white': reservation.status === 'CANCELLED'
+                  'bg-green-600 dark:bg-green-700 !text-white': reservation.status === 'CONFIRMED' || reservation.status === 'REFUNDED',
+                  'bg-yellow-600 dark:bg-yellow-700 !text-white': reservation.status === 'PENDING' || reservation.status === 'REFUND_REQUESTED',
+                  'bg-red-600 dark:bg-red-700 !text-white': reservation.status === 'CANCELLED' || reservation.status === 'REFUND_REJECTED'
                 }">
-                  <ng-container class="mr-1" *ngIf="reservation.status === 'CONFIRMED'">
+
+                  <ng-container class="mr-1" *ngIf="reservation.status === 'CONFIRMED' || reservation.status === 'REFUNDED'">
                     <i class='bx bx-check'></i>
                   </ng-container>
-                  <ng-container class="mr-1" *ngIf="reservation.status === 'PENDING'">
+                  <ng-container class="mr-1" *ngIf="reservation.status === 'PENDING' || reservation.status === 'REFUND_REQUESTED'">
                     <i class='bx bx-time-five'></i>
                   </ng-container>
-                  <ng-container class="mr-1" *ngIf="reservation.status === 'CANCELLED'">
+                  <ng-container class="mr-1" *ngIf="reservation.status === 'CANCELLED' || reservation.status === 'REFUND_REJECTED'">
                     <i class='bx bx-x'></i>
                   </ng-container>
+
                   <span class="ml-1">
                     {{ reservation.status }}
                   </span>
@@ -205,9 +209,9 @@
         <h2 class="text-xl font-bold mb-4">Manage Refund Requests</h2>
 
         <div class="overflow-x-auto">
-          <table class="min-w-full bg-white dark:bg-gray-800 rounded-lg overflow-hidden">
-            <thead class="bg-gray-100 dark:bg-gray-700">
-            <tr>
+          <table class="w-full caption-bottom text-sm rounded-lg overflow-hidden">
+            <thead class="bg-gray-50 dark:bg-gray-800">
+            <tr class="w-full h-10 transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
               <th class="px-4 py-2">Request ID</th>
               <th class="px-4 py-2">Passenger</th>
               <th class="px-4 py-2">Reservation ID</th>
@@ -218,28 +222,47 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let request of refundRequests" class="border-b border-gray-200 dark:border-gray-700">
-              <td class="px-4 py-2">{{ request.id }}</td>
-              <td class="px-4 py-2">{{ request.passengerName}}</td>
-              <td class="px-4 py-2">{{ request.reservationId }}</td>
-              <td class="px-4 py-2">{{ request.requestDate | date:'medium' }}</td>
-              <td class="px-4 py-2">{{ request.motif }}</td>
-              <td class="px-4 py-2">
-            <span [ngClass]="{
-              'bg-yellow-600 dark:bg-yellow-700': request.status === 'PENDING' || request.status === 'REFUND_REJECTED',
-              'bg-green-600 dark:bg-green-700': request.status === 'APPROVED',
-              'bg-red-600 dark:bg-red-700': request.status === 'REJECTED'
-            }" class="px-2 py-1 rounded-full text-white text-sm">
-              {{ request.status }}
-            </span>
+            <tr *ngFor="let request of refundRequests" class="transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ request.id }}</td>
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ request.passengerName }}</td>
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ request.reservationId }}</td>
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ request.requestDate | date:'mediumDate' }}</td>
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ request.motif }}</td>
+              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                <div class="flex justify-center items-center">
+                  <span class="inline-flex items-center justify-center rounded-md px-2 py-1 font-medium text-white shadow transition-colors disabled:opacity-50 duration-300" [ngClass]="{
+                    'bg-yellow-600 dark:bg-yellow-700 !text-white': request.status === 'PENDING',
+                    'bg-green-600 dark:bg-green-700 !text-white': request.status === 'APPROVED',
+                    'bg-red-600 dark:bg-red-700 !text-white': request.status === 'REJECTED'
+                  }">
+                    <ng-container *ngIf="request.status === 'PENDING'">
+                      <i class='bx bx-time-five mr-1'></i>
+                    </ng-container>
+                    <ng-container *ngIf="request.status === 'APPROVED'">
+                      <i class='bx bx-check mr-1'></i>
+                    </ng-container>
+                    <ng-container *ngif="request.status === 'REJECTED'">
+                      <i class='bx bx-x mr-1'></i>
+                    </ng-container>
+                    <span>
+                      {{ request.status }}
+                    </span>
+                  </span>
+                </div>
               </td>
               <td class="px-4 py-2">
-                <button *ngIf="request.status === 'PENDING'" (click)="approveRefund(request)" class="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded mr-2">
-                  Approve
-                </button>
-                <button *ngIf="request.status === 'PENDING'" (click)="rejectRefund(request)" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">
-                  Reject
-                </button>
+                <div class="flex flex-row gap-2 items-center justify-center">
+                  <button *ngIf="request.status === 'PENDING'"
+                          (click)="rejectRefund(request)"
+                          class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-1 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-red-500 dark:hover:text-red-600 disabled:opacity-50 duration-300">
+                    Reject
+                  </button>
+                  <button *ngIf="request.status === 'PENDING'"
+                          (click)="approveRefund(request)"
+                          class="bg-green-600 hover:bg-green-700 inline-flex items-center justify-center rounded-md px-4 py-1 text-sm font-medium text-white dark:text-darkText shadow transition-colors disabled:opacity-50 duration-300">
+                    Approve
+                  </button>
+                </div>
               </td>
             </tr>
             </tbody>

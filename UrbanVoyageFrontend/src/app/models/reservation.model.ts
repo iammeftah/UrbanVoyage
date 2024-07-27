@@ -8,7 +8,7 @@ export interface Reservation {
   route: Route;
   user:User;
   reservationDate: Date;
-  status: 'PENDING' | 'CONFIRMED' | 'CANCELLED';
+  status: 'PENDING' | 'CONFIRMED'| 'CANCELLED'| 'REFUND_APPROVED'| 'REFUND_REJECTED'| 'REFUND_REQUESTED'| 'REFUNDED';
   departure: string;
   arrival: string;
   seatType: 'STANDARD' | 'PREMIUM' | 'VIP';
