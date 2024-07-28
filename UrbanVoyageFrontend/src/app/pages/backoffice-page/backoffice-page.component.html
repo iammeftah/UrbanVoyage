@@ -94,19 +94,22 @@
       <div *ngIf="activeTab === 'schedules'">
         <h2 class="text-xl font-bold mb-4">Manage Schedules</h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-          <select [(ngModel)]="newSchedule.route" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
-            <option *ngFor="let route of routes" [ngValue]="route">{{ route.departureCity }} - {{ route.arrivalCity }}</option>
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
+          <select [(ngModel)]="newSchedule.departureCity" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+            <option value="">Select Departure City</option>
+            <option *ngFor="let location of locations" [value]="location.name">{{ location.name }}</option>
+          </select>
+
+          <select [(ngModel)]="newSchedule.arrivalCity" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+            <option value="">Select Arrival City</option>
+            <option *ngFor="let location of locations" [value]="location.name">{{ location.name }}</option>
           </select>
 
           <input type="datetime-local" [(ngModel)]="newSchedule.departureTime" name="departureTime" required
                  class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
 
-
-
           <input type="number" [(ngModel)]="newSchedule.availableSeats" name="availableSeats" placeholder="Available Seats" max="60" min="0" required
                  class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
-
 
           <button (click)="addSchedule()" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">Add Schedule</button>
         </div>

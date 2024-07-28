@@ -98,7 +98,12 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
 
 
   newRoute: Partial<Route> = {};
-  newSchedule: Partial<Schedule> = {};
+
+  newSchedule: Partial<Schedule> & { departureCity?: string, arrivalCity?: string } = {
+    departureTime: new Date().toISOString(),
+    availableSeats: 50,
+    route: {} as Route
+  };
 
   userChart?: Chart;
   reservationChart?: Chart;
@@ -473,72 +478,81 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
   }
 
   addSchedule(): void {
-    if (!this.newSchedule.route || !this.newSchedule.departureTime || this.newSchedule.availableSeats === undefined) {
+    if (!this.newSchedule.departureCity || !this.newSchedule.arrivalCity || !this.newSchedule.departureTime || this.newSchedule.availableSeats === undefined) {
       this.message = "Please fill in all required fields.";
       this.messageType = "error";
       return;
     }
 
-    let routeId: number;
-    if (typeof this.newSchedule.route === 'number') {
-      routeId = this.newSchedule.route;
-    } else if (this.newSchedule.route && 'routeID' in this.newSchedule.route) {
-      routeId = this.newSchedule.route.routeID;
-    } else {
-      this.message = "Invalid route selected.";
-      this.messageType = "error";
-      return;
-    }
+    console.log('Searching for route:', this.newSchedule.departureCity, this.newSchedule.arrivalCity);
 
-    const route = this.routes.find(r => r.routeID === routeId);
-    if (!route) {
-      this.message = "Selected route not found.";
-      this.messageType = "error";
-      return;
-    }
+    // Use the findByDepartureAndArrival method to get the route
+    this.routeService.findByDepartureAndArrival(this.newSchedule.departureCity, this.newSchedule.arrivalCity)
+      .subscribe({
+        next: (routes: Route[]) => {
+          console.log('Found routes:', routes);
 
-    this.calculateTravelTime(route.departureCity, route.arrivalCity).then(travelTimeSeconds => {
-      const departureTime = new Date(this.newSchedule.departureTime!);
-      // Adjust for timezone offset
-      const timezoneOffset = departureTime.getTimezoneOffset() * 60000;
-      const adjustedDepartureTime = new Date(departureTime.getTime() - timezoneOffset);
+          if (routes.length === 0) {
+            this.message = "No route found for the selected cities. Please add the route first.";
+            this.messageType = "error";
+            return;
+          }
 
-      const arrivalTime = new Date(adjustedDepartureTime.getTime() + travelTimeSeconds * 1000);
+          const route = routes[0]; // Assume the first route is the one we want
 
-      const distanceFromDepartureToArrival = this.cityDistances[route.departureCity][route.arrivalCity];
-      const schedulePrice = this.pricingService.calculateTicketPrice(distanceFromDepartureToArrival, this.seatType);
+          this.calculateTravelTime(this.newSchedule.departureCity, this.newSchedule.arrivalCity).then(travelTimeSeconds => {
+            const departureTime = new Date(this.newSchedule.departureTime!);
+            // Adjust for timezone offset
+            const timezoneOffset = departureTime.getTimezoneOffset() * 60000;
+            const adjustedDepartureTime = new Date(departureTime.getTime() - timezoneOffset);
 
-      const scheduleToAdd: Omit<Schedule, 'scheduleID'> = {
-        route: { routeID: routeId } as Route,
-        departureTime: adjustedDepartureTime.toISOString(),
-        arrivalTime: arrivalTime.toISOString(),
-        availableSeats: this.newSchedule.availableSeats || 50,
-        duration: null,
-        schedulePrice: schedulePrice,
-        seatType: 'STANDARD'
-      };
+            const arrivalTime = new Date(adjustedDepartureTime.getTime() + travelTimeSeconds * 1000);
 
-      this.scheduleService.addSchedule(scheduleToAdd).subscribe({
-        next: (schedule) => {
-          this.schedules.push(schedule);
-          this.newSchedule = {
-            departureTime: new Date().toISOString(),
-            availableSeats: 50
-          };
-          this.message = "Schedule added successfully";
-          this.messageType = "success";
-          this.loadSchedules();
+            const distanceFromDepartureToArrival = route.distance; // Use the distance from the route
+
+            const schedulePrice = this.pricingService.calculateTicketPrice(distanceFromDepartureToArrival, this.seatType);
+
+            const scheduleToAdd: Omit<Schedule, 'scheduleID'> = {
+              route: route,
+              departureTime: adjustedDepartureTime.toISOString(),
+              arrivalTime: arrivalTime.toISOString(),
+              availableSeats: this.newSchedule.availableSeats || 50,
+              duration: null,
+              schedulePrice: schedulePrice,
+              seatType: 'STANDARD'
+            };
+
+            this.scheduleService.addSchedule(scheduleToAdd).subscribe({
+              next: (schedule) => {
+                this.schedules.push(schedule);
+                this.newSchedule = {
+                  departureCity: '',
+                  arrivalCity: '',
+                  departureTime: new Date().toISOString(),
+                  availableSeats: 50,
+                  route: {} as Route
+                };
+                this.message = "Schedule added successfully";
+                this.messageType = "success";
+                this.loadSchedules();
+              },
+              error: (error) => {
+                console.error('Error adding schedule:', error);
+                this.message = 'Error adding schedule: ' + (error.message || 'Unknown error');
+                this.messageType = "error";
+              }
+            });
+          }).catch(error => {
+            this.message = 'Error calculating travel time: ' + error;
+            this.messageType = "error";
+          });
         },
         error: (error) => {
-          console.error('Error adding schedule:', error);
-          this.message = 'Error adding schedule: ' + (error.message || 'Unknown error');
+          console.error('Error finding route:', error);
+          this.message = 'Error finding route: ' + (error.message || 'Unknown error');
           this.messageType = "error";
         }
       });
-    }).catch(error => {
-      this.message = 'Error calculating travel time: ' + error;
-      this.messageType = "error";
-    });
   }
 
   updateSchedule(): void {
@@ -801,9 +815,7 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
   }
 
 
-
-
-  calculateTravelTime(origin: string, destination: string): Promise<number> {
+  calculateTravelTime(origin: string | undefined, destination: string | undefined): Promise<number> {
     return new Promise((resolve, reject) => {
       const originLocation = this.locations.find(loc => loc.name === origin);
       const destLocation = this.locations.find(loc => loc.name === destination);
