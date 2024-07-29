@@ -59,9 +59,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**", "/error", "/oauth2/**").permitAll()
                         .requestMatchers("/api/routes/**", "/error").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/reservations/**").permitAll()
+                        .requestMatchers("/api/reservations/create").permitAll() // Add this line
                         .requestMatchers("/api/users/**", "/error").permitAll()
                         .requestMatchers("/api/schedules/**", "/error").permitAll()
                         .requestMatchers("/api/payment/**", "/error").permitAll()
+                        .requestMatchers("/api/passengers/**", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
