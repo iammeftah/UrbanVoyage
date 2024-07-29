@@ -9,28 +9,17 @@ import com.example.urbanvoyagebackend.service.media.EmailService;
 import com.example.urbanvoyagebackend.service.users.AuthService;
 import com.example.urbanvoyagebackend.service.users.UserService;
 import com.example.urbanvoyagebackend.utils.JwtUtil;
-import com.example.urbanvoyagebackend.utils.MD5Util; // Import MD5Util
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -176,13 +165,13 @@ public class AuthController {
 
     @GetMapping("/user-details")
     public ResponseEntity<UserDTO> getUserDetails(@RequestParam String email) {
-        User user = userService.findByEmail(email);
-        if (user == null) {
+        Optional<User> user = userService.findByEmail(email);
+        if (user.isEmpty()) {
             System.out.println("AuthController: User not found");
             return ResponseEntity.notFound().build();
         }
-        System.out.println("AuthController: User found - " + user.getEmail());
-        UserDTO userDTO = new UserDTO(user.getUserID(), user.getEmail(), user.getFirstName(), user.getLastName());
+        System.out.println("AuthController: User found - " + user.get().getEmail());
+        UserDTO userDTO = new UserDTO(user.get().getUserID(), user.get().getEmail(), user.get().getFirstName(), user.get().getLastName());
         return ResponseEntity.ok(userDTO);
     }
 }

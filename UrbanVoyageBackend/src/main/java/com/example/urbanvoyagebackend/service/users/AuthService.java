@@ -2,7 +2,6 @@ package com.example.urbanvoyagebackend.service.users;
 
 
 import com.example.urbanvoyagebackend.dto.LoginResponse;
-import com.example.urbanvoyagebackend.entity.users.Client;
 import com.example.urbanvoyagebackend.entity.users.User;
 import com.example.urbanvoyagebackend.repository.users.UserRepository;
 import com.example.urbanvoyagebackend.utils.MD5Util;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -33,17 +33,17 @@ public class AuthService {
 
     public LoginResponse authenticate(String email, String password) {
         System.out.println("AuthService: Attempting to authenticate user with email: " + email);
-        User user = userRepository.findByEmail(email);
+        Optional<User> user = userRepository.findByEmail(email);
         System.out.println("Client: " + user);
         System.out.println("Entered password: " + password);
 
-        if (user != null && verifyPassword(MD5Util.md5(password), user.getPassword())) {
+        if (user.isPresent() && verifyPassword(MD5Util.md5(password), user.get().getPassword())) {
             System.out.println("Stored password: " + MD5Util.md5(password));
 
             System.out.println();
-            System.out.println("AuthService: Verifying password returns :" + verifyPassword(password,  user.getPassword()));
+            System.out.println("AuthService: Verifying password returns :" + verifyPassword(password,  user.get().getPassword()));
             System.out.println("AuthService: Client authentication successful");
-            return createLoginResponse(user);
+            return createLoginResponse(user.orElse(null));
         }
         System.out.println("AuthService: client authentication failed");
         return null;
@@ -91,7 +91,7 @@ public class AuthService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public User getCurrentUser(String email) {
+    public Optional<User> getCurrentUser(String email) {
         return userRepository.findByEmail(email);
     }
 

@@ -1,5 +1,6 @@
 package com.example.urbanvoyagebackend.config;
 
+import com.example.urbanvoyagebackend.entity.users.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -27,12 +28,15 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(String email) {
+    public String generateToken(User user) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(user.getEmail())
+                .claim("userId", user.getUserID())
+                .claim("username", user.getUsername())
+                .claim("roles", user.getRoles().stream().map(Enum::name).toList())
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(key)

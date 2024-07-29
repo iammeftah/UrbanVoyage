@@ -5,12 +5,12 @@ import com.example.urbanvoyagebackend.entity.travel.Reservation;
 import com.example.urbanvoyagebackend.entity.users.User;
 import com.example.urbanvoyagebackend.repository.travel.PassengerRepository;
 import com.example.urbanvoyagebackend.service.users.AuthService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PassengerService {
@@ -26,9 +26,9 @@ public class PassengerService {
 
     @Transactional
     public Passenger savePassenger(Passenger passenger, String userEmail) {
-        User currentUser = authService.getCurrentUser(userEmail);
-        if (currentUser != null) {
-            passenger.setCreatedByUser(currentUser);
+        Optional<User> currentUser = authService.getCurrentUser(userEmail);
+        if (currentUser.isPresent()) {
+            passenger.setCreatedByUser(currentUser.orElse(null));
         }
         System.out.println("PassengerService savePassenger: " + passenger);
         return passengerRepository.save(passenger);

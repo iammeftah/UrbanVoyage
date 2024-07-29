@@ -74,7 +74,8 @@ export function initializeApp() {
     CancelPaymentComponent,
     ClientDashboardComponent,
     CustomPaginatorComponent,
-    OAuthRedirectComponent
+    OAuthRedirectComponent,
+
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostListener, Input, Renderer2} from '@angular/core';
+import {Component, ElementRef, HostListener, Input, OnInit, Renderer2} from '@angular/core';
 import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
 import { Subscription } from 'rxjs';
@@ -8,11 +8,13 @@ import { Subscription } from 'rxjs';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit{
   isSidebarOpen: boolean = false;
   isLoggedIn: boolean = false;
   message: string | null = null;
   messageType: 'success' | 'error' = 'success';
+
+  private subscriptions: Subscription = new Subscription();
 
 
 
@@ -26,26 +28,32 @@ export class HeaderComponent {
     this.isLoggedIn = this.authService.isLoggedIn();
   }
 
+
+
   ngOnInit() {
-    this.authService.isLoggedIn$.subscribe(
-      isLoggedIn => this.isLoggedIn = isLoggedIn
+    this.subscriptions.add(
+      this.authService.isLoggedIn$.subscribe(
+        isLoggedIn => this.isLoggedIn = isLoggedIn
+      )
     );
 
-    this.isAdmin = this.authService.isAdmin();
-    this.authService.getAdminStatus().subscribe(status => {
-      this.isAdmin = status;
-    });
-    this.clientSubscription = this.authService.hasRole('ROLE_CLIENT').subscribe(
-      isClient => this.isClient = isClient
+    this.subscriptions.add(
+      this.authService.getAdminStatus().subscribe(
+        status => this.isAdmin = status
+      )
+    );
+
+    this.subscriptions.add(
+      this.authService.hasRole('ROLE_CLIENT').subscribe(
+        isClient => this.isClient = isClient
+      )
     );
   }
 
-  ngOnDestroy() {
 
-    if (this.clientSubscription) {
-      this.clientSubscription.unsubscribe();
-    }
-    // ... unsubscribe from other subscriptions if any ...
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
 

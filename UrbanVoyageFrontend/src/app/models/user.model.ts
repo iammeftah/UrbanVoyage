@@ -6,4 +6,5 @@ export interface User {
   phoneNumber:string;
   username:string;
   hasReservations: boolean; // Add any other fields as necessary
+  isClient:boolean;
 }

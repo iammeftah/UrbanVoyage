@@ -2,6 +2,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {AuthService} from "./auth.service";
+import {catchError} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -9,20 +11,27 @@ import { Observable } from 'rxjs';
 export class OAuthService {
   private baseUrl = 'http://localhost:8080'; // Your Spring Boot backend URL
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient , private authService: AuthService) {}
 
   initiateGoogleLogin(): void {
     window.location.href = `${this.baseUrl}/oauth2/authorization/google`;
   }
 
   handleRedirect(token: string): Observable<any> {
-    // Store the token in local storage
-    localStorage.setItem('auth_token', token);
-
-    // You can also make a request to your backend to get user details if needed
+    this.authService.handleOAuthLogin(token); // Call this method to update login state
     return this.http.get(`${this.baseUrl}/api/user`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
+  }
+
+  loginWithOAuthCode(code: string, state: string): Observable<any> {
+    const url = `${this.baseUrl}/oauth/login`;
+    return this.http.post<any>(url, { code, state }).pipe(
+      catchError((error) => {
+        console.error('OAuth login error', error);
+        throw error;
+      })
+    );
   }
 }
 

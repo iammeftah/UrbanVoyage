@@ -62,7 +62,8 @@ export class AuthService {
       tap((response: any) => {
         if (response.token) {
           localStorage.setItem('token', response.token);
-          this.setUserRoles(response.roles); // Assuming the backend sends roles in the response
+          this.setUserRoles(response.roles);
+          this.isLoggedInSubject.next(true);
         }
       }),
       catchError((error) => {
@@ -72,10 +73,12 @@ export class AuthService {
     );
   }
 
-  setUserRoles(roles: string[]) {
-    localStorage.setItem('userRoles', JSON.stringify(roles));
-    this.userRolesSubject.next(roles);
+  setUserRoles(roles: string[] | undefined) {
+    const safeRoles = roles || [];
+    localStorage.setItem('userRoles', JSON.stringify(safeRoles));
+    this.userRolesSubject.next(safeRoles);
   }
+
 
   getStoredRoles(): string[] {
     const storedRoles = localStorage.getItem('userRoles');
@@ -88,7 +91,7 @@ export class AuthService {
 
   hasRole(role: string): Observable<boolean> {
     return this.getUserRoles().pipe(
-      map(roles => roles.includes(role))
+      map(roles => Array.isArray(roles) && roles.includes(role))
     );
   }
 
@@ -152,15 +155,43 @@ export class AuthService {
   }
 
 
-  loadCurrentUser(): void {
+  // In auth.service.ts
+
+  private loadCurrentUser(): void {
     const email = this.getCurrentUserEmail();
     if (email) {
       this.getUserDetails(email).subscribe(
-        user => this.currentUserSubject.next(user),
-        error => console.error('Error loading user details:', error)
+        user => {
+          console.log('Received user details:', user);
+          if (user) {
+            this.currentUserSubject.next(user);
+            if (Array.isArray(user.roles)) {
+              this.setUserRoles(user.roles);
+              this.setAdminStatus(user.roles.includes('ROLE_ADMIN'));
+            } else {
+              console.error('User roles is not an array:', user.roles);
+              this.setUserRoles([]);
+              this.setAdminStatus(false);
+            }
+          } else {
+            console.error('User details are null');
+            this.setUserRoles([]);
+            this.setAdminStatus(false);
+          }
+        },
+        error => {
+          console.error('Error loading user details:', error);
+          this.setUserRoles([]);
+          this.setAdminStatus(false);
+        }
       );
+    } else {
+      console.error('No email found in the token');
+      this.setUserRoles([]);
+      this.setAdminStatus(false);
     }
   }
+
 
   getCurrentUser(): Observable<any> {
     if (!this.currentUserSubject.getValue()) {
@@ -193,9 +224,9 @@ export class AuthService {
   }
 
   handleOAuthLogin(token: string): void {
-    localStorage.setItem('token', token); // Change 'auth_token' to 'token'
+    localStorage.setItem('token', token);
     this.isLoggedInSubject.next(true);
-    // Optionally, you can decode the token here to get user info
-    // this.decodeAndSetUserInfo(token);
+    this.loadCurrentUser(); // This will update roles and admin status
   }
+
 }

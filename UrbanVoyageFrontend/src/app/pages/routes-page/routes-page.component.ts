@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {forkJoin, of, switchMap, tap} from 'rxjs';
+import {BehaviorSubject, forkJoin, of, Subscription, switchMap, tap} from 'rxjs';
 import { Schedule } from 'src/app/models/schedule.model';
 import { Route } from 'src/app/models/route.model';
 import { RouteService } from 'src/app/services/route.service';
@@ -46,6 +46,7 @@ export class RoutesPageComponent implements OnInit {
 
 
 
+
   locations = locations;
 
 
@@ -61,11 +62,39 @@ export class RoutesPageComponent implements OnInit {
     private authService: AuthService
   ) {}
 
+  isLoggedIn: boolean = false;
+  isClient: boolean = false;
+  private loginSubscription: Subscription = new Subscription();
+
+
 
   ngOnInit() {
     this.selectedSchedule = this.sharedDataService.getSelectedSchedule();
     this.generateCalendar();
+
+    this.loginSubscription.add(
+      this.authService.hasRole('ROLE_CLIENT').subscribe(
+        isClient => {
+          this.isClient = isClient;
+          console.log('Client role updated:', this.isClient);
+        }
+      )
+    );
+    this.loginSubscription = this.authService.isLoggedIn$.subscribe(
+      isLoggedIn => {
+        this.isLoggedIn = isLoggedIn;
+        console.log('Login state updated:', this.isLoggedIn);
+      }
+    );
+
   }
+
+  ngOnDestroy() {
+    if (this.loginSubscription) {
+      this.loginSubscription.unsubscribe();
+    }
+  }
+
 
   searchRoutes(): void {
     this.loading = true;
@@ -217,8 +246,9 @@ export class RoutesPageComponent implements OnInit {
 
 
 
+
   bookSchedule(schedule: Schedule): void {
-    if (!this.authService.isLoggedIn()) {
+    if (!this.isLoggedIn) {
       this.message = "Please log in to book a trip.";
       this.messageType = "error";
       setTimeout(() => {

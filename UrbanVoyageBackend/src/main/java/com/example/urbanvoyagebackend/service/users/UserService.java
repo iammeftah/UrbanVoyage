@@ -12,10 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -67,7 +64,7 @@ public class UserService implements UserDetailsService {
         return userRepository.existsByPhoneNumber(phoneNumber);
     }
 
-    public User findByEmail(String email) {
+    public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
@@ -110,14 +107,14 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
-        if (user == null) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty()) {
             throw new UsernameNotFoundException("User not found with email: " + email);
         }
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                user.isVerified(),
+                user.get().getEmail(),
+                user.get().getPassword(),
+                user.get().isVerified(),
                 true,
                 true,
                 true,
