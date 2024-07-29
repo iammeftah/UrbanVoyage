@@ -2,6 +2,7 @@ package com.example.urbanvoyagebackend.config;
 
 import com.example.urbanvoyagebackend.config.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -31,10 +32,16 @@ public class SecurityConfig {
 
     private static final Logger logger = Logger.getLogger(SecurityConfig.class.getName());
 
+    @Autowired
+    private OAuth2SuccessHandler oAuth2SuccessHandler;
+
+
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -49,13 +56,17 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/auth/**", "/error").permitAll()
+                        .requestMatchers("/api/auth/**", "/error", "/oauth2/**").permitAll()
                         .requestMatchers("/api/routes/**", "/error").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/reservations/**").permitAll()
                         .requestMatchers("/api/users/**", "/error").permitAll()
                         .requestMatchers("/api/schedules/**", "/error").permitAll()
-                        .requestMatchers("/api/payment/**", "/error").permitAll() // Add this line
+                        .requestMatchers("/api/payment/**", "/error").permitAll()
                         .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/oauth2/authorization/google")
+                        .successHandler(oAuth2SuccessHandler)
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
@@ -65,12 +76,8 @@ public class SecurityConfig {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                             response.getWriter().write("{\"error\": \"Unauthorized\", \"message\": \"" + authException.getMessage() + "\"}");
                         })
-
                 )
-                .addFilterBefore(new CorsFilter(corsConfigurationSource()), ChannelProcessingFilter.class)
-                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
-
+                .addFilterBefore(new CorsFilter(corsConfigurationSource()), ChannelProcessingFilter.class);
 
         return http.build();
     }

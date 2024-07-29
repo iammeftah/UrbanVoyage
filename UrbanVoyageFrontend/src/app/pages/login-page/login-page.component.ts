@@ -2,6 +2,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import {OAuthService} from "../../services/oauth.service";
 
 @Component({
   selector: 'app-login-page',
@@ -18,8 +19,9 @@ export class LoginPageComponent {
   messageType: 'success' | 'error' = 'success';
   loading: boolean = false;
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(private authService: AuthService, private router: Router ,private oauthService: OAuthService) {
     this.isLoggedIn = this.authService.isLoggedIn();
+
   }
 
   togglePasswordVisibility(): void {
@@ -88,7 +90,7 @@ export class LoginPageComponent {
     this.authService.logout();
     this.isLoggedIn = false;
     this.showMessage('Logged out successfully!', 'success');
-    
+
     this.router.navigate(['/login']);
 
   }
@@ -102,7 +104,7 @@ export class LoginPageComponent {
   }
 
   loginWithGoogle(): void {
-    this.showMessage('Google login not implemented yet.', 'error');
+    this.oauthService.initiateGoogleLogin();
   }
 
   showMessage(msg: string, type: 'success' | 'error'): void {

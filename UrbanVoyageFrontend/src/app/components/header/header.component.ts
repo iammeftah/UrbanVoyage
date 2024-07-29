@@ -21,11 +21,16 @@ export class HeaderComponent {
   private clientSubscription: Subscription | undefined;
   private adminSubscription: Subscription | undefined;
 
+
   constructor(private authService: AuthService, private router: Router) {
     this.isLoggedIn = this.authService.isLoggedIn();
   }
 
   ngOnInit() {
+    this.authService.isLoggedIn$.subscribe(
+      isLoggedIn => this.isLoggedIn = isLoggedIn
+    );
+
     this.isAdmin = this.authService.isAdmin();
     this.authService.getAdminStatus().subscribe(status => {
       this.isAdmin = status;
@@ -36,6 +41,7 @@ export class HeaderComponent {
   }
 
   ngOnDestroy() {
+
     if (this.clientSubscription) {
       this.clientSubscription.unsubscribe();
     }

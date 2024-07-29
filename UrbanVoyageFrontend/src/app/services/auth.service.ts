@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { jwtDecode } from 'jwt-decode';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +13,14 @@ export class AuthService {
   private currentUserSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private isAdminSubject = new BehaviorSubject<boolean>(this.getStoredAdminStatus());
 
+  private isLoggedInSubject = new BehaviorSubject<boolean>(this.hasValidToken());
+  isLoggedIn$ = this.isLoggedInSubject.asObservable();
+
+
+
   private userRolesSubject = new BehaviorSubject<string[]>(this.getStoredRoles());
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private router: Router) {}
 
   private getStoredAdminStatus(): boolean {
     return JSON.parse(localStorage.getItem('isAdmin') || 'false');
@@ -51,6 +57,7 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<any> {
+    this.isLoggedInSubject.next(true);
     return this.http.post(`${this.apiUrl}/signin`, { email, password }).pipe(
       tap((response: any) => {
         if (response.token) {
@@ -90,11 +97,31 @@ export class AuthService {
     localStorage.removeItem('userRoles');
     this.setAdminStatus(false);
     this.userRolesSubject.next([]);
+    this.isLoggedInSubject.next(false);
     return this.http.post(`${this.apiUrl}/signout`, {});
   }
 
+
+
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    return this.isLoggedInSubject.value;
+  }
+
+  private hasValidToken(): boolean {
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Here you should also check if the token is expired
+      // You can use the jwtDecode function to check the expiration
+      try {
+        const decodedToken: any = jwtDecode(token);
+        const currentTime = Date.now() / 1000;
+        return decodedToken.exp > currentTime;
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        return false;
+      }
+    }
+    return false;
   }
 
   getToken(): string | null {
@@ -165,6 +192,10 @@ export class AuthService {
     );
   }
 
-
-
+  handleOAuthLogin(token: string): void {
+    localStorage.setItem('token', token); // Change 'auth_token' to 'token'
+    this.isLoggedInSubject.next(true);
+    // Optionally, you can decode the token here to get user info
+    // this.decodeAndSetUserInfo(token);
+  }
 }

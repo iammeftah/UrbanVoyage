@@ -18,6 +18,7 @@ import {SuccessPaymentComponent} from "./pages/success-payment/success-payment.c
 import {CancelPaymentComponent} from "./pages/cancel-payment/cancel-payment.component";
 import {ClientDashboardComponent} from "./pages/client-dashboard/client-dashboard.component";
 import {ClientGuard} from "./guards/client.guard";
+import {OAuthRedirectComponent} from "./components/oauth-redirect/oauth-redirect/oauth-redirect.component";
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -49,7 +50,7 @@ const routes: Routes = [
     component: ClientDashboardComponent,
     canActivate: [ClientGuard]
   },
-
+  { path: 'oauth2/redirect', component: OAuthRedirectComponent },
 
 
 
