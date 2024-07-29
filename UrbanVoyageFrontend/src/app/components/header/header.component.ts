@@ -35,7 +35,7 @@ export class HeaderComponent implements OnInit{
       this.authService.getUserRoles().subscribe(
         roles => {
           console.log('Roles updated in HeaderComponent:', roles);
-          this.isClient = roles.includes('ROLE_CLIENT') || roles.includes('ROLE_ADMIN');
+          this.isClient = roles.includes('ROLE_CLIENT');
           console.log('Is client:', this.isClient);
         }
       )
