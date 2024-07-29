@@ -27,6 +27,7 @@
       <div *ngIf="activeTab === 'routes'">
         <h2 class="text-xl font-bold mb-4">Manage Routes</h2>
 
+        <!--
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
           <select [(ngModel)]="newRoute.departureCity" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
             <option value="">Select Departure City</option>
@@ -40,9 +41,9 @@
             Distance: {{ newRoute.departureCity && newRoute.arrivalCity ? (cityDistances[newRoute.departureCity][newRoute.arrivalCity] | number:'1.0-0') + ' km' : 'N/A' }}
           </div>
           <button (click)="addRoute()" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">Add Route</button>
-          <!-- <button (click)="createAllRoutes()" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">Create All Routes</button> -->
-
-        </div>
+          <button (click)="createAllRoutes()" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">Create All Routes</button>
+      </div>
+        -->
 
 
         <div class="overflow-x-auto">
@@ -94,6 +95,7 @@
       <div *ngIf="activeTab === 'schedules'">
         <h2 class="text-xl font-bold mb-4">Manage Schedules</h2>
 
+        <!--
         <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
           <select [(ngModel)]="newSchedule.departureCity" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
             <option value="">Select Departure City</option>
@@ -113,6 +115,7 @@
 
           <button (click)="addSchedule()" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">Add Schedule</button>
         </div>
+        -->
 
         <div class="overflow-x-auto">
           <table class="w-full caption-bottom text-sm rounded-lg overflow-hidden">

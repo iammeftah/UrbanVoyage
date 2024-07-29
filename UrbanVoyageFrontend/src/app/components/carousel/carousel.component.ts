@@ -16,29 +16,29 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
 
   slides: Slide[] = [
     {
-      image: "https://images.unsplash.com/photo-1580619305218-8423a7ef79b4?q=80&w=2074&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Machu Picchu, Peru",
-      description: "Discover the ancient Inca citadel nestled high in the Andes mountains, a true wonder of the world."
+      image: "https://images.unsplash.com/photo-1589306719793-0a78d2744e7b?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "Marrakech",
+      description: "Explore the vibrant souks, stunning palaces, and lively Djemaa el-Fna square in the Red City."
     },
     {
-      image: "https://plus.unsplash.com/premium_photo-1675805016128-079d8b813539?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Northern Lights, Iceland",
-      description: "Witness the mesmerizing natural light show in the night sky, a truly breathtaking experience."
+      image: "https://images.unsplash.com/photo-1701676639172-421b5e0b148b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "Chefchaouen",
+      description: "Wander through the enchanting blue-washed streets of this picturesque mountain town."
     },
     {
-      image: "https://images.unsplash.com/photo-1526958977630-bc61b30a2009?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Great Barrier Reef, Australia",
-      description: "Explore the world's largest coral reef system, a vibrant underwater paradise teeming with marine life."
+      image: "https://plus.unsplash.com/premium_photo-1699533135446-ffc64587ac03?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "Fes",
+      description: "Discover the ancient medina, traditional tanneries, and rich cultural heritage of this imperial city."
     },
     {
-      image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=1794&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Tokyo, Japan",
-      description: "Immerse yourself in the futuristic cityscape, rich culture, and unique blend of tradition and innovation."
+      image: "https://images.unsplash.com/photo-1499617990088-691f028dd3ed?q=80&w=1933&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "Dakhla",
+      description: "Experience the perfect blend of desert and ocean, ideal for kitesurfing and enjoying pristine beaches."
     },
     {
-      image: "https://images.unsplash.com/photo-1500213721845-709b85a28da0?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Bali, Indonesia",
-      description: "Experience lush jungles, coastal vistas, and cultural wonders in this tropical paradise."
+      image: "https://images.unsplash.com/photo-1624802751971-d425380ee247?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "Essaouira",
+      description: "Enjoy the laid-back atmosphere, beautiful beaches, and historic medina of this coastal gem."
     }
   ];
 
