@@ -1,7 +1,7 @@
 import {Component, ElementRef, HostListener, Input, OnInit, Renderer2} from '@angular/core';
 import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
-import { Subscription } from 'rxjs';
+import {filter, Subscription, switchMap} from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -32,23 +32,16 @@ export class HeaderComponent implements OnInit{
 
   ngOnInit() {
     this.subscriptions.add(
-      this.authService.isLoggedIn$.subscribe(
-        isLoggedIn => this.isLoggedIn = isLoggedIn
-      )
-    );
-
-    this.subscriptions.add(
-      this.authService.getAdminStatus().subscribe(
-        status => this.isAdmin = status
-      )
-    );
-
-    this.subscriptions.add(
-      this.authService.hasRole('ROLE_CLIENT').subscribe(
-        isClient => this.isClient = isClient
+      this.authService.getUserRoles().subscribe(
+        roles => {
+          console.log('Roles updated in HeaderComponent:', roles);
+          this.isClient = roles.includes('ROLE_CLIENT') || roles.includes('ROLE_ADMIN');
+          console.log('Is client:', this.isClient);
+        }
       )
     );
   }
+
 
 
 

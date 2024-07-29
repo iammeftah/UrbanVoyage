@@ -17,20 +17,18 @@ export class OAuthRedirectComponent implements OnInit {
   ) {}
 
 
+  // In OAuthRedirectComponent
   ngOnInit() {
     const token = this.route.snapshot.queryParamMap.get('token');
     if (token) {
-      try {
-        this.authService.handleOAuthLogin(token);
-        // Navigate to home or dashboard
-        this.router.navigate(['/']);
-      } catch (error) {
-        console.error('Error handling OAuth login:', error);
-        // Handle error (e.g., show error message to user)
-      }
-    } else {
-      console.error('No token found in redirect URL');
-      // Handle error (e.g., show error message to user)
+      this.authService.handleOAuthLogin(token);
+      this.authService.hasRole('ROLE_CLIENT').subscribe(isClient => {
+        if (isClient) {
+          this.router.navigate(['/routes']);
+        } else {
+          this.router.navigate(['/']);
+        }
+      });
     }
   }
 }

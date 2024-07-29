@@ -73,12 +73,13 @@ export class AuthService {
     );
   }
 
+  // In AuthService
   setUserRoles(roles: string[] | undefined) {
     const safeRoles = roles || [];
     localStorage.setItem('userRoles', JSON.stringify(safeRoles));
+    console.log('Roles stored in localStorage:', safeRoles);
     this.userRolesSubject.next(safeRoles);
   }
-
 
   getStoredRoles(): string[] {
     const storedRoles = localStorage.getItem('userRoles');
@@ -91,9 +92,15 @@ export class AuthService {
 
   hasRole(role: string): Observable<boolean> {
     return this.getUserRoles().pipe(
-      map(roles => Array.isArray(roles) && roles.includes(role))
+      map(roles => {
+        console.log('Checking for role:', role);
+        console.log('User roles:', roles);
+        return Array.isArray(roles) && roles.includes(role);
+      })
     );
   }
+
+
 
   logout(): Observable<any> {
     localStorage.removeItem('token');
@@ -156,40 +163,29 @@ export class AuthService {
 
 
   // In auth.service.ts
+  private isLoadingSubject = new BehaviorSubject<boolean>(true);
+  isLoading$ = this.isLoadingSubject.asObservable();
 
   private loadCurrentUser(): void {
+    this.isLoadingSubject.next(true);
     const email = this.getCurrentUserEmail();
     if (email) {
       this.getUserDetails(email).subscribe(
         user => {
-          console.log('Received user details:', user);
-          if (user) {
-            this.currentUserSubject.next(user);
-            if (Array.isArray(user.roles)) {
-              this.setUserRoles(user.roles);
-              this.setAdminStatus(user.roles.includes('ROLE_ADMIN'));
-            } else {
-              console.error('User roles is not an array:', user.roles);
-              this.setUserRoles([]);
-              this.setAdminStatus(false);
-            }
+
+          console.log('User details:', user);
+          if (user && Array.isArray(user.roles)) {
+            this.setUserRoles(user.roles);
+            console.log('Set user roles:', user.roles);
           } else {
-            console.error('User details are null');
-            this.setUserRoles([]);
-            this.setAdminStatus(false);
+            console.error('User roles not found or not an array');
           }
+          this.currentUserSubject.next(user);
         },
-        error => {
-          console.error('Error loading user details:', error);
-          this.setUserRoles([]);
-          this.setAdminStatus(false);
-        }
+        error => console.error('Error loading user details:', error)
       );
-    } else {
-      console.error('No email found in the token');
-      this.setUserRoles([]);
-      this.setAdminStatus(false);
     }
+    this.isLoadingSubject.next(false);
   }
 
 
@@ -226,7 +222,17 @@ export class AuthService {
   handleOAuthLogin(token: string): void {
     localStorage.setItem('token', token);
     this.isLoggedInSubject.next(true);
-    this.loadCurrentUser(); // This will update roles and admin status
+
+    const decodedToken: any = jwtDecode(token);
+    console.log('Decoded token:', decodedToken);
+
+    if (decodedToken && Array.isArray(decodedToken.roles)) {
+      this.setUserRoles(decodedToken.roles);
+    } else {
+      console.error('Roles not found in token or not an array');
+    }
+
+    this.loadCurrentUser();
   }
 
 }
