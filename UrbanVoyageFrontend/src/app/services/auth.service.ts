@@ -167,25 +167,26 @@ export class AuthService {
   isLoading$ = this.isLoadingSubject.asObservable();
 
   private loadCurrentUser(): void {
-    this.isLoadingSubject.next(true);
     const email = this.getCurrentUserEmail();
     if (email) {
       this.getUserDetails(email).subscribe(
         user => {
-
-          console.log('User details:', user);
-          if (user && Array.isArray(user.roles)) {
-            this.setUserRoles(user.roles);
-            console.log('Set user roles:', user.roles);
+          console.log('Full user details:', user);
+          if (user && user.roles) {
+            console.log('User roles from details:', user.roles);
+            if (Array.isArray(user.roles)) {
+              this.setUserRoles(user.roles);
+            } else {
+              console.error('User roles is not an array:', user.roles);
+            }
           } else {
-            console.error('User roles not found or not an array');
+            console.error('User roles not found in user details');
           }
           this.currentUserSubject.next(user);
         },
         error => console.error('Error loading user details:', error)
       );
     }
-    this.isLoadingSubject.next(false);
   }
 
 
@@ -227,12 +228,20 @@ export class AuthService {
     console.log('Decoded token:', decodedToken);
 
     if (decodedToken && Array.isArray(decodedToken.roles)) {
+      console.log('Roles from token:', decodedToken.roles);
       this.setUserRoles(decodedToken.roles);
     } else {
       console.error('Roles not found in token or not an array');
     }
 
     this.loadCurrentUser();
+  }
+
+  isTokenExpired(): boolean {
+    const token = this.getToken();
+    if (!token) return true;
+    const expiry = (JSON.parse(atob(token.split('.')[1]))).exp;
+    return (Math.floor((new Date).getTime() / 1000)) >= expiry;
   }
 
 }

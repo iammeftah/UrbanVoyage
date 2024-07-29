@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import { Reservation } from '../models/reservation.model';
 import {PaymentService} from "./payment.service";
+import {AuthService} from "./auth.service";
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import {PaymentService} from "./payment.service";
 export class ReservationService {
   private apiUrl = 'http://localhost:8080/api/reservations';
 
-  constructor(private http: HttpClient ,private paymentService: PaymentService) { }
+  constructor(private http: HttpClient ,private paymentService: PaymentService,private authService:AuthService) { }
 
   getReservations(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl).pipe(
@@ -39,6 +40,7 @@ export class ReservationService {
   }
 
   createReservation(reservationDTO: any): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.authService.getToken()}`);
     return this.http.post<any>(`${this.apiUrl}/create`, reservationDTO).pipe(
       tap(response => console.log('Reservation creation response:', response)),
       catchError(error => {
@@ -47,6 +49,8 @@ export class ReservationService {
       })
     );
   }
+
+
 
   updateReservationSeatType(reservationID: number, newSeatType: string): Observable<Reservation> {
     return this.http.patch<Reservation>(`${this.apiUrl}/${reservationID}/seatType`, newSeatType).pipe(
