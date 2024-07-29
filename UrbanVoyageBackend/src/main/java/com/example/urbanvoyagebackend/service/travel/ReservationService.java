@@ -4,14 +4,18 @@ package com.example.urbanvoyagebackend.service.travel;
 import com.example.urbanvoyagebackend.dto.ReservationDTO;
 import com.example.urbanvoyagebackend.entity.travel.Reservation;
 import com.example.urbanvoyagebackend.entity.travel.Route;
+import com.example.urbanvoyagebackend.entity.travel.Schedule;
 import com.example.urbanvoyagebackend.entity.users.User;
 import com.example.urbanvoyagebackend.repository.travel.ReservationRepository;
 import com.example.urbanvoyagebackend.repository.travel.RouteRepository;
+import com.example.urbanvoyagebackend.repository.travel.ScheduleRepository;
 import com.example.urbanvoyagebackend.repository.users.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -26,26 +30,76 @@ public class ReservationService {
     @Autowired
     private RouteRepository routeRepository;
 
+    @Autowired
+    private ScheduleRepository scheduleRepository;
+
 
     @Transactional
     public Reservation createReservation(ReservationDTO reservationDTO) {
-        User user = userRepository.findById(reservationDTO.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        Route route = routeRepository.findById(reservationDTO.getRouteId())
-                .orElseThrow(() -> new RuntimeException("Route not found"));
+        try {
+            System.out.println("ReservationService: Starting reservation creation");
+            User user = userRepository.findById(reservationDTO.getUserId())
+                    .orElseThrow(() -> new RuntimeException("User not found with ID: " + reservationDTO.getUserId()));
+            System.out.println("ReservationService: User found");
 
-        Reservation reservation = new Reservation();
-        reservation.setUser(user);
-        reservation.setRoute(route);
-        reservation.setReservationDate(new Date());
-        reservation.setStatus(Reservation.ReservationStatus.PENDING);
-        reservation.setSeatType(reservationDTO.getSeatType() != null ? reservationDTO.getSeatType() : Reservation.SeatType.STANDARD);
+            Route route = routeRepository.findById(reservationDTO.getRouteId())
+                    .orElseThrow(() -> new RuntimeException("Route not found with ID: " + reservationDTO.getRouteId()));
+            System.out.println("ReservationService: Route found");
 
+            // Find or create schedule
+            Schedule schedule = findOrCreateSchedule(route, reservationDTO.getDepartureTime());
+            System.out.println("ReservationService: Schedule found or created");
 
+            if (schedule.getAvailableSeats() <= 0) {
+                throw new IllegalStateException("No available seats for this schedule");
+            }
 
-        System.out.println("ReservationService: Reservation created");
+            Reservation reservation = new Reservation();
+            reservation.setUser(user);
+            reservation.setRoute(route);
+            reservation.setReservationDate(new Date());
+            reservation.setStatus(Reservation.ReservationStatus.PENDING);
+            reservation.setSeatType(reservationDTO.getSeatType() != null ? reservationDTO.getSeatType() : Reservation.SeatType.STANDARD);
 
-        return reservationRepository.save(reservation);
+            schedule.setAvailableSeats(schedule.getAvailableSeats() - 1);
+            scheduleRepository.save(schedule);
+            System.out.println("ReservationService: Schedule updated");
+
+            Reservation savedReservation = reservationRepository.save(reservation);
+            System.out.println("ReservationService: Reservation saved successfully");
+
+            return savedReservation;
+        } catch (Exception e) {
+            System.err.println("ReservationService: Error in createReservation: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    private Schedule findOrCreateSchedule(Route route, LocalDateTime departureTime) {
+        Schedule schedule = scheduleRepository.findByRouteAndDepartureTime(route, departureTime);
+        if (schedule == null) {
+            schedule = new Schedule();
+            schedule.setRoute(route);
+            schedule.setDepartureTime(departureTime);
+            schedule.setArrivalTime(departureTime.plusHours(1)); // Set a default arrival time
+            schedule.setAvailableSeats(50); // Set a default number of seats
+            schedule.setDuration(schedule.calculateDuration());
+            schedule.setSchedulePrice(BigDecimal.valueOf(100)); // Set a default price
+            schedule = scheduleRepository.save(schedule);
+        }
+        return schedule;
+    }
+
+    public int getAvailableSeats(Long routeId, LocalDateTime departureTime) {
+        Route route = routeRepository.findById(routeId)
+                .orElseThrow(() -> new RuntimeException("Route not found with ID: " + routeId));
+        Schedule schedule = scheduleRepository.findByRouteAndDepartureTime(route, departureTime);
+        if (schedule == null) {
+            // If no schedule exists, return a default value or throw an exception
+            return 50; // or whatever default value you want to use
+        }
+        return schedule.getAvailableSeats();
     }
 
     public Reservation updateReservationSeatType(Long id, String seatType) {

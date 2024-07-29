@@ -5,10 +5,12 @@ import com.example.urbanvoyagebackend.entity.travel.Reservation;
 import com.example.urbanvoyagebackend.entity.users.User;
 import com.example.urbanvoyagebackend.service.travel.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,14 +118,24 @@ public class ReservationController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationDTO reservationDTO) {
+    public ResponseEntity<?> createReservation(@RequestBody ReservationDTO reservationDTO) {
         try {
             Reservation newReservation = reservationService.createReservation(reservationDTO);
-            System.out.println("ReservationController: Reservation created");
+            System.out.println("ReservationController: Reservation created successfully");
             return ResponseEntity.ok(newReservation);
         } catch (Exception e) {
-            System.out.println("ReservationController: Reservation creation fails");
+            System.err.println("ReservationController: Error creating reservation: " + e.getMessage());
+            e.printStackTrace(); // This will print the full stack trace
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while creating the reservation: " + e.getMessage());
+        }
+    }
 
+    @GetMapping("/availableSeats")
+    public ResponseEntity<Integer> getAvailableSeats(@RequestParam Long routeId, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime departureTime) {
+        try {
+            int availableSeats = reservationService.getAvailableSeats(routeId, departureTime);
+            return ResponseEntity.ok(availableSeats);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }

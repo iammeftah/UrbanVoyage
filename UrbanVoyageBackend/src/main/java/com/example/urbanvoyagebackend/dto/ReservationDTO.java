@@ -5,6 +5,7 @@ import com.example.urbanvoyagebackend.entity.travel.Reservation;
 import com.example.urbanvoyagebackend.entity.travel.Route;
 import com.example.urbanvoyagebackend.entity.users.User;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class ReservationDTO {
@@ -19,6 +20,16 @@ public class ReservationDTO {
     private String arrival;
     private Reservation.SeatType seatType;
     private Passenger passenger ;
+    private Long scheduleId;
+    private LocalDateTime departureTime;
+
+    public LocalDateTime getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(LocalDateTime departureTime) {
+        this.departureTime = departureTime;
+    }
 
     public ReservationDTO() {
     }
@@ -111,6 +122,22 @@ public class ReservationDTO {
 
     public void setSeatType(Reservation.SeatType seatType) {
         this.seatType = seatType;
+    }
+
+    public Passenger getPassenger() {
+        return passenger;
+    }
+
+    public void setPassenger(Passenger passenger) {
+        this.passenger = passenger;
+    }
+
+    public Long getScheduleId() {
+        return scheduleId;
+    }
+
+    public void setScheduleId(Long scheduleId) {
+        this.scheduleId = scheduleId;
     }
 
     // Getters and setters

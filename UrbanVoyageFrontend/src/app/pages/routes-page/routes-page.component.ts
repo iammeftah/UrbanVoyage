@@ -33,7 +33,7 @@ export class RoutesPageComponent implements OnInit {
   departureCity: string = '';
   arrivalCity: string = '';
 
-  schedules: Schedule[] = [];
+  schedules: (Schedule & { availableSeats: number })[] = [];
   noRoutesFound: boolean = false;
   isLoading: boolean = false;
   errorMessage: string = '';
@@ -120,6 +120,22 @@ export class RoutesPageComponent implements OnInit {
         this.handleError(error);
       }
     });
+    this.schedules.forEach(schedule => {
+      this.reservationService.getAvailableSeats(schedule.route.routeID, schedule.departureTime)
+        .subscribe(
+          availableSeats => {
+            schedule.availableSeats = availableSeats;
+          },
+          error => {
+            console.error('Error fetching available seats:', error);
+            schedule.availableSeats = 0; // Set to 0 if there's an error
+          }
+        );
+    });
+  }
+
+  isScheduleAvailable(schedule: Schedule & { availableSeats: number }): boolean {
+    return schedule.availableSeats > 0;
   }
 
   private generateSchedulesForRoute(route: Route): void {
@@ -277,42 +293,35 @@ export class RoutesPageComponent implements OnInit {
         const reservationDTO = {
           userId: userId,
           routeId: schedule.route.routeID,
+          departureTime: schedule.departureTime,
           seatType: 'STANDARD',
           status: 'PENDING'
         };
         console.log('Reservation DTO:', reservationDTO);
         return this.reservationService.createReservation(reservationDTO);
-      }),
-      switchMap(reservation => {
-        if (reservation) {
-          return this.scheduleService.saveSchedule(schedule).pipe(
-            map(() => reservation)
-          );
-        }
-        return of(null);
-      }),
-      switchMap(reservation => {
-        if (reservation) {
-          return this.scheduleService.deleteOtherSchedules(schedule).pipe(
-            map(() => reservation)
-          );
-        }
-        return of(null);
       })
     ).subscribe({
       next: (reservation) => {
         if (reservation) {
-          console.log('Reservation created and schedule saved:', reservation);
+          console.log('Reservation created:', reservation);
           this.sharedDataService.setSelectedReservation(reservation);
           this.sharedDataService.setSelectedSchedule(schedule);
           this.router.navigate(['/booking']);
         } else {
           console.error('No reservation returned');
+          this.message = "Error creating reservation. Please try again.";
+          this.messageType = "error";
         }
       },
       error: (error) => {
         console.error('Error in reservation process:', error);
-        this.message = "Error creating reservation. Please try again.";
+        if (error.status === 400) {
+          this.message = error.error || "Bad request. Please check your input.";
+        } else if (error.status === 500) {
+          this.message = "Server error. Please try again later.";
+        } else {
+          this.message = "Error creating reservation. Please try again.";
+        }
         this.messageType = "error";
       }
     });

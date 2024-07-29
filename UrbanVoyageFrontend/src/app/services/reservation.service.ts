@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import { Reservation } from '../models/reservation.model';
 import {PaymentService} from "./payment.service";
@@ -80,6 +80,13 @@ export class ReservationService {
   requestRefund(reservationId: number): Observable<any> {
     console.log(`Requesting refund for reservation ID: ${reservationId}`);
     return this.paymentService.refundPayment(reservationId);
+  }
+
+  getAvailableSeats(routeId: number, departureTime: string): Observable<number> {
+    const params = new HttpParams()
+      .set('routeId', routeId.toString())
+      .set('departureTime', departureTime);
+    return this.http.get<number>(`${this.apiUrl}/availableSeats`, { params });
   }
 
 
