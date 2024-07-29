@@ -11,7 +11,7 @@
 
 
   <!-- Login Page -->
-  <div class="flex-grow flex items-start justify-center mx-auto space-y-6 p-4 text-lightText dark:text-darkText w-full bg-lightBackground dark:bg-darkBackground">
+  <div class="flex-grow flex items-center justify-center mx-auto space-y-6 p-4 text-lightText dark:text-darkText w-full bg-lightBackground dark:bg-darkBackground">
     <div class="w-full mt-0 md-mt-16 md:max-w-xl px-6 py-6 rounded-lg shadow-sm  bg-white dark:bg-[#333333]">
       <div class="space-y-2 text-center">
         <h1 class="text-3xl font-bold text-cyan-500">Login</h1>
@@ -68,7 +68,8 @@
             <span class="bg-white dark:bg-[#333333] px-2 text-muted-foreground">Or continue with</span>
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="flex justify-center gap-4">
+          <!--
           <button
             (click)="loginWithFacebook()"
             class="oauth-button whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors  disabled:pointer-events-none disabled:opacity-50 border border-input hover:bg-[#1877f2] hover:border-[#1877f2] hover:text-white h-10 px-4 py-2 flex items-center justify-center gap-2 group"
@@ -76,14 +77,18 @@
             <i class='bx bxl-facebook text-xl'></i>
             Facebook
           </button>
+          -->
           <button
             (click)="loginWithGoogle()"
-            class="oauth-button whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors  disabled:pointer-events-none disabled:opacity-50 border border-input hover:bg-[#db4437] hover:border-[#db4437] hover:text-white h-10 px-4 py-2 flex items-center justify-center gap-2 group"
+            class="w-full oauth-button whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors  disabled:pointer-events-none disabled:opacity-50 border border-input hover:bg-[#db4437] hover:border-[#db4437] hover:text-white h-10 px-4 py-2 flex items-center justify-center gap-2 group"
           >
             <i class='bx bxl-google text-xl'></i>
             Google
           </button>
+
+
         </div>
+
         <p class="text-center text-sm text-muted-foreground">
           Don't have an account? <a href="/register" class="text-cyan-500 hover:underline">Sign up</a>
         </p>
