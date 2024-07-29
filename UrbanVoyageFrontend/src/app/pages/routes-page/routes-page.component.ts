@@ -83,11 +83,28 @@ export class RoutesPageComponent implements OnInit {
           this.noRoutesFound = true;
           this.loading = false;
         } else {
-          this.loadSchedulesForRoutes(routes);
+          this.generateSchedulesForRoute(routes[0]);
         }
       },
       error: (error) => {
         console.error('Error fetching routes:', error);
+        this.handleError(error);
+      }
+    });
+  }
+
+  private generateSchedulesForRoute(route: Route): void {
+    this.scheduleService.generateSchedulesForDay(route, new Date(this.travelDate)).subscribe({
+      next: (generatedSchedules) => {
+        this.schedules = generatedSchedules;
+        console.log('Generated schedules:', this.schedules);
+        if (this.schedules.length === 0) {
+          this.noRoutesFound = true;
+        }
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error generating schedules:', error);
         this.handleError(error);
       }
     });
@@ -235,11 +252,27 @@ export class RoutesPageComponent implements OnInit {
         };
         console.log('Reservation DTO:', reservationDTO);
         return this.reservationService.createReservation(reservationDTO);
+      }),
+      switchMap(reservation => {
+        if (reservation) {
+          return this.scheduleService.saveSchedule(schedule).pipe(
+            map(() => reservation)
+          );
+        }
+        return of(null);
+      }),
+      switchMap(reservation => {
+        if (reservation) {
+          return this.scheduleService.deleteOtherSchedules(schedule).pipe(
+            map(() => reservation)
+          );
+        }
+        return of(null);
       })
     ).subscribe({
       next: (reservation) => {
         if (reservation) {
-          console.log('Reservation created:', reservation);
+          console.log('Reservation created and schedule saved:', reservation);
           this.sharedDataService.setSelectedReservation(reservation);
           this.sharedDataService.setSelectedSchedule(schedule);
           this.router.navigate(['/booking']);
@@ -248,12 +281,13 @@ export class RoutesPageComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.error('Error creating reservation:', error);
+        console.error('Error in reservation process:', error);
         this.message = "Error creating reservation. Please try again.";
         this.messageType = "error";
       }
     });
   }
+
 
 
   private updateAvailableSeats(schedule: Schedule): void {
