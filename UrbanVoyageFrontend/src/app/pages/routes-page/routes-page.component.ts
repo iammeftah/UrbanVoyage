@@ -10,6 +10,7 @@ import {AuthService} from "../../services/auth.service";
 import {ReservationService} from "../../services/reservation.service";
 import {map} from "rxjs/operators";
 import { locations } from 'src/app/data/locations.data';
+import {DistanceService} from "../../services/distance.service";
 
 
 interface AgencyLocation {
@@ -59,7 +60,9 @@ export class RoutesPageComponent implements OnInit {
     private reservationService: ReservationService,
     private router: Router,
     private sharedDataService: SharedDataService,
-    private authService: AuthService
+    private authService: AuthService,
+    private distanceService: DistanceService,
+
   ) {}
 
   isLoggedIn: boolean = false;
@@ -309,13 +312,38 @@ export class RoutesPageComponent implements OnInit {
           this.router.navigate(['/login']);
           return of(null);
         }
+
+        const departureLocation = this.findLocation(schedule.route.departureCity);
+        const arrivalLocation = this.findLocation(schedule.route.arrivalCity);
+
+        if (!departureLocation || !arrivalLocation) {
+          console.error('Location not found');
+          this.message = "Error: Location not found";
+          this.messageType = "error";
+          return of(null);
+        }
+
+        // Calculate distance
+        const distance = this.distanceService.calculateDistance(
+          departureLocation.lat,
+          departureLocation.lng,
+          arrivalLocation.lat,
+          arrivalLocation.lng
+        );
+
         const reservationDTO = {
           userId: userId,
           routeId: schedule.route.routeID,
           departureTime: schedule.departureTime,
+          departureLat: departureLocation.lat,
+          departureLng: departureLocation.lng,
+          arrivalLat: arrivalLocation.lat,
+          arrivalLng: arrivalLocation.lng,
+          distance: distance,
           seatType: 'STANDARD',
           status: 'PENDING'
         };
+
         console.log('Reservation DTO:', reservationDTO);
         return this.reservationService.createReservation(reservationDTO);
       })
@@ -346,7 +374,9 @@ export class RoutesPageComponent implements OnInit {
     });
   }
 
-
+  private findLocation(cityName: string): AgencyLocation | undefined {
+    return locations.find(location => location.name.toLowerCase() === cityName.toLowerCase());
+  }
 
   private updateAvailableSeats(schedule: Schedule): void {
     const newAvailableSeats = schedule.availableSeats - 1;

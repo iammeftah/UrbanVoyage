@@ -23,6 +23,12 @@ public class ReservationDTO {
     private Long scheduleId;
     private LocalDateTime departureTime;
 
+    private Double departureLat;
+    private Double departureLng;
+    private Double arrivalLat;
+    private Double arrivalLng;
+    private Double distance;
+
     public LocalDateTime getDepartureTime() {
         return departureTime;
     }
@@ -138,6 +144,46 @@ public class ReservationDTO {
 
     public void setScheduleId(Long scheduleId) {
         this.scheduleId = scheduleId;
+    }
+
+    public Double getDepartureLat() {
+        return departureLat;
+    }
+
+    public void setDepartureLat(Double departureLat) {
+        this.departureLat = departureLat;
+    }
+
+    public Double getDepartureLng() {
+        return departureLng;
+    }
+
+    public void setDepartureLng(Double departureLng) {
+        this.departureLng = departureLng;
+    }
+
+    public Double getArrivalLat() {
+        return arrivalLat;
+    }
+
+    public void setArrivalLat(Double arrivalLat) {
+        this.arrivalLat = arrivalLat;
+    }
+
+    public Double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Double distance) {
+        this.distance = distance;
+    }
+
+    public Double getArrivalLng() {
+        return arrivalLng;
+    }
+
+    public void setArrivalLng(Double arrivalLng) {
+        this.arrivalLng = arrivalLng;
     }
 
     // Getters and setters

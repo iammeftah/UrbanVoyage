@@ -47,7 +47,7 @@ public class ReservationService {
             System.out.println("ReservationService: Route found");
 
             // Find or create schedule
-            Schedule schedule = findOrCreateSchedule(route, reservationDTO.getDepartureTime());
+            Schedule schedule = findOrCreateSchedule(route, reservationDTO);
             System.out.println("ReservationService: Schedule found or created");
 
             if (schedule.getAvailableSeats() <= 0) {
@@ -76,16 +76,36 @@ public class ReservationService {
         }
     }
 
-    private Schedule findOrCreateSchedule(Route route, LocalDateTime departureTime) {
-        Schedule schedule = scheduleRepository.findByRouteAndDepartureTime(route, departureTime);
+    @Autowired
+    private DistanceService distanceService;
+
+    @Autowired
+    private PricingService pricingService;
+
+    private Schedule findOrCreateSchedule(Route route, ReservationDTO reservationDTO) {
+        Schedule schedule = scheduleRepository.findByRouteAndDepartureTime(route, reservationDTO.getDepartureTime());
         if (schedule == null) {
             schedule = new Schedule();
             schedule.setRoute(route);
-            schedule.setDepartureTime(departureTime);
-            schedule.setArrivalTime(departureTime.plusHours(1)); // Set a default arrival time
-            schedule.setAvailableSeats(50); // Set a default number of seats
-            schedule.setDuration(schedule.calculateDuration());
-            schedule.setSchedulePrice(BigDecimal.valueOf(100)); // Set a default price
+            schedule.setDepartureTime(reservationDTO.getDepartureTime());
+
+            // Use the distance calculated in the frontend
+            double distance = reservationDTO.getDistance();
+
+            // Calculate duration (assuming average speed of 60 km/h)
+            long durationMinutes = Math.round((distance / 60) * 60);
+
+            // Set arrival time
+            LocalDateTime arrivalTime = reservationDTO.getDepartureTime().plusMinutes(durationMinutes);
+            schedule.setArrivalTime(arrivalTime);
+
+            // Calculate price
+            BigDecimal price = pricingService.calculateTicketPrice(distance);
+            schedule.setSchedulePrice(price);
+
+            // Set available seats (you may want to make this configurable)
+            schedule.setAvailableSeats(50);
+
             schedule = scheduleRepository.save(schedule);
         }
         return schedule;
