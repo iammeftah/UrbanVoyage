@@ -132,6 +132,7 @@ public class ReservationController {
 
     @GetMapping("/availableSeats")
     public ResponseEntity<Integer> getAvailableSeats(@RequestParam Long routeId, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime departureTime) {
+        System.out.println("Reservation Controller: getAvailableSeats() triggered");
         try {
             int availableSeats = reservationService.getAvailableSeats(routeId, departureTime);
             return ResponseEntity.ok(availableSeats);

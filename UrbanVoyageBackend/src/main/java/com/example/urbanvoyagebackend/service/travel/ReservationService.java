@@ -92,6 +92,7 @@ public class ReservationService {
     }
 
     public int getAvailableSeats(Long routeId, LocalDateTime departureTime) {
+        System.out.println("Reservation Service: getAvailableSeats() triggered");
         Route route = routeRepository.findById(routeId)
                 .orElseThrow(() -> new RuntimeException("Route not found with ID: " + routeId));
         Schedule schedule = scheduleRepository.findByRouteAndDepartureTime(route, departureTime);

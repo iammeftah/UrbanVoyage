@@ -145,6 +145,9 @@ export class RoutesPageComponent implements OnInit {
         console.log('Generated schedules:', this.schedules);
         if (this.schedules.length === 0) {
           this.noRoutesFound = true;
+        } else {
+          // Fetch available seats for each schedule
+          this.fetchAvailableSeatsForSchedules();
         }
         this.loading = false;
       },
@@ -152,6 +155,22 @@ export class RoutesPageComponent implements OnInit {
         console.error('Error generating schedules:', error);
         this.handleError(error);
       }
+    });
+  }
+
+
+  private fetchAvailableSeatsForSchedules(): void {
+    this.schedules.forEach(schedule => {
+      this.reservationService.getAvailableSeats(schedule.route.routeID, schedule.departureTime)
+        .subscribe(
+          availableSeats => {
+            schedule.availableSeats = availableSeats;
+          },
+          error => {
+            console.error('Error fetching available seats:', error);
+            schedule.availableSeats = 0; // Set to 0 if there's an error
+          }
+        );
     });
   }
 
