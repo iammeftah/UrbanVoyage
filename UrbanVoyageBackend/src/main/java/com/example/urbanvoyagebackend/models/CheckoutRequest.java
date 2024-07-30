@@ -1,8 +1,10 @@
 package com.example.urbanvoyagebackend.models;
 
+import java.math.BigDecimal;
+
 public class CheckoutRequest {
     private String productName;
-    private int amount;
+    private BigDecimal amount;
     private Long reservationId;
 
     public String getProductName() {
@@ -13,11 +15,11 @@ public class CheckoutRequest {
         this.productName = productName;
     }
 
-    public int getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

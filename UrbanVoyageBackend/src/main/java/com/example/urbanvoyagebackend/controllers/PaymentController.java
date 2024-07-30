@@ -21,6 +21,8 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
+
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import com.stripe.model.Refund;
@@ -66,13 +68,13 @@ public class PaymentController {
                         .setQuantity(1L)
                         .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
                                 .setCurrency("mad")
-                                .setUnitAmount((long) (checkoutRequest.getAmount() * 100L))
+                                .setUnitAmount(checkoutRequest.getAmount().multiply(new BigDecimal(100)).longValue())
                                 .setProductData(SessionCreateParams.LineItem.PriceData.ProductData.builder()
                                         .setName(checkoutRequest.getProductName())
                                         .build())
                                 .build())
                         .build())
-                .setClientReferenceId(checkoutRequest.getReservationId().toString()) // Add this line
+                .setClientReferenceId(checkoutRequest.getReservationId().toString())
                 .build();
 
 
