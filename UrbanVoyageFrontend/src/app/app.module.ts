@@ -35,6 +35,8 @@ import { CancelPaymentComponent } from './pages/cancel-payment/cancel-payment.co
 import {ClientDashboardComponent} from "./pages/client-dashboard/client-dashboard.component";
 import {CustomPaginatorComponent} from "./objects/custom-paginator/custom-paginator.component";
 import { OAuthRedirectComponent } from './components/oauth-redirect/oauth-redirect/oauth-redirect.component';
+import {AutoTranslateDirective} from "./services/auto-translate.directive";
+import { LanguageSelectorComponent } from './objects/language-selector/language-selector.component';
 
 export function initializeApp() {
   return () => {
@@ -75,6 +77,8 @@ export function initializeApp() {
     ClientDashboardComponent,
     CustomPaginatorComponent,
     OAuthRedirectComponent,
+    AutoTranslateDirective,
+    LanguageSelectorComponent
 
   ],
   imports: [
@@ -84,7 +88,7 @@ export function initializeApp() {
     HttpClientModule,
     FormsModule,
     RouterOutlet,
-    GoogleMapsModule
+    GoogleMapsModule,
   ],
 
 

@@ -1,0 +1,5 @@
+<select (change)="switchLang($event)">
+  <option *ngFor="let lang of langs" [value]="lang.code">
+    {{lang.name}}
+  </option>
+</select>
