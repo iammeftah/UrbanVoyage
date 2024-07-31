@@ -58,11 +58,11 @@ public class PassengerController {
 
         // Set the reservation
         passenger.setReservation(reservation);
-
         passenger.setReservationId(reservation.getReservationID());
 
+        // Save the passenger, which will also generate and set the serial number and QR code
         Passenger savedPassenger = passengerService.savePassenger(passenger, passenger.getEmail());
-        System.out.println("Created passenger " + savedPassenger);
+        System.out.println("Created passenger " + savedPassenger + " with serial number " + savedPassenger.getSerialNumber());
         return ResponseEntity.ok(savedPassenger);
     }
 

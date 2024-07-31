@@ -53,6 +53,10 @@ public class Passenger {
     @JoinColumn(name = "created_by_user_id")
     private User createdByUser;
 
+    @Column(name = "serial_number", unique = true)
+    private String serialNumber;
+
+
     // Default constructor
     public Passenger() {}
 
@@ -170,6 +174,14 @@ public class Passenger {
 
     public void setSchedulePrice(BigDecimal schedulePrice) {
         this.schedulePrice = schedulePrice;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
     }
 
     // ... (include getters and setters for all fields)

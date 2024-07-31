@@ -8,13 +8,17 @@ import com.example.urbanvoyagebackend.models.CheckoutRequest;
 import com.example.urbanvoyagebackend.repository.travel.PaymentRepository;
 import com.example.urbanvoyagebackend.repository.travel.RefundRequestRepository;
 import com.example.urbanvoyagebackend.repository.travel.ReservationRepository;
+import com.example.urbanvoyagebackend.service.media.EmailService;
 import com.example.urbanvoyagebackend.service.travel.PassengerService;
 import com.example.urbanvoyagebackend.service.travel.PaymentService;
+import com.example.urbanvoyagebackend.service.travel.TicketService;
 import com.stripe.model.Charge;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.Refund;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import com.stripe.Stripe;
@@ -89,8 +93,14 @@ public class PaymentController {
         return ResponseEntity.ok(responseData);
     }
 
+    @Autowired
+    private TicketService ticketService;
+
+    @Autowired
+    private EmailService emailService;
+
     @PostMapping("/confirm-payment")
-    public ResponseEntity<Map<String, String>> confirmPayment(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<?> confirmPayment(@RequestBody Map<String, String> payload) {
         String sessionId = payload.get("sessionId");
         Map<String, String> response = new HashMap<>();
 
@@ -106,28 +116,42 @@ public class PaymentController {
                 reservation.setStatus(Reservation.ReservationStatus.CONFIRMED);
                 reservationRepository.save(reservation);
 
-                // Retrieve the payment intent ID from the session
                 String paymentIntentId = session.getPaymentIntent();
-
-                // Retrieve the PaymentIntent to get the Charge ID
                 PaymentIntent paymentIntent = PaymentIntent.retrieve(paymentIntentId);
                 String chargeId = paymentIntent.getLatestCharge();
 
-                // Create a payment record with both payment intent ID and charge ID
                 Payment payment = paymentService.createPayment(reservation, session.getAmountTotal() / 100.0, "COMPLETED");
                 payment.setStripePaymentIntentId(paymentIntentId);
                 payment.setStripeChargeId(chargeId);
                 paymentService.savePayment(payment);
 
-                response.put("status", "success");
-                response.put("message", "Payment confirmed and reservation updated");
+                // Generate ticket PDF
+                Passenger passenger = passengerService.getPassengerByReservation(reservation);
+                byte[] ticketPdf = ticketService.generateTicket(reservation, passenger);
+
+                // Send email with ticket
+                emailService.sendEmailWithAttachment(
+                        passenger.getEmail(),
+                        "Your Travel Ticket",
+                        "Thank you for your purchase. Please find your ticket attached.",
+                        ticketPdf,
+                        "ticket.pdf"
+                );
+
+                // Set up the response with PDF content
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_PDF);
+                headers.setContentDispositionFormData("attachment", "ticket.pdf");
+
+                return ResponseEntity.ok()
+                        .headers(headers)
+                        .body(ticketPdf);
             } else {
                 response.put("status", "failure");
                 response.put("message", "Payment was not successful");
+                return ResponseEntity.badRequest().body(response);
             }
-
-            return ResponseEntity.ok(response);
-        } catch (StripeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             response.put("status", "error");
             response.put("message", "Error confirming payment: " + e.getMessage());
