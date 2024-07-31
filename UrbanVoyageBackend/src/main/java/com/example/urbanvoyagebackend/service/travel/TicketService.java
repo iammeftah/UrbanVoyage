@@ -114,7 +114,7 @@ public class TicketService {
                 "@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');" +
                 "* { font-family: \"Ubuntu\", sans-serif; margin: 0; padding: 0; box-sizing: border-box; }" +
                 "body, html { height: 100%; width: 100%; overflow: hidden; }" +
-                "body { background-color: white; display: flex; justify-content: center; align-items: center; }" +
+                "body { background-color: white; display: flex; justify-content: center; align-items: center; border-radius:20px; }" +
                 ".ticket { width: 100%; height: 100%; background-color: white; }" +
                 ".ticket-header { background-color: #06b6d4; color: white; padding: 20px 32px; text-align: center; position: relative; }" +
                 ".ticket-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('https://media.istockphoto.com/id/842924980/photo/abstract-soap-foam-bubbles.webp?s=2048x2048&w=is&k=20&c=-742_N7U3ehoUfd3-oeIe0cIRlZabGbCjHxd3QX_RCk='); background-size: cover; opacity: 0.5; z-index: 0; }" +
@@ -129,6 +129,7 @@ public class TicketService {
                 ".detail-item { margin-bottom: 20px; }" +
                 ".detail-label { font-size: 14px; color: #666; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }" +
                 ".detail-value { font-size: 18px; font-weight: 500; color: #333; }" +
+                ".detail-value-italic { font-size: 18px; font-weight: 600; color:#06b6d4;font-style: italic; }" +
                 ".qr-code { text-align: center; }" +
                 ".qr-code img { border-radius: 8px; width: 200px; height: 200px; }" +
                 ".footer { text-align: center; margin-top: 30px; font-size: 14px; color: #666; }" +
@@ -170,11 +171,11 @@ public class TicketService {
                 "</div>" +
                 "<div class=\"detail-item\">" +
                 "<div class=\"detail-label\">Seat Type</div>" +
-                "<div class=\"detail-value\">" + passenger.getSeatType() + "</div>" +
+                "<div class=\"detail-value-italic\">" + passenger.getSeatType() + "</div>" +
                 "</div>" +
                 "<div class=\"detail-item\">" +
-                "<div class=\"detail-label\">Serial</div>" +
-                "<div class=\"detail-value\">" + passenger.getSerialNumber() + "</div>" +
+                "<div class=\"detail-label\">Price</div>" +
+                "<div class=\"detail-value\">" + passenger.getSchedulePrice() + "MAD </div>" +
                 "</div>" +
                 "</div>" +
                 "<div class=\"qr-code\">" +
