@@ -6,8 +6,8 @@
     <div class="flex justify-center flex-col md:flex-row gap-16 w-full px-4 py-8 sm:px-6 lg:px-32 ">
       <!-- Find ur next text -->
       <div class="mb-8" data-aos="fade-up">
-        <h1 class="text-3xl font-bold mb-2">Find your next trip</h1>
-        <p class="text-gray-600 dark:text-gray-300">Search for autocar routes to your destination.</p>
+        <h1 appAutoTranslate class="text-3xl font-bold mb-2">Find your next trip</h1>
+        <p appAutoTranslate class="text-gray-600 dark:text-gray-300">Search for autocar routes to your destination.</p>
       </div>
 
       <!-- Route picker card -->
@@ -17,7 +17,7 @@
             <div class="grid grid-cols-1 w-full">
 
               <div class="relative z-50">
-                <label class="text-sm font-medium mb-1 block" for="arrivalCity">
+                <label appAutoTranslate class="text-sm font-medium mb-1 block" for="arrivalCity">
                   Travel Date
                 </label>
                 <button
@@ -66,7 +66,7 @@
             <div class="flex flex-row gap-4 w-full">
               <!-- Departure Location -->
               <div class="w-full">
-                <label class="text-sm font-medium mb-1 block" for="departureCity">
+                <label appAutoTranslate class="text-sm font-medium mb-1 block" for="departureCity">
                   Departure
                 </label>
                 <select id="departureCity" [(ngModel)]="departureCity" name="departureCity" class="pr-2 flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
@@ -76,7 +76,7 @@
               </div>
               <!-- Destination Location -->
               <div class="w-full">
-                <label class="text-sm font-medium mb-1 block" for="arrivalCity">
+                <label appAutoTranslate class="text-sm font-medium mb-1 block" for="arrivalCity">
                   Destination
                 </label>
                 <select id="arrivalCity" [(ngModel)]="arrivalCity" name="arrivalCity" class="pr-2 flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
@@ -95,6 +95,7 @@
           <!-- Search Button -->
           <div class="w-full mt-4 flex justify-end sm:col-span-3" data-aos="fade-left">
             <button
+              appAutoTranslate
               (click)="searchRoutes()"
               class="inline-flex items-center justify-center rounded-md bg-cyan-600 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-gray-900"
               type="submit"
@@ -117,24 +118,25 @@
         <div class="p-6 grid grid-cols-2 gap-4">
           <div>
             <p class="text-lg font-semibold">{{ formatTime(schedule.departureTime) }}</p>
-            <p class="text-sm text-gray-600 dark:text-gray-400">Departure</p>
+            <p appAutoTranslate class="text-sm text-gray-600 dark:text-gray-400">Departure</p>
             <p class="flex items-start justify-start gap-2 text-xl md:text-2xl  font-bold"><span class="text-sm text-cyan-500">From: </span>{{ schedule.route.departureCity }}</p>
           </div>
           <div>
             <p class="text-lg font-semibold">{{ formatTime(schedule.arrivalTime) }}</p>
-            <p class="text-sm text-gray-600 dark:text-gray-400">Arrival</p>
+            <p appAutoTranslate class="text-sm text-gray-600 dark:text-gray-400">Arrival</p>
             <p class="flex items-start justify-start gap-2 text-xl md:text-2xl font-bold"><span class="text-sm text-cyan-500">To: </span> {{ schedule.route.arrivalCity }}</p>
           </div>
           <div>
-            <p class="text-sm text-gray-600 dark:text-gray-400">Duration</p>
+            <p appAutoTranslate class="text-sm text-gray-600 dark:text-gray-400">Duration</p>
             <p class="text-sm">{{ formatDuration(schedule.duration) }}</p>
           </div>
           <div>
-            <p class="text-sm text-gray-600 dark:text-gray-400">Price</p>
+            <p appAutoTranslate class="text-sm text-gray-600 dark:text-gray-400">Price</p>
             <p class="text-sm">{{schedule.schedulePrice}} MAD</p>
           </div>
           <div class="flex justify-end col-span-2">
             <button
+              appAutoTranslate
               [disabled]="!isScheduleAvailable(schedule)"
               (click)="bookSchedule(schedule)"
               class="w-32 bg-cyan-600 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300"

@@ -8,11 +8,11 @@ import { TranslationService } from "../../services/translation.service";
 })
 export class LanguageSelectorComponent {
   langs = [
-    {code: 'EN', name: 'English'},
-    {code: 'DE', name: 'German'},
-    {code: 'FR', name: 'French'},
-    {code: 'ES', name: 'Spanish'},
-    {code: 'IT', name: 'Italian'},
+    {code: 'EN', name: 'en'},
+    {code: 'DE', name: 'de'},
+    {code: 'FR', name: 'fr'},
+    {code: 'ES', name: 'es'},
+    {code: 'IT', name: 'it'},
     // Add more languages as needed
   ];
 
