@@ -109,25 +109,38 @@ public class TicketService {
 
 
         // Create an HTML string with ticket details and QR code
-        return "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>Boarding Pass</title>" +
+        return "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>UrbanVoyage Boarding Pass</title>" +
                 "<style>" +
                 "@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');" +
                 "* { font-family: \"Ubuntu\", sans-serif; margin: 0; padding: 0; box-sizing: border-box; }" +
-                "body { background-color: white; }" +
-                ".ticket { width: 100%; height: 100vh; padding: 24px 32px; }" +
-                ".ticket-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }" +
-                ".ticket-title { font-size: 28px; font-weight: bold; }" +
+                "body, html { height: 100%; width: 100%; overflow: hidden; }" +
+                "body { background-color: white; display: flex; justify-content: center; align-items: center; }" +
+                ".ticket { width: 100%; height: 100%; background-color: white; }" +
+                ".ticket-header { background-color: #06b6d4; color: white; padding: 20px 32px; text-align: center; position: relative; }" +
+                ".ticket-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('https://media.istockphoto.com/id/842924980/photo/abstract-soap-foam-bubbles.webp?s=2048x2048&w=is&k=20&c=-742_N7U3ehoUfd3-oeIe0cIRlZabGbCjHxd3QX_RCk='); background-size: cover; opacity: 0.5; z-index: 0; }" +
+                ".ticket-header > * { position: relative; z-index: 1; }" +
+                ".app-title { font-size: 48px; font-weight: bold; margin-bottom: 10px; }" +
+                ".thank-you { font-size: 18px; opacity: 0.9; }" +
+                ".ticket-content { padding: 32px; }" +
+                ".boarding-pass-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }" +
+                ".boarding-pass { font-size: 28px; font-weight: bold; color: #333; }" +
                 ".ticket-status { background-color: #06b6d4; color: white; padding: 6px 14px; border-radius: 20px; font-size: 16px; font-weight: 500; }" +
-                ".ticket-details { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }" +
+                ".ticket-details { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 30px; }" +
                 ".detail-item { margin-bottom: 20px; }" +
-                ".detail-label { font-size: 16px; color: #666; margin-bottom: 6px; }" +
-                ".detail-value { font-size: 18px; font-weight: 500; }" +
-                ".qr-code { margin-top: 40px; text-align: center; }" +
-                ".qr-code img { border-radius: 8px; width: 400px; height: 400px; }" +
+                ".detail-label { font-size: 14px; color: #666; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }" +
+                ".detail-value { font-size: 18px; font-weight: 500; color: #333; }" +
+                ".qr-code { text-align: center; }" +
+                ".qr-code img { border-radius: 8px; width: 200px; height: 200px; }" +
+                ".footer { text-align: center; margin-top: 30px; font-size: 14px; color: #666; }" +
                 "</style></head><body>" +
                 "<div class=\"ticket\">" +
                 "<div class=\"ticket-header\">" +
-                "<div class=\"ticket-title\">Boarding Pass</div>" +
+                "<div class=\"app-title\">UrbanVoyage</div>" +
+                "<div class=\"thank-you\">Thank you for choosing UrbanVoyage. Enjoy your journey!</div>" +
+                "</div>" +
+                "<div class=\"ticket-content\">" +
+                "<div class=\"boarding-pass-row\">" +
+                "<div class=\"boarding-pass\">Boarding Pass</div>" +
                 "<div class=\"ticket-status\">Confirmed</div>" +
                 "</div>" +
                 "<div class=\"ticket-details\">" +
@@ -166,6 +179,8 @@ public class TicketService {
                 "</div>" +
                 "<div class=\"qr-code\">" +
                 "<img src=\"data:image/png;base64," + qrCodeImage + "\" alt=\"QR Code\" />" +
+                "</div>" +
+                "<div class=\"footer\">This boarding pass is your ticket to travel. Please present it along with a valid ID at the boarding gate.</div>" +
                 "</div>" +
                 "</div>" +
                 "</body></html>";

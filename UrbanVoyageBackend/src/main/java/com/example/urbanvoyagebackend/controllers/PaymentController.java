@@ -127,7 +127,7 @@ public class PaymentController {
                         "Your Travel Ticket",
                         "Thank you for your purchase. Please find your ticket attached.",
                         ticketPdf,
-                        "ticket.pdf"
+                        "UrbanVoyageTicket.pdf"
                 );
 
                 // Set up the response with PDF content
