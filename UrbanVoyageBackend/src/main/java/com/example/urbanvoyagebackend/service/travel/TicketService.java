@@ -20,6 +20,8 @@ import jakarta.xml.bind.DatatypeConverter;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Service
@@ -101,31 +103,87 @@ public class TicketService {
         String qrCodeImage = generateQRCodeImage(passenger.getSerialNumber());
 
         // Format dates
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String formattedDepartureTime = passenger.getDepartureTime().format(String.valueOf(formatter));
-        String formattedArrivalTime = passenger.getArrivalTime().format(String.valueOf(formatter));
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ISO_DATE_TIME;
+        String formattedDepartureTime = formatDateTime(passenger.getDepartureTime(), inputFormatter);
+        String formattedArrivalTime = formatDateTime(passenger.getArrivalTime(), inputFormatter);
+
 
         // Create an HTML string with ticket details and QR code
-        return "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>Travel Ticket</title>" +
-                "<style>body { font-family: Arial, sans-serif; } " +
-                ".ticket { border: 1px solid #000; padding: 20px; max-width: 600px; margin: 0 auto; }" +
-                ".qr-code { text-align: center; margin-top: 20px; }" +
+        return "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>Boarding Pass</title>" +
+                "<style>" +
+                "@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');" +
+                "* { font-family: \"Ubuntu\", sans-serif; margin: 0; padding: 0; box-sizing: border-box; }" +
+                "body { background-color: white; }" +
+                ".ticket { width: 100%; height: 100vh; padding: 24px 32px; }" +
+                ".ticket-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }" +
+                ".ticket-title { font-size: 28px; font-weight: bold; }" +
+                ".ticket-status { background-color: #06b6d4; color: white; padding: 6px 14px; border-radius: 20px; font-size: 16px; font-weight: 500; }" +
+                ".ticket-details { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }" +
+                ".detail-item { margin-bottom: 20px; }" +
+                ".detail-label { font-size: 16px; color: #666; margin-bottom: 6px; }" +
+                ".detail-value { font-size: 18px; font-weight: 500; }" +
+                ".qr-code { margin-top: 40px; text-align: center; }" +
+                ".qr-code img { border-radius: 8px; width: 400px; height: 400px; }" +
                 "</style></head><body>" +
                 "<div class=\"ticket\">" +
-                "<h1>Travel Ticket</h1>" +
-                "<p><strong>Passenger:</strong> " + passenger.getFirstName() + " " + passenger.getLastName() + "</p>" +
-                "<p><strong>From:</strong> " + passenger.getDepartureCity() + "</p>" +
-                "<p><strong>To:</strong> " + passenger.getArrivalCity() + "</p>" +
-                "<p><strong>Departure:</strong> " + formattedDepartureTime + "</p>" +
-                "<p><strong>Arrival:</strong> " + formattedArrivalTime + "</p>" +
-                "<p><strong>Seat Type:</strong> " + passenger.getSeatType() + "</p>" +
-                "<p><strong>Reservation ID:</strong> " + reservation.getReservationID() + "</p>" +
-                "<p><strong>Serial Number:</strong> " + passenger.getSerialNumber() + "</p>" +
+                "<div class=\"ticket-header\">" +
+                "<div class=\"ticket-title\">Boarding Pass</div>" +
+                "<div class=\"ticket-status\">Confirmed</div>" +
+                "</div>" +
+                "<div class=\"ticket-details\">" +
+                "<div class=\"detail-item\">" +
+                "<div class=\"detail-label\">Passenger</div>" +
+                "<div class=\"detail-value\">" + passenger.getFirstName() + " " + passenger.getLastName() + "</div>" +
+                "</div>" +
+                "<div class=\"detail-item\">" +
+                "<div class=\"detail-label\">Reservation ID</div>" +
+                "<div class=\"detail-value\">" + reservation.getReservationID() + "</div>" +
+                "</div>" +
+                "<div class=\"detail-item\">" +
+                "<div class=\"detail-label\">From</div>" +
+                "<div class=\"detail-value\">" + passenger.getDepartureCity() + "</div>" +
+                "</div>" +
+                "<div class=\"detail-item\">" +
+                "<div class=\"detail-label\">To</div>" +
+                "<div class=\"detail-value\">" + passenger.getArrivalCity() + "</div>" +
+                "</div>" +
+                "<div class=\"detail-item\">" +
+                "<div class=\"detail-label\">Departure</div>" +
+                "<div class=\"detail-value\">" + formattedDepartureTime + "</div>" +
+                "</div>" +
+                "<div class=\"detail-item\">" +
+                "<div class=\"detail-label\">Arrival</div>" +
+                "<div class=\"detail-value\">" + formattedArrivalTime + "</div>" +
+                "</div>" +
+                "<div class=\"detail-item\">" +
+                "<div class=\"detail-label\">Seat Type</div>" +
+                "<div class=\"detail-value\">" + passenger.getSeatType() + "</div>" +
+                "</div>" +
+                "<div class=\"detail-item\">" +
+                "<div class=\"detail-label\">Serial</div>" +
+                "<div class=\"detail-value\">" + passenger.getSerialNumber() + "</div>" +
+                "</div>" +
+                "</div>" +
                 "<div class=\"qr-code\">" +
                 "<img src=\"data:image/png;base64," + qrCodeImage + "\" alt=\"QR Code\" />" +
-                "</div></div></body></html>";
+                "</div>" +
+                "</div>" +
+                "</body></html>";
     }
 
+    private String formatDateTime(Object dateTime, DateTimeFormatter inputFormatter) {
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd - HH'h'mm'min'");
+
+        if (dateTime instanceof String) {
+            // Parse the string to ZonedDateTime, then format to desired output
+            ZonedDateTime zonedDateTime = ZonedDateTime.parse((String) dateTime, inputFormatter);
+            return zonedDateTime.format(outputFormatter);
+        } else if (dateTime instanceof ZonedDateTime) {
+            return ((ZonedDateTime) dateTime).format(outputFormatter);
+        } else {
+            return "Invalid Date Format";
+        }
+    }
     private String generateQRCodeImage(String content) throws Exception {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrCodeWriter.encode(content, BarcodeFormat.QR_CODE, 200, 200);

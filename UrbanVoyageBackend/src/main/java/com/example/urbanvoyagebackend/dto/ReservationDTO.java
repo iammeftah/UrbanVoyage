@@ -22,6 +22,7 @@ public class ReservationDTO {
     private Passenger passenger ;
     private Long scheduleId;
     private LocalDateTime departureTime;
+    private LocalDateTime arrivalTime;
 
     private Double departureLat;
     private Double departureLng;
@@ -184,6 +185,14 @@ public class ReservationDTO {
 
     public void setArrivalLng(Double arrivalLng) {
         this.arrivalLng = arrivalLng;
+    }
+
+    public LocalDateTime getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(LocalDateTime arrivalTime) {
+        this.arrivalTime = arrivalTime;
     }
 
     // Getters and setters
