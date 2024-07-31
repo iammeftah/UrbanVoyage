@@ -18,6 +18,7 @@ import com.stripe.model.Refund;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -116,15 +117,6 @@ public class PaymentController {
                 reservation.setStatus(Reservation.ReservationStatus.CONFIRMED);
                 reservationRepository.save(reservation);
 
-                String paymentIntentId = session.getPaymentIntent();
-                PaymentIntent paymentIntent = PaymentIntent.retrieve(paymentIntentId);
-                String chargeId = paymentIntent.getLatestCharge();
-
-                Payment payment = paymentService.createPayment(reservation, session.getAmountTotal() / 100.0, "COMPLETED");
-                payment.setStripePaymentIntentId(paymentIntentId);
-                payment.setStripeChargeId(chargeId);
-                paymentService.savePayment(payment);
-
                 // Generate ticket PDF
                 Passenger passenger = passengerService.getPassengerByReservation(reservation);
                 byte[] ticketPdf = ticketService.generateTicket(reservation, passenger);
@@ -151,11 +143,12 @@ public class PaymentController {
                 response.put("message", "Payment was not successful");
                 return ResponseEntity.badRequest().body(response);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             response.put("status", "error");
             response.put("message", "Error confirming payment: " + e.getMessage());
-            return ResponseEntity.badRequest().body(response);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 

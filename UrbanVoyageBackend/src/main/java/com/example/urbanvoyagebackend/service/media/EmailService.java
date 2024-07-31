@@ -28,6 +28,7 @@ public class EmailService {
 
     public void sendEmail(String to, String verificationCode) {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+
         mailSender.setHost(host);
         mailSender.setPort(port);
         mailSender.setUsername(username);
@@ -51,19 +52,34 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
-    @Value("${spring.mail.username}")
-    private String fromEmail;
 
     public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
+    private JavaMailSender getJavaMailSender() {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost(host);
+        mailSender.setPort(port);
+        mailSender.setUsername(username);
+        mailSender.setPassword(password);
+
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.debug", "true");
+
+        return mailSender;
+    }
+
     public void sendEmailWithAttachment(String to, String subject, String text, byte[] attachment, String attachmentName) {
         try {
+            JavaMailSender mailSender = getJavaMailSender();
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-            helper.setFrom(fromEmail);
+            helper.setFrom(username);
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(text);
@@ -72,7 +88,19 @@ public class EmailService {
 
             mailSender.send(message);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to send email", e);
+            throw new RuntimeException("Failed to send email: " + e.getMessage(), e);
         }
     }
+
+    public void testEmailConfig() {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo("test@example.com");
+        message.setSubject("Test Email");
+        message.setText("This is a test email from your application.");
+        mailSender.send(message);
+    }
+
+
+
+
 }
