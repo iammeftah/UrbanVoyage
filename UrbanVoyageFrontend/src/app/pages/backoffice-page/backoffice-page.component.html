@@ -18,7 +18,7 @@
             <i class="material-icons mr-2 md:mr-4 text-3xl md:text-2xl relative">
               {{getTabIcon(tab)}}
               <span *ngIf="tab === 'messages' && unreadMessageCount > 0"
-                    class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    class="absolute top-0 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
           {{ unreadMessageCount }}
         </span>
             </i>
@@ -32,14 +32,17 @@
     <!-- Main Content -->
     <div class="flex-grow p-4 md:p-8" data-aos="fade-left">
       <div *ngIf="activeTab === 'routes'" class="flex flex-col min-h-full">
-        <h2 class="text-xl font-bold mb-4">Manage Routes</h2>
+        <div class="flex justify-between items-center gap-4 w-full mb-2">
+          <h2 class="text-xl font-bold mb-4">Manage Routes</h2>
+          <div class="flex flex-row items-center justify-center gap-4">
+            <input [(ngModel)]="searchDepartureCity" (input)="onSearch()" placeholder="Search Departure City" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+            <input [(ngModel)]="searchArrivalCity" (input)="onSearch()" placeholder="Search Arrival City" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+          </div>
+        </div>
 
         <div class="flex-grow overflow-auto">
           <div class="">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-              <input [(ngModel)]="searchDepartureCity" (input)="onSearch()" placeholder="Search Departure City" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
-              <input [(ngModel)]="searchArrivalCity" (input)="onSearch()" placeholder="Search Arrival City" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
-            </div>
+
 
             <div class="overflow-x-auto">
               <table class="w-full caption-bottom text-sm rounded-lg overflow-hidden">
@@ -329,7 +332,7 @@
                   </svg>
                   <div *ngIf="this.selectedFile" class="relative">
                     <img [src]="this.selectedFilePreview" class="max-h-48 max-w-48 object-cover rounded-md m-4">
-                    <button (click)="removeFileSelected(this.selectedFile)" class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center hover:bg-red-600 focus:outline-none">
+                    <button (click)="removeFileSelected(this.selectedFile)" class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center hover:bg-red-600 focus:outline-none">
                       <span class="sr-only">Remove file</span>
                       <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -395,33 +398,41 @@
         <h2 class="text-xl font-bold mb-4">Contact Messages</h2>
 
         <div class="flex-grow overflow-auto">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-            <ng-container *ngFor="let message of paginatedContactMessages">
-              <div
-                class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg hover:scale-105 duration-300 relative"
-                data-aos="fade-up"
-                [ngClass]="{'border-l-4 border-red-500': !message.read}"
-              >
-                <div *ngIf="!message.read" class="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full"></div>
-                <div class="p-4">
-                  <div class="flex justify-between items-start mb-2">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ message.fullName }}</h3>
-                    <span class="text-sm text-gray-500 dark:text-gray-400">{{ message.createdAt | date:'short' }}</span>
-                  </div>
-                  <p class="text-gray-600 dark:text-gray-300 mb-2">{{ message.email }}</p>
-                  <p class="text-gray-700 dark:text-gray-200 mb-4 line-clamp-3">{{ message.message }}</p>
-                  <div class="flex justify-between items-center">
-                    <button (click)="openMessageDetails(message)" class="text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 text-sm font-medium transition-colors duration-300">
-                      Read More
-                    </button>
-                    <button (click)="deleteContactMessage(message.id)" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 text-sm font-medium transition-colors duration-300">
-                      Delete
-                    </button>
+          <ng-container *ngIf="paginatedContactMessages.length > 0; else noMessages">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+              <ng-container *ngFor="let message of paginatedContactMessages">
+                <div
+                  class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg hover:scale-105 duration-300 relative"
+                  data-aos="fade-up"
+                  [ngClass]="{'border-l-4 border-red-500': !message.read}"
+                >
+                  <div *ngIf="!message.read" class="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full"></div>
+                  <div class="p-4">
+                    <div class="flex justify-between items-start mb-2">
+                      <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ message.fullName }}</h3>
+                      <span class="text-sm text-gray-500 dark:text-gray-400">{{ message.createdAt | date:'short' }}</span>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300 mb-2">{{ message.email }}</p>
+                    <p class="text-gray-700 dark:text-gray-200 mb-4 line-clamp-3">{{ message.message }}</p>
+                    <div class="flex justify-between items-center">
+                      <button (click)="openMessageDetails(message)" class="text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 text-sm font-medium transition-colors duration-300">
+                        Read More
+                      </button>
+                      <button (click)="deleteContactMessage(message.id)" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 text-sm font-medium transition-colors duration-300">
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </ng-container>
-          </div>
+              </ng-container>
+            </div>
+          </ng-container>
+
+          <ng-template #noMessages>
+            <div class="flex items-center justify-center h-full">
+              <p class="text-gray-600 dark:text-gray-400 text-lg">There are no received messages.</p>
+            </div>
+          </ng-template>
         </div>
 
         <div class="mt-4">

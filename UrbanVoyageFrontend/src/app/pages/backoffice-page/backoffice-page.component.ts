@@ -1064,6 +1064,8 @@ export class BackofficePageComponent implements OnInit {
         this.messages = this.messages.filter((message) => message.id !== id);
         this.contactTotalItems = this.messages.length;
         this.updateFilteredMessages();
+        this.loadUnreadMessageCount();
+
         console.log('Message deleted successfully');
       },
       (error) => console.error('Error deleting message', error)

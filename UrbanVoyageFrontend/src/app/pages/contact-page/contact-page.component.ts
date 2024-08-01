@@ -370,6 +370,11 @@ export class ContactPageComponent implements OnInit  {
   constructor(private contactService: ContactService) { }
 
   onSubmit() {
+    if (!this.contact.fullName || !this.contact.email || !this.contact.message) {
+      this.showMessage('Please fill in all required fields.', 'error');
+      return;
+    }
+
     this.loading = true;
 
     this.contactService.createContact(this.contact).subscribe(
@@ -383,7 +388,7 @@ export class ContactPageComponent implements OnInit  {
           email: '',
           message: '',
           createdAt: new Date().toISOString(), // Convert Date to ISO string
-          read:false
+          read: false
         };
       },
       error => {
