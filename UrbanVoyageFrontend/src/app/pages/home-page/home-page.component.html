@@ -86,49 +86,21 @@
           <p class="max-w-2xl mx-auto text-gray-600 dark:text-gray-300 text-base sm:text-lg lg:text-xl">Experience the beauty of diverse destinations through the lens of our travelers.</p>
         </div>
         <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div class="relative rounded-lg overflow-hidden group" data-aos="fade-up" data-aos-delay="100">
-            <a class="absolute inset-0 z-10" href="#">
-              <span class="sr-only">View</span>
-            </a>
-            <img
-              src="/placeholder.svg"
-              alt="Travel Photo 1"
-              class="w-full h-64 md:h-80 object-cover transition-all duration-300 group-hover:scale-105"
-            />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-            <div class="absolute bottom-4 left-4 text-white">
-              <h3 class="text-lg font-bold">Majestic Mountains</h3>
-              <p class="text-sm">Explore the breathtaking landscapes</p>
-            </div>
-          </div>
-          <div class="relative rounded-lg overflow-hidden group" data-aos="fade-up" data-aos-delay="200">
-            <a class="absolute inset-0 z-10" href="#">
-              <span class="sr-only">View</span>
-            </a>
-            <img
-              src="/placeholder.svg"
-              alt="Travel Photo 2"
-              class="w-full h-64 md:h-80 object-cover transition-all duration-300 group-hover:scale-105"
-            />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-            <div class="absolute bottom-4 left-4 text-white">
-              <h3 class="text-lg font-bold">Serene Beaches</h3>
-              <p class="text-sm">Unwind on the golden sands</p>
-            </div>
-          </div>
-          <div class="relative rounded-lg overflow-hidden group" data-aos="fade-up" data-aos-delay="300">
-            <a class="absolute inset-0 z-10" href="#">
-              <span class="sr-only">View</span>
-            </a>
-            <img
-              src="/placeholder.svg"
-              alt="Travel Photo 3"
-              class="w-full h-64 md:h-80 object-cover transition-all duration-300 group-hover:scale-105"
-            />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-            <div class="absolute bottom-4 left-4 text-white">
-              <h3 class="text-lg font-bold">Historic Landmarks</h3>
-              <p class="text-sm">Discover rich cultural heritage</p>
+          <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div *ngFor="let destination of destinations" class="relative rounded-lg overflow-hidden group" data-aos="fade-up">
+              <a class="absolute inset-0 z-10" href="#">
+                <span class="sr-only">View</span>
+              </a>
+              <img
+                [src]="destination.imageUrl"
+                [alt]="destination.title"
+                class="w-full h-64 md:h-80 object-cover transition-all duration-300 group-hover:scale-105"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+              <div class="absolute bottom-4 left-4 text-white">
+                <h3 class="text-lg font-bold">{{ destination.title }}</h3>
+                <p class="text-sm">{{ destination.description }}</p>
+              </div>
             </div>
           </div>
         </div>

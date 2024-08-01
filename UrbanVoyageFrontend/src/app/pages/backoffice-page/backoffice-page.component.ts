@@ -15,6 +15,7 @@ import { locations } from 'src/app/data/locations.data';
 import {Contact} from "../../models/contact.model";
 import {ContactService} from "../../services/contact.service";
 import { AuthService } from 'src/app/services/auth.service';
+import {DestinationService} from "../../services/destination.service";
 
 
 declare var google: any;
@@ -40,8 +41,8 @@ interface Statistics {
 })
 export class BackofficePageComponent implements OnInit {
 
-  activeTab: 'routes' | 'schedules' | 'reservations' | 'refunds' | 'messages'   = 'routes';
-  tabs: ('routes' | 'schedules' | 'reservations' | 'messages' | 'refunds')[] = ['routes', 'schedules', 'reservations', 'refunds' , 'messages'];
+  activeTab: 'routes' | 'schedules' | 'reservations' | 'refunds' | 'messages' | 'destinations'  = 'routes';
+  tabs: ('routes' | 'schedules' | 'reservations' | 'messages' | 'refunds' | 'destinations')[] = ['routes', 'schedules', 'reservations', 'refunds' ,'destinations' , 'messages'];
   refundRequests: any[] = [];
   routes: Route[] = [];
   schedules: Schedule[] = [];
@@ -129,6 +130,7 @@ export class BackofficePageComponent implements OnInit {
     private pricingService: PricingService,
     private refundService: RefundService,
     private contactService: ContactService,
+    private destinationService: DestinationService
   ) {
     this.initializeCityDistances();
     this.newSchedule = {
@@ -148,6 +150,7 @@ export class BackofficePageComponent implements OnInit {
     this.initializeGoogleMaps();
     this.loadReservations();
     this.loadContactMessages();
+    this.loadDestinations();
   }
 
   /*
@@ -766,7 +769,7 @@ export class BackofficePageComponent implements OnInit {
     this.isEditingSchedule = false;
   }
 
-  setActiveTab(tab: 'routes' | 'schedules' | 'reservations'  | 'messages' | 'refunds'): void {
+  setActiveTab(tab: 'routes' | 'schedules' | 'reservations'  | 'messages' | 'refunds' | 'destinations'): void {
     this.activeTab = tab;
     this.currentPage = 1;
     /*
@@ -787,6 +790,8 @@ export class BackofficePageComponent implements OnInit {
         return 'book';
       case 'statistics':
         return 'bar_chart';
+      case 'destinations':
+        return 'traffic';
       case 'messages':
         return 'mail'; // Changed to 'mail' as 'envelope' isn't a standard Material icon
       case 'refunds':
@@ -1026,5 +1031,70 @@ export class BackofficePageComponent implements OnInit {
     );
   }
 
+
+  destinations: any[] = [];
+  currentDestination: any = {};
+  selectedFile: File | null = null;
+
+  loadDestinations() {
+    this.destinationService.getDestinations().subscribe(
+      data => this.destinations = data,
+      error => console.error('Error fetching destinations', error)
+    );
+  }
+
+  onFileSelected(event: any) {
+    this.selectedFile = event.target.files[0];
+  }
+
+  onSubmit() {
+    const formData = new FormData();
+    formData.append('title', this.currentDestination.title);
+    formData.append('description', this.currentDestination.description);
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile);
+    }
+
+    if (this.currentDestination.id) {
+      this.destinationService.updateDestination(this.currentDestination.id, formData).subscribe(
+        response => {
+          console.log('Destination updated successfully', response);
+          this.resetForm();
+          this.loadDestinations();
+        },
+        error => console.error('Error updating destination', error)
+      );
+    } else {
+      this.destinationService.createDestination(formData).subscribe(
+        response => {
+          console.log('Destination added successfully', response);
+          this.resetForm();
+          this.loadDestinations();
+        },
+        error => console.error('Error adding destination', error)
+      );
+    }
+  }
+
+  editDestination(destination: any) {
+    this.currentDestination = { ...destination };
+  }
+
+  deleteDestination(id: number) {
+    if (confirm('Are you sure you want to delete this destination?')) {
+      this.destinationService.deleteDestination(id).subscribe(
+        () => {
+          console.log('Destination deleted successfully');
+          this.loadDestinations();
+        },
+        error => console.error('Error deleting destination', error)
+      );
+    }
+  }
+
+  resetForm() {
+    this.currentDestination = {};
+    this.selectedFile = null;
+  }
 
 }

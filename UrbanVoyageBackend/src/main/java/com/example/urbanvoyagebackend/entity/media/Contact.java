@@ -14,6 +14,7 @@ public class Contact {
 
     private String fullName;
     private String email;
+    @Column(columnDefinition = "TEXT")
     private String message;
     private LocalDateTime createdAt;
     private boolean read;

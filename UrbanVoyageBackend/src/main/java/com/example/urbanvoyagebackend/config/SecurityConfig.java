@@ -77,6 +77,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/translate/**", "/error").permitAll()
                         .requestMatchers("/api/contact-messages/**", "/error").permitAll()
                         .requestMatchers("/api/contacts/**", "/error").permitAll()
+                        .requestMatchers("/api/destinations/**", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2

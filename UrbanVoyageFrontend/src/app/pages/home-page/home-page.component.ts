@@ -3,6 +3,7 @@ import {debounceTime, distinctUntilChanged, Subject, switchMap} from "rxjs";
 import {ScheduleService} from "../../services/schedule.service";
 import {Schedule} from "../../models/schedule.model";
 import {map} from "rxjs/operators";
+import {DestinationService} from "../../services/destination.service";
 
 @Component({
   selector: 'app-home-page',
@@ -11,11 +12,16 @@ import {map} from "rxjs/operators";
 })
 export class HomePageComponent implements OnInit {
   searchResults: string[] = [];
+  destinations?: any[];
   private searchTerms = new Subject<string>();
 
-  constructor(private scheduleService: ScheduleService) {}
+  constructor(private scheduleService: ScheduleService , private destinationService: DestinationService) {}
 
   ngOnInit() {
+    this.destinationService.getDestinations().subscribe(
+      data => this.destinations = data,
+      error => console.error('Error fetching destinations', error)
+    );
     this.searchTerms.pipe(
       debounceTime(300),
       distinctUntilChanged(),
