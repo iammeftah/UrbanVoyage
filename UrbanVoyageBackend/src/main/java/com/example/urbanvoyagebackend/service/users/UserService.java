@@ -2,6 +2,7 @@ package com.example.urbanvoyagebackend.service.users;
 
 import com.example.urbanvoyagebackend.dto.UserDTO;
 import com.example.urbanvoyagebackend.entity.users.Client;
+import com.example.urbanvoyagebackend.entity.users.Role;
 import com.example.urbanvoyagebackend.entity.users.User;
 import com.example.urbanvoyagebackend.repository.users.UserRepository;
 import com.example.urbanvoyagebackend.utils.MD5Util;
@@ -126,5 +127,9 @@ public class UserService implements UserDetailsService {
     private String generateUniqueUsername(String firstName, String lastName) {
         // Implement your logic to generate a unique username here
         return firstName.toLowerCase() + "." + lastName.toLowerCase();
+    }
+
+    public List<String> getAdminEmails() {
+        return userRepository.findEmailsByRole(Role.ROLE_ADMIN);
     }
 }
