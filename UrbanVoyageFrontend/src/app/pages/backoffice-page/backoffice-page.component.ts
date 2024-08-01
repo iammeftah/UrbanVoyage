@@ -255,9 +255,6 @@ export class BackofficePageComponent implements OnInit {
     return this.messages.slice(startIndex, startIndex + this.contactItemsPerPage);
   }
 
-  onContactPageChange(page: number): void {
-    this.contactCurrentPage = page;
-  }
 
 
 
@@ -998,12 +995,18 @@ export class BackofficePageComponent implements OnInit {
 
   unreadMessages: Contact[] = [];
 
+  filteredMessages: Contact[] = [];
+
+  // ... rest of the component ...
+
   loadContactMessages() {
     this.contactService.getAllMessages().subscribe(
       (messages) => {
-        this.messages = messages;
+        // Sort messages to show unread first
+        this.messages = messages.sort((a, b) => (a.read === b.read) ? 0 : a.read ? 1 : -1);
         this.contactTotalItems = messages.length;
         this.contactCurrentPage = 1;
+        this.updateFilteredMessages();
       },
       (error) => {
         console.error('Error loading contact messages', error);
@@ -1011,6 +1014,19 @@ export class BackofficePageComponent implements OnInit {
       }
     );
   }
+
+  updateFilteredMessages() {
+    const startIndex = (this.contactCurrentPage - 1) * this.contactItemsPerPage;
+    const endIndex = startIndex + this.contactItemsPerPage;
+    this.filteredMessages = this.messages.slice(startIndex, endIndex);
+  }
+
+  onContactPageChange(page: number): void {
+    this.contactCurrentPage = page;
+    this.updateFilteredMessages();
+  }
+
+
 
   loadUnreadMessageCount() {
     this.contactService.getUnreadMessageCount().subscribe(
@@ -1030,6 +1046,7 @@ export class BackofficePageComponent implements OnInit {
         () => {
           message.read = true;
           this.loadUnreadMessageCount();
+          this.updateFilteredMessages(); // Re-filter to update order
         },
         (error) => {
           console.error('Error marking message as read', error);
@@ -1037,7 +1054,6 @@ export class BackofficePageComponent implements OnInit {
       );
     }
   }
-
   deleteContactMessage(id: number | undefined) {
     if (id === undefined) {
       console.error('Cannot delete message with undefined id');
@@ -1045,14 +1061,14 @@ export class BackofficePageComponent implements OnInit {
     }
     this.contactService.deleteMessage(id).subscribe(
       () => {
-        this.contact = this.contact.filter((message) => message.id !== id);
+        this.messages = this.messages.filter((message) => message.id !== id);
+        this.contactTotalItems = this.messages.length;
+        this.updateFilteredMessages();
         console.log('Message deleted successfully');
-        this.loadContactMessages();
       },
       (error) => console.error('Error deleting message', error)
     );
   }
-
 
   destinations: any[] = [];
   currentDestination: any = {};
@@ -1135,7 +1151,6 @@ export class BackofficePageComponent implements OnInit {
 
   editDestination(destination: any) {
     this.currentDestination = { ...destination };
-    this.currentDestination.selectedFile = this.selectedFile;
   }
 
   deleteDestination(id: number) {
