@@ -86,8 +86,8 @@
           <p class="max-w-2xl mx-auto text-gray-600 dark:text-gray-300 text-base sm:text-lg lg:text-xl">Experience the beauty of diverse destinations through the lens of our travelers.</p>
         </div>
         <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div *ngFor="let destination of destinations" class="relative rounded-lg overflow-hidden group" data-aos="fade-up">
+          <ng-container *ngFor="let destination of destinations?.slice(0, 3)">
+            <div class="relative rounded-lg overflow-hidden group shadow-lg" data-aos="fade-up">
               <a class="absolute inset-0 z-10" href="#">
                 <span class="sr-only">View</span>
               </a>
@@ -102,7 +102,7 @@
                 <p class="text-sm">{{ destination.description }}</p>
               </div>
             </div>
-          </div>
+          </ng-container>
         </div>
       </div>
     </section>
