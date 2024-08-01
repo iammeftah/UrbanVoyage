@@ -4,5 +4,6 @@ export interface Contact {
   email: string;
   message: string;
   createdAt: Date;
+  read: boolean
 
 }

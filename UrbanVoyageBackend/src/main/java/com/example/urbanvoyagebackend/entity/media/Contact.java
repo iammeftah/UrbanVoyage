@@ -16,6 +16,7 @@ public class Contact {
     private String email;
     private String message;
     private LocalDateTime createdAt;
+    private boolean read;
 
 
     // Getters and setters
@@ -34,5 +35,13 @@ public class Contact {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
     }
 }

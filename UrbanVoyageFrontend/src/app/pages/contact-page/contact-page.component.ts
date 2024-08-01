@@ -363,7 +363,8 @@ export class ContactPageComponent implements OnInit  {
     fullName: '',
     email: '',
     message: '',
-    createdAt: new Date()
+    createdAt: new Date(),
+    read: false
   };
 
   constructor(private contactService: ContactService) { }
@@ -381,7 +382,8 @@ export class ContactPageComponent implements OnInit  {
           fullName: '',
           email: '',
           message: '',
-          createdAt: new Date()
+          createdAt: new Date(),
+          read:false
         };
       },
       error => {

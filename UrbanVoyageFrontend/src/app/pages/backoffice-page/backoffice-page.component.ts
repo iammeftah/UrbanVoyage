@@ -14,6 +14,7 @@ import {Passenger} from "../../models/passenger.model";
 import { locations } from 'src/app/data/locations.data';
 import {Contact} from "../../models/contact.model";
 import {ContactService} from "../../services/contact.service";
+import { AuthService } from 'src/app/services/auth.service';
 
 
 declare var google: any;
@@ -37,9 +38,9 @@ interface Statistics {
   templateUrl: './backoffice-page.component.html',
   styleUrls: ['./backoffice-page.component.css']
 })
-export class BackofficePageComponent implements OnInit, AfterViewInit {
-  activeTab: 'routes' | 'schedules' | 'reservations' | 'refunds' | 'messages' | 'statistics'  = 'routes';
-  tabs: ('routes' | 'schedules' | 'reservations' | 'statistics'| 'messages' | 'refunds')[] = ['routes', 'schedules', 'reservations', 'refunds' , 'messages', 'statistics'];
+export class BackofficePageComponent implements OnInit {
+  activeTab: 'routes' | 'schedules' | 'reservations' | 'refunds' | 'messages'   = 'routes';
+  tabs: ('routes' | 'schedules' | 'reservations' | 'messages' | 'refunds')[] = ['routes', 'schedules', 'reservations', 'refunds' , 'messages'];
   refundRequests: any[] = [];
   routes: Route[] = [];
   schedules: Schedule[] = [];
@@ -60,6 +61,8 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
   loading: boolean = false;
 
   locations = locations;
+
+  unreadMessage:number = 0;
 
 
 
@@ -124,7 +127,7 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
     private distanceService: DistanceService,
     private pricingService: PricingService,
     private refundService: RefundService,
-    private contactService: ContactService
+    private contactService: ContactService,
   ) {
     this.initializeCityDistances();
     this.newSchedule = {
@@ -140,17 +143,18 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
 
     this.loadRoutes();
     this.loadSchedules();
-    this.loadStatistics();
+    // this.loadStatistics();
     this.initializeGoogleMaps();
     this.loadReservations();
     this.loadContactMessages();
   }
 
+  /*
   ngAfterViewInit(): void {
     if (this.activeTab === 'statistics') {
       setTimeout(() => this.initializeCharts(), 0);
     }
-  }
+  }*/
 
   private googleMapsLoaded = false;
 
@@ -236,6 +240,21 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
 
 
 
+  messages: Contact[] = [];
+  contactCurrentPage: number = 1;
+  contactTotalItems: number = 0;
+  contactItemsPerPage: number = 12; // Set this to 12 as per your requirement
+
+  get paginatedContactMessages(): Contact[] {
+    const startIndex = (this.contactCurrentPage - 1) * this.contactItemsPerPage;
+    return this.messages.slice(startIndex, startIndex + this.contactItemsPerPage);
+  }
+
+  onContactPageChange(page: number): void {
+    this.contactCurrentPage = page;
+  }
+
+
 
   totalItems: number = 0;
   totalPages: number = 0;
@@ -289,6 +308,7 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /*
   loadStatistics(): void {
     this.loading=true;
     this.userService.getAllUsers().subscribe({
@@ -313,7 +333,7 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
         this.showMessage('Error loading statistics: ' + error.message, 'error');
       }
     });
-  }
+  }*/
 
   initializeCharts(): void {
     const cyan500 = '#06b6d4';
@@ -745,14 +765,15 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
     this.isEditingSchedule = false;
   }
 
-  setActiveTab(tab: 'routes' | 'schedules' | 'reservations' | 'statistics' | 'messages' | 'refunds'): void {
+  setActiveTab(tab: 'routes' | 'schedules' | 'reservations'  | 'messages' | 'refunds'): void {
     this.activeTab = tab;
     this.currentPage = 1;
+    /*
     if (tab === 'statistics') {
       setTimeout(() => this.initializeCharts(), 0);
     } else if (tab === 'refunds') {
       this.loadRefundRequests();
-    }
+    }*/
   }
 
   getTabIcon(tab: string): string {
@@ -971,10 +992,21 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
 
   contact: Contact[] = [];
 
+  unreadMessages: Contact[] = [];
+
   loadContactMessages() {
     this.contactService.getAllMessages().subscribe(
-      messages => this.contact = messages,
-      error => console.error('Error loading contact messages', error)
+      (messages) => {
+        this.messages = messages;
+        this.unreadMessages = messages.filter(message => !message.read);
+        this.unreadMessage = this.unreadMessages.length;
+        this.contactTotalItems = messages.length;
+        this.contactCurrentPage = 1; // Reset to first page when loading new data
+      },
+      (error) => {
+        console.error('Error loading contact messages', error);
+        this.showMessage('Error loading contact messages', 'error');
+      }
     );
   }
 
@@ -985,10 +1017,10 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
     }
     this.contactService.deleteMessage(id).subscribe(
       () => {
-        this.contact = this.contact.filter(message => message.id !== id);
+        this.contact = this.contact.filter((message) => message.id !== id);
         console.log('Message deleted successfully');
       },
-      error => console.error('Error deleting message', error)
+      (error) => console.error('Error deleting message', error)
     );
   }
 

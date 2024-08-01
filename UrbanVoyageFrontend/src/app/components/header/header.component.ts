@@ -36,7 +36,9 @@ export class HeaderComponent implements OnInit{
         roles => {
           console.log('Roles updated in HeaderComponent:', roles);
           this.isClient = roles.includes('ROLE_CLIENT');
+          this.isAdmin = roles.includes('ROLE_ADMIN');
           console.log('Is client:', this.isClient);
+          console.log('Is admin:', this.isAdmin);
         }
       )
     );
@@ -81,3 +83,4 @@ export class HeaderComponent implements OnInit{
 
 
 }
+
