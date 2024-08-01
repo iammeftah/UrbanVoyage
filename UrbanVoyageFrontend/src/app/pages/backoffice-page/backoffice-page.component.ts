@@ -39,6 +39,7 @@ interface Statistics {
   styleUrls: ['./backoffice-page.component.css']
 })
 export class BackofficePageComponent implements OnInit {
+
   activeTab: 'routes' | 'schedules' | 'reservations' | 'refunds' | 'messages'   = 'routes';
   tabs: ('routes' | 'schedules' | 'reservations' | 'messages' | 'refunds')[] = ['routes', 'schedules', 'reservations', 'refunds' , 'messages'];
   refundRequests: any[] = [];
@@ -1019,6 +1020,7 @@ export class BackofficePageComponent implements OnInit {
       () => {
         this.contact = this.contact.filter((message) => message.id !== id);
         console.log('Message deleted successfully');
+        this.loadContactMessages();
       },
       (error) => console.error('Error deleting message', error)
     );
