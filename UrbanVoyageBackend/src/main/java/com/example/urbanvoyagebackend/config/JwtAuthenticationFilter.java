@@ -1,7 +1,6 @@
 package com.example.urbanvoyagebackend.config;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -81,10 +80,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
             logger.info("Token is valid");
             return true;
-        } catch (Exception e) {
-            logger.warning("Invalid token: " + e.getMessage());
-            return false;
+        } catch (ExpiredJwtException e) {
+            logger.warning("Token is expired: " + e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            logger.warning("Unsupported JWT token: " + e.getMessage());
+        } catch (MalformedJwtException e) {
+            logger.warning("Malformed JWT token: " + e.getMessage());
+        } catch (SignatureException e) {
+            logger.warning("Invalid JWT signature: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            logger.warning("JWT claims string is empty: " + e.getMessage());
         }
+        return false;
     }
 
     private Key getSigningKey() {

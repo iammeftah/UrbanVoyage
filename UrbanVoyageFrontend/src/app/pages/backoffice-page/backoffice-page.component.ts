@@ -12,6 +12,8 @@ import {PricingService} from "../../services/pricing.service";
 import {RefundService} from "../../services/refund.service";
 import {Passenger} from "../../models/passenger.model";
 import { locations } from 'src/app/data/locations.data';
+import {Contact} from "../../models/contact.model";
+import {ContactService} from "../../services/contact.service";
 
 
 declare var google: any;
@@ -36,8 +38,8 @@ interface Statistics {
   styleUrls: ['./backoffice-page.component.css']
 })
 export class BackofficePageComponent implements OnInit, AfterViewInit {
-  activeTab: 'routes' | 'schedules' | 'reservations' | 'refunds' | 'statistics' = 'routes';
-  tabs: ('routes' | 'schedules' | 'reservations' | 'statistics' | 'refunds')[] = ['routes', 'schedules', 'reservations', 'refunds', 'statistics'];
+  activeTab: 'routes' | 'schedules' | 'reservations' | 'refunds' | 'messages' | 'statistics'  = 'routes';
+  tabs: ('routes' | 'schedules' | 'reservations' | 'statistics'| 'messages' | 'refunds')[] = ['routes', 'schedules', 'reservations', 'refunds' , 'messages', 'statistics'];
   refundRequests: any[] = [];
   routes: Route[] = [];
   schedules: Schedule[] = [];
@@ -121,7 +123,8 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
     private cdr: ChangeDetectorRef,
     private distanceService: DistanceService,
     private pricingService: PricingService,
-    private refundService: RefundService
+    private refundService: RefundService,
+    private contactService: ContactService
   ) {
     this.initializeCityDistances();
     this.newSchedule = {
@@ -140,6 +143,7 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
     this.loadStatistics();
     this.initializeGoogleMaps();
     this.loadReservations();
+    this.loadContactMessages();
   }
 
   ngAfterViewInit(): void {
@@ -741,7 +745,7 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
     this.isEditingSchedule = false;
   }
 
-  setActiveTab(tab: 'routes' | 'schedules' | 'reservations' | 'statistics' | 'refunds'): void {
+  setActiveTab(tab: 'routes' | 'schedules' | 'reservations' | 'statistics' | 'messages' | 'refunds'): void {
     this.activeTab = tab;
     this.currentPage = 1;
     if (tab === 'statistics') {
@@ -761,8 +765,10 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
         return 'book';
       case 'statistics':
         return 'bar_chart';
+      case 'messages':
+        return 'mail'; // Changed to 'mail' as 'envelope' isn't a standard Material icon
       case 'refunds':
-        return 'undo'; // or 'replay' or any other suitable icon
+        return 'undo';
       default:
         return 'error';
     }
@@ -778,6 +784,16 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
         // Handle error (show message to user, etc.)
       }
     );
+  }
+
+  selectedMessage: Contact | null = null;
+
+  openMessageDetails(message: Contact) {
+    this.selectedMessage = message;
+  }
+
+  closeMessageDetails() {
+    this.selectedMessage = null;
   }
 
   approveRefund(request: Passenger) {
@@ -950,5 +966,31 @@ export class BackofficePageComponent implements OnInit, AfterViewInit {
     // After all routes are created, reload the routes
     setTimeout(() => this.loadRoutes(), 5000); // Wait for 5 seconds before reloading
   }
+
+
+
+  contact: Contact[] = [];
+
+  loadContactMessages() {
+    this.contactService.getAllMessages().subscribe(
+      messages => this.contact = messages,
+      error => console.error('Error loading contact messages', error)
+    );
+  }
+
+  deleteContactMessage(id: number | undefined) {
+    if (id === undefined) {
+      console.error('Cannot delete message with undefined id');
+      return;
+    }
+    this.contactService.deleteMessage(id).subscribe(
+      () => {
+        this.contact = this.contact.filter(message => message.id !== id);
+        console.log('Message deleted successfully');
+      },
+      error => console.error('Error deleting message', error)
+    );
+  }
+
 
 }

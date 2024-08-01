@@ -3,6 +3,8 @@ import { Chart, registerables } from 'chart.js';
 import * as L from 'leaflet';
 import { locations } from 'src/app/data/locations.data';
 import {AgencyLocation} from "../../models/agency-location.model";
+import {Contact} from "../../models/contact.model";
+import {ContactService} from "../../services/contact.service";
 
 Chart.register(...registerables);
 
@@ -23,7 +25,19 @@ export class ContactPageComponent implements OnInit  {
 
   private userGrowthChart: Chart | null = null
 
+  loading: boolean = false;
 
+  message: string | null = null;
+  messageType: 'success' | 'error' = 'success';
+  showMessage(msg: string, type: 'success' | 'error'): void {
+    this.message = msg;
+    this.messageType = type;
+    // Optionally, you can set a timer to clear the message after a few seconds
+    setTimeout(() => this.closeMessage(), 5000); // Clear message after 5 seconds
+  }
+  closeMessage(): void {
+    this.message = null;
+  }
 
   faqs: FAQ[] = [
     {
@@ -341,5 +355,40 @@ export class ContactPageComponent implements OnInit  {
         }
       }]
     });
+  }
+
+
+
+  contact: Contact = {
+    fullName: '',
+    email: '',
+    message: '',
+    createdAt: new Date()
+  };
+
+  constructor(private contactService: ContactService) { }
+
+  onSubmit() {
+    this.loading = true;
+
+    this.contactService.createContact(this.contact).subscribe(
+      response => {
+        this.loading = false;
+        this.showMessage('Message sent successfully.', 'success');
+        console.log('Message sent successfully', response);
+        // Reset the form
+        this.contact = {
+          fullName: '',
+          email: '',
+          message: '',
+          createdAt: new Date()
+        };
+      },
+      error => {
+        this.loading = false;
+        this.showMessage('Error sending message.', 'error');
+        console.error('Error saving contact', error);
+      }
+    );
   }
 }
