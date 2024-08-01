@@ -3,7 +3,6 @@ export interface Contact {
   fullName: string;
   email: string;
   message: string;
-  createdAt: Date;
-  read: boolean
-
+  createdAt: string | Date; // Allow both string and Date
+  read: boolean;
 }

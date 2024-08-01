@@ -33,4 +33,15 @@ public class ContactController {
         contactService.deleteMessage(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/unread-count")
+    public ResponseEntity<Integer> getUnreadMessageCount() {
+        return ResponseEntity.ok(contactService.getUnreadMessageCount());
+    }
+
+    @PutMapping("/{id}/mark-as-read")
+    public ResponseEntity<Contact> markAsRead(@PathVariable Long id) {
+        Contact updatedContact = contactService.markAsRead(id);
+        return ResponseEntity.ok(updatedContact);
+    }
 }

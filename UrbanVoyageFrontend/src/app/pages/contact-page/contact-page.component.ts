@@ -382,7 +382,7 @@ export class ContactPageComponent implements OnInit  {
           fullName: '',
           email: '',
           message: '',
-          createdAt: new Date(),
+          createdAt: new Date().toISOString(), // Convert Date to ISO string
           read:false
         };
       },

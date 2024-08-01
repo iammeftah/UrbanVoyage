@@ -151,6 +151,7 @@ export class BackofficePageComponent implements OnInit {
     this.loadReservations();
     this.loadContactMessages();
     this.loadDestinations();
+    this.loadUnreadMessageCount();
   }
 
   /*
@@ -815,9 +816,6 @@ export class BackofficePageComponent implements OnInit {
 
   selectedMessage: Contact | null = null;
 
-  openMessageDetails(message: Contact) {
-    this.selectedMessage = message;
-  }
 
   closeMessageDetails() {
     this.selectedMessage = null;
@@ -1004,16 +1002,40 @@ export class BackofficePageComponent implements OnInit {
     this.contactService.getAllMessages().subscribe(
       (messages) => {
         this.messages = messages;
-        this.unreadMessages = messages.filter(message => !message.read);
-        this.unreadMessage = this.unreadMessages.length;
         this.contactTotalItems = messages.length;
-        this.contactCurrentPage = 1; // Reset to first page when loading new data
+        this.contactCurrentPage = 1;
       },
       (error) => {
         console.error('Error loading contact messages', error);
         this.showMessage('Error loading contact messages', 'error');
       }
     );
+  }
+
+  loadUnreadMessageCount() {
+    this.contactService.getUnreadMessageCount().subscribe(
+      (count) => {
+        this.unreadMessageCount = count;
+      },
+      (error) => {
+        console.error('Error loading unread message count', error);
+      }
+    );
+  }
+
+  openMessageDetails(message: Contact) {
+    this.selectedMessage = message;
+    if (!message.read && message.id !== undefined) {
+      this.contactService.markAsRead(message.id).subscribe(
+        () => {
+          message.read = true;
+          this.loadUnreadMessageCount();
+        },
+        (error) => {
+          console.error('Error marking message as read', error);
+        }
+      );
+    }
   }
 
   deleteContactMessage(id: number | undefined) {
@@ -1055,7 +1077,7 @@ export class BackofficePageComponent implements OnInit {
       reader.readAsDataURL(this.selectedFile);
     }
   }
-
+  unreadMessageCount: number = 0;
   removeFileSelected(event: any) {
     this.selectedFile = null;
   }

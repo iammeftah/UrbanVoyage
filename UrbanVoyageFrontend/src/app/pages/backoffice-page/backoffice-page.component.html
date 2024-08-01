@@ -17,9 +17,9 @@
               [ngClass]="{'bg-lightAccent dark:bg-darkAccent': activeTab === tab}">
             <i class="material-icons mr-2 md:mr-4 text-3xl md:text-2xl relative">
               {{getTabIcon(tab)}}
-              <span *ngIf="tab === 'messages' && unreadMessage > 0"
+              <span *ngIf="tab === 'messages' && unreadMessageCount > 0"
                     class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-          {{ unreadMessage }}
+          {{ unreadMessageCount }}
         </span>
             </i>
             <span class="hidden md:inline">{{ tab | titlecase }}</span>

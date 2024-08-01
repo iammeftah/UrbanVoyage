@@ -24,4 +24,15 @@ public class ContactService {
     public void deleteMessage(Long id) {
         contactRepository.deleteById(id);
     }
+
+    public int getUnreadMessageCount() {
+        return contactRepository.countByReadFalse();
+    }
+
+    public Contact markAsRead(Long id) {
+        Contact contact = contactRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Contact not found"));
+        contact.setRead(true);
+        return contactRepository.save(contact);
+    }
 }
