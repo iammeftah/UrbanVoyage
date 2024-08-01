@@ -2,43 +2,18 @@
 
 <div class="flex flex-col w-full min-h-screen">
   <main class="flex-1">
-    <section class="w-full h-[700px] bg-[url('https://images.unsplash.com/photo-1597212618440-806262de4f6b?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover bg-center relative">
+    <section class="w-full h-[700px] bg-cover bg-center relative" [ngStyle]="{'background-image': 'url(https://images.unsplash.com/photo-1597212618440-806262de4f6b?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)'}">
       <div class="absolute inset-0 bg-black bg-opacity-50"></div>
       <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center space-y-6 relative z-10">
         <div class="space-y-4" data-aos="fade-up">
-          <h1 class="text-6xl font-bold tracking-tighter text-cyan-500 sm:text-5xl lg:text-6xl xl:text-8xl">
-            UrbanVoyage
-          </h1>
-          <h1 appAutoTranslate class="text-4xl font-bold tracking-tighter text-white sm:text-5xl lg:text-6xl xl:text-7xl">
-            Experience Seamless Autocar Travel
-          </h1>
-          <p appAutoTranslate class="max-w-2xl text-cyan-400 text-xl sm:text-2xl">
-            Discover comfort, convenience, and affordability with Urban Voyage. Your journey begins here.
-          </p>
-          <!--
-          <div class="max-w-xl">
-            <input
-              class="w-full h-12 px-4 py-2 text-white placeholder-white bg-white/20 border border-white/30 rounded-md backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 focus:border-white transition-all duration-300 hover:shadow-sm hover:shadow-white/50"
-              placeholder="Where do you want to go?"
-            />
-          </div>
-          -->
+          <h1 id="urbanvoyage" class="text-6xl font-bold tracking-tighter text-cyan-500 sm:text-5xl lg:text-6xl xl:text-8xl">UrbanVoyage</h1>
+          <h2 id="experience-seamless-autocar-travel" class="text-4xl font-bold tracking-tighter text-white sm:text-5xl lg:text-6xl xl:text-7xl" appAutoTranslate>Experience Seamless Autocar Travel</h2>
+          <p class="text-white">Discover comfort, convenience, and affordability with Urban Voyage. Your journey begins here.</p>
         </div>
-        <div class="flex flex-col sm:flex-row gap-4">
-          <a
-            appAutoTranslate
-            data-aos="fade-up"
-            href="/booking"
-            class="inline-flex h-12 items-center justify-center rounded-md bg-cyan-600 px-6 text-base sm:text-lg font-medium text-white shadow transition-all hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 duration-300"
-          >
-            Book Your Trip Now
-          </a>
-          <a
-            appAutoTranslate
-            data-aos="fade-up"
-            href="/services"
-            class="inline-flex h-12 items-center justify-center rounded-md border-2 border-white bg-transparent px-6 text-base sm:text-lg font-medium text-white shadow transition-all hover:bg-white hover:text-cyan-600 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 duration-300"
-          >
+        <div class="flex flex-col sm:flex-row gap-4"  data-aos="fade-up">
+          <a routerLink="/routes" class="inline-flex h-12 items-center justify-center rounded-md bg-cyan-600 px-6 text-base sm:text-lg font-medium text-white shadow transition-all hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 duration-300" appAutoTranslate >Book Your Trip Now</a>
+
+          <a routerLink="/services" class="explore-services-btn inline-flex h-12 items-center justify-center rounded-md border-2 border-white px-6 text-base sm:text-lg font-medium text-white shadow transition-all focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 duration-300" appAutoTranslate>
             Explore Our Services
           </a>
         </div>
@@ -97,6 +72,64 @@
             <p appAutoTranslate class="text-gray-600 dark:text-gray-300">
               Life is unpredictable. Our flexible booking options allow you to change your travel plans without hefty fees or hassles.
             </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="w-full py-16 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
+      <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col items-center justify-center space-y-4 text-center" data-aos="fade-up">
+          <span class="inline-block rounded-lg bg-cyan-600 px-3 py-1 text-sm text-white font-semibold" appAutoTranslate>Our Destinations</span>
+          <h2 class="text-3xl font-bold tracking-tighter text-lightText dark:text-darkText sm:text-4xl lg:text-5xl" appAutoTranslate>Explore the World with Us</h2>
+          <p class="max-w-2xl mx-auto text-gray-600 dark:text-gray-300 text-base sm:text-lg lg:text-xl">Experience the beauty of diverse destinations through the lens of our travelers.</p>
+        </div>
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="relative rounded-lg overflow-hidden group" data-aos="fade-up" data-aos-delay="100">
+            <a class="absolute inset-0 z-10" href="#">
+              <span class="sr-only">View</span>
+            </a>
+            <img
+              src="/placeholder.svg"
+              alt="Travel Photo 1"
+              class="w-full h-64 md:h-80 object-cover transition-all duration-300 group-hover:scale-105"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 text-white">
+              <h3 class="text-lg font-bold">Majestic Mountains</h3>
+              <p class="text-sm">Explore the breathtaking landscapes</p>
+            </div>
+          </div>
+          <div class="relative rounded-lg overflow-hidden group" data-aos="fade-up" data-aos-delay="200">
+            <a class="absolute inset-0 z-10" href="#">
+              <span class="sr-only">View</span>
+            </a>
+            <img
+              src="/placeholder.svg"
+              alt="Travel Photo 2"
+              class="w-full h-64 md:h-80 object-cover transition-all duration-300 group-hover:scale-105"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 text-white">
+              <h3 class="text-lg font-bold">Serene Beaches</h3>
+              <p class="text-sm">Unwind on the golden sands</p>
+            </div>
+          </div>
+          <div class="relative rounded-lg overflow-hidden group" data-aos="fade-up" data-aos-delay="300">
+            <a class="absolute inset-0 z-10" href="#">
+              <span class="sr-only">View</span>
+            </a>
+            <img
+              src="/placeholder.svg"
+              alt="Travel Photo 3"
+              class="w-full h-64 md:h-80 object-cover transition-all duration-300 group-hover:scale-105"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 text-white">
+              <h3 class="text-lg font-bold">Historic Landmarks</h3>
+              <p class="text-sm">Discover rich cultural heritage</p>
+            </div>
           </div>
         </div>
       </div>
