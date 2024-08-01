@@ -1043,11 +1043,30 @@ export class BackofficePageComponent implements OnInit {
     );
   }
 
+  selectedFilePreview: string | ArrayBuffer | null = null;
+
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0];
+    if (this.selectedFile) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.selectedFilePreview = e.target.result;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
+  }
+
+  removeFileSelected(event: any) {
+    this.selectedFile = null;
   }
 
   onSubmit() {
+    if(!this.currentDestination.title || !this.currentDestination.description || !this.selectedFile){
+      this.message = "All fields are required";
+      this.messageType = "error";
+      return;
+    }
+    this.loading = true;
     const formData = new FormData();
     formData.append('title', this.currentDestination.title);
     formData.append('description', this.currentDestination.description);
@@ -1059,35 +1078,61 @@ export class BackofficePageComponent implements OnInit {
       this.destinationService.updateDestination(this.currentDestination.id, formData).subscribe(
         response => {
           console.log('Destination updated successfully', response);
+          this.message = 'Destination updated successfully';
+          this.messageType = 'success';
           this.resetForm();
           this.loadDestinations();
+          this.loading = false;
         },
-        error => console.error('Error updating destination', error)
+        error => {
+          console.error('Error updating destination', error);
+          this.message = 'Error updating destination';
+          this.messageType = 'error';
+          this.loading = false;
+        }
       );
     } else {
       this.destinationService.createDestination(formData).subscribe(
         response => {
           console.log('Destination added successfully', response);
+          this.message = 'Destination added successfully';
+          this.messageType = 'success';
           this.resetForm();
           this.loadDestinations();
+          this.loading = false;
         },
-        error => console.error('Error adding destination', error)
+        error => {
+          console.error('Error adding destination', error);
+          this.message = 'Error adding destination';
+          this.messageType = 'error';
+          this.loading = false;
+        }
       );
     }
   }
 
   editDestination(destination: any) {
     this.currentDestination = { ...destination };
+    this.currentDestination.selectedFile = this.selectedFile;
   }
 
   deleteDestination(id: number) {
     if (confirm('Are you sure you want to delete this destination?')) {
+      this.loading = true;
       this.destinationService.deleteDestination(id).subscribe(
         () => {
           console.log('Destination deleted successfully');
+          this.message = 'Destination deleted successfully';
+          this.messageType = 'success';
           this.loadDestinations();
+          this.loading = false;
         },
-        error => console.error('Error deleting destination', error)
+        error => {
+          console.error('Error deleting destination', error);
+          this.message = 'Error deleting destination';
+          this.messageType = 'error';
+          this.loading = false;
+        }
       );
     }
   }
