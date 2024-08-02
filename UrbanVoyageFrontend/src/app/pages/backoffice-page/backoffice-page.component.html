@@ -304,7 +304,7 @@
 
 
         <div>
-          <h1 class="text-3xl font-bold mb-6 text-lightText dark:text-darkText">Homepage Destination Management</h1>
+          <h1 id="homepagedestinationmanagement" class="text-3xl font-bold mb-6 text-lightText dark:text-darkText">Homepage Destination Management</h1>
           <!-- Add/Edit Form -->
           <form (ngSubmit)="onSubmit()" class="mb-8 bg-white dark:bg-[#222222] shadow-md rounded-lg px-8 pt-6 pb-8">
             <input type="hidden" [(ngModel)]="currentDestination.id" name="id">
@@ -360,7 +360,7 @@
                       type="button" (click)="resetForm()">
                 Cancel
               </button>
-              <button class="bg-teal-600 hover:bg-teal-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300"
+              <button class="bg-teal-600 w-full hover:bg-teal-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300"
                       type="submit">
                 {{ currentDestination.id ? 'Update' : 'Add' }} Destination
               </button>
@@ -404,7 +404,7 @@
             </div>
 
             <div class="flex flex-col md:flex-row gap-8 w-full">
-              <div class="w-1/3">
+              <div class="w-full md:w-1/3">
                 <div class="rounded-lg bg-white dark:bg-[#222222] text-card-foreground shadow-sm" data-aos="fade-up">
                   <div class="flex flex-col space-y-1.5 p-6">
                     <h3 class="text-2xl font-semibold">Add New Sponsor</h3>
@@ -431,7 +431,7 @@
                 </div>
               </div>
 
-              <div class="w-2/3">
+              <div class="w-full md:w-2/3">
                 <div class="rounded-lg bg-white dark:bg-[#222222] text-card-foreground shadow-sm" data-aos="fade-up" data-aos-delay="100">
                   <div class="flex flex-col space-y-1.5 p-6">
                     <h3 class="text-2xl font-semibold">Current Sponsors</h3>
@@ -475,7 +475,7 @@
       <div *ngIf="activeTab === 'messages'" class="flex flex-col min-h-full">
         <h2 class="text-xl font-bold mb-4">Contact Messages</h2>
 
-        <div class="flex-grow overflow-auto p-6 bg-[#DDDDDD] rounded-xl">
+        <div class="flex-grow overflow-auto p-6 bg-[#DDDDDD] dark:bg-[#333333] rounded-xl">
           <ng-container *ngIf="paginatedContactMessages.length > 0; else noMessages">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
               <ng-container *ngFor="let message of paginatedContactMessages">

@@ -1158,6 +1158,10 @@ export class BackofficePageComponent implements OnInit {
 
   editDestination(destination: any) {
     this.currentDestination = { ...destination };
+    const element = document.getElementById('homepagedestinationmanagement');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   deleteDestination(id: number) {
