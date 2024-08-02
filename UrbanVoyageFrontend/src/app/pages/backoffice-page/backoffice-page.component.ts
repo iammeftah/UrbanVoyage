@@ -16,6 +16,8 @@ import {Contact} from "../../models/contact.model";
 import {ContactService} from "../../services/contact.service";
 import { AuthService } from 'src/app/services/auth.service';
 import {DestinationService} from "../../services/destination.service";
+import {Sponsor} from "../../models/sponsor.model";
+import {SponsorService} from "../../services/sponsor.service";
 
 
 declare var google: any;
@@ -130,7 +132,8 @@ export class BackofficePageComponent implements OnInit {
     private pricingService: PricingService,
     private refundService: RefundService,
     private contactService: ContactService,
-    private destinationService: DestinationService
+    private destinationService: DestinationService,
+    private sponsorService: SponsorService
   ) {
     this.initializeCityDistances();
     this.newSchedule = {
@@ -152,6 +155,8 @@ export class BackofficePageComponent implements OnInit {
     this.loadContactMessages();
     this.loadDestinations();
     this.loadUnreadMessageCount();
+    this.loadSponsors();
+
   }
 
   /*
@@ -1179,6 +1184,51 @@ export class BackofficePageComponent implements OnInit {
   resetForm() {
     this.currentDestination = {};
     this.selectedFile = null;
+  }
+
+
+
+
+  sponsors: Sponsor[] = [];
+  newSponsor: Sponsor = { name: '', imageUrl: '', website: '' };
+
+
+  loadSponsors(): void {
+    this.sponsorService.getSponsors().subscribe(
+      sponsors => this.sponsors = sponsors,
+      error => console.error('Error loading sponsors:', error)
+    );
+  }
+
+  addSponsor(): void {
+    this.sponsorService.createSponsor(this.newSponsor).subscribe(
+      sponsor => {
+        this.sponsors.push(sponsor);
+        this.newSponsor = { name: '', imageUrl: '', website: '' };
+      },
+      error => console.error('Error adding sponsor:', error)
+    );
+  }
+
+  updateSponsor(sponsor: Sponsor): void {
+    this.sponsorService.updateSponsor(sponsor.id!, sponsor).subscribe(
+      updatedSponsor => {
+        const index = this.sponsors.findIndex(s => s.id === updatedSponsor.id);
+        if (index !== -1) {
+          this.sponsors[index] = updatedSponsor;
+        }
+      },
+      error => console.error('Error updating sponsor:', error)
+    );
+  }
+
+  deleteSponsor(id: number): void {
+    this.sponsorService.deleteSponsor(id).subscribe(
+      () => {
+        this.sponsors = this.sponsors.filter(sponsor => sponsor.id !== id);
+      },
+      error => console.error('Error deleting sponsor:', error)
+    );
   }
 
 }
