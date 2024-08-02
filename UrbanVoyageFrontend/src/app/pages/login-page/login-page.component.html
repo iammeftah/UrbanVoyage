@@ -4,7 +4,8 @@
 
 
 
-  <app-message [message]="message" [type]="messageType"></app-message>
+  <app-message [message]="message" [type]="messageType" (close)="closeMessage()"></app-message>
+
   <div *ngIf="loading" class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-gray-200 bg-opacity-20 backdrop-blur-lg z-50">
     <app-loading-spinner *ngIf="loading"></app-loading-spinner>
   </div>
@@ -69,7 +70,12 @@
               Remember Me
             </label>
           </div>
-          <button (click)="showForgotPassword()" class="text-sm text-cyan-500 hover:underline">Forgot password?</button>
+          <button (click)="showForgotPassword()" class="text-sm text-cyan-500 relative group">
+            <span class="relative">
+              Forgot password?
+              <span class="absolute bottom-0 left-1/2 w-0 h-[1px] bg-cyan-500 group-hover:w-full transition-all duration-300 ease-out -translate-x-1/2"></span>
+            </span>
+          </button>
         </div>
         <button
           (click)="login()"
@@ -120,8 +126,15 @@
         </div>
 
         <p class="text-center text-sm text-muted-foreground">
-          Don't have an account? <a href="/register" class="text-cyan-500 hover:underline">Sign up</a>
+          Don't have an account?
+          <a href="/register" class="text-sm text-cyan-500 relative group">
+            <span class="relative">
+              Sign up
+              <span class="absolute bottom-0 left-1/2 w-0 h-[1px] bg-cyan-500 group-hover:w-full transition-all duration-300 ease-out -translate-x-1/2"></span>
+            </span>
+          </a>
         </p>
+
       </div>
     </div>
   </div>
@@ -137,5 +150,7 @@
     (closeReset)="hideForgotPassword()">
   </app-reset-password-page>
 </div>
+
+
 
 

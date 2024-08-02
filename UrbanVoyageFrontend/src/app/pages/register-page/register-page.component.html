@@ -123,7 +123,14 @@
           <a href="#" class="underline underline-offset-4 hover:text-cyan-500">Privacy Policy</a>.
         </p>
         <p class="text-center text-sm text-muted-foreground">
-          Already have an account? <a href="/login" class="text-cyan-500 hover:underline">Sign in</a>
+          Already have an account?
+
+          <a href="/login" class="text-sm text-cyan-500 relative group">
+            <span class="relative">
+              Sign in
+              <span class="absolute bottom-0 left-1/2 w-0 h-[1px] bg-cyan-500 group-hover:w-full transition-all duration-300 ease-out -translate-x-1/2"></span>
+            </span>
+          </a>
         </p>
       </div>
       <app-verify-email
