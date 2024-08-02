@@ -37,6 +37,7 @@ import {CustomPaginatorComponent} from "./objects/custom-paginator/custom-pagina
 import { OAuthRedirectComponent } from './components/oauth-redirect/oauth-redirect/oauth-redirect.component';
 import {AutoTranslateDirective} from "./services/auto-translate.directive";
 import { LanguageSelectorComponent } from './objects/language-selector/language-selector.component';
+import {ImageService} from "./services/image.service";
 
 export function initializeApp() {
   return () => {
@@ -100,6 +101,7 @@ export function initializeApp() {
       deps: [AuthService],
       multi: true
     },
+    ImageService
 
 
   ],

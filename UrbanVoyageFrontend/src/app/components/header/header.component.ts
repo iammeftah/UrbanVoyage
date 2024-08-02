@@ -16,8 +16,6 @@ export class HeaderComponent implements OnInit{
 
   private subscriptions: Subscription = new Subscription();
 
-
-
   isAdmin: boolean = false;
   isClient: boolean = false;
   private clientSubscription: Subscription | undefined;

@@ -2,7 +2,11 @@
 
 <div class="flex flex-col w-full min-h-screen">
   <main class="flex-1">
-    <section class="w-full h-[700px] bg-cover bg-center relative" [ngStyle]="{'background-image': 'url(https://images.unsplash.com/photo-1597212618440-806262de4f6b?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)'}">
+    <section class="w-full h-[700px] bg-cover bg-center relative"
+             [ngStyle]="{'background-image': 'url(' + backgroundImage + ')'}"
+             [class.opacity-0]="isLoadingImage"
+             [class.transition-opacity]="true"
+             [class.duration-300]="true">
       <div class="absolute inset-0 bg-black bg-opacity-50"></div>
       <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center space-y-6 relative z-10">
         <div class="space-y-4" data-aos="fade-up">
@@ -10,15 +14,97 @@
           <h2 id="experience-seamless-autocar-travel" class="text-4xl font-bold tracking-tighter text-white sm:text-5xl lg:text-6xl xl:text-7xl" appAutoTranslate>Experience Seamless Autocar Travel</h2>
           <p class="text-white">Discover comfort, convenience, and affordability with Urban Voyage. Your journey begins here.</p>
         </div>
-        <div class="flex flex-col sm:flex-row gap-4"  data-aos="fade-up">
-          <a routerLink="/routes" class="inline-flex h-12 items-center justify-center rounded-md bg-cyan-600 px-6 text-base sm:text-lg font-medium text-white shadow transition-all hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 duration-300" appAutoTranslate >Book Your Trip Now</a>
-
-          <a routerLink="/services" class="explore-services-btn inline-flex h-12 items-center justify-center rounded-md border-2 border-white px-6 text-base sm:text-lg font-medium text-white shadow transition-all focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 duration-300" appAutoTranslate>
-            Explore Our Services
-          </a>
+        <div class="flex flex-col sm:flex-row gap-4" data-aos="fade-up">
+          <a routerLink="/routes" class="inline-flex h-12 items-center justify-center rounded-md bg-cyan-600 px-6 text-base sm:text-lg font-medium text-white shadow transition-all hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 duration-300" appAutoTranslate>Book Your Trip Now</a>
+          <a routerLink="/services" class="explore-services-btn inline-flex h-12 items-center justify-center rounded-md border-2 border-white px-6 text-base sm:text-lg font-medium text-white shadow transition-all focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 duration-300" appAutoTranslate>Explore Our Services</a>
         </div>
       </div>
+
+      <!-- Edit Image Icon for Admins -->
+      <button *ngIf="isAdmin" (click)="editImage()" class="absolute bottom-4 right-4 bg-white bg-opacity-70 hover:bg-opacity-100 text-gray-800 rounded-full p-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+        </svg>
+      </button>
     </section>
+
+    <!-- Image Upload Modal -->
+    <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" data-aos="fade">
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl sm:max-w-[480px] w-full relative" data-aos="zoom-in">
+        <!-- Loading Spinner -->
+        <div *ngIf="isLoading" class="fixed top-0 left-0 w-full h-full flex rounded-lg items-center justify-center bg-gray-500 bg-opacity-20 backdrop-blur-lg z-50">
+          <app-loading-spinner></app-loading-spinner>
+        </div>
+
+
+        <div class="mb-4">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Upload Photo</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Add a new photo to your profile. Supported formats are PNG, JPG, and GIF up to 10MB.</p>
+        </div>
+        <div class="space-y-4">
+          <div class="grid gap-2">
+            <label class="text-sm font-medium leading-none text-gray-700 dark:text-gray-300 peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="photo">
+              Photo
+            </label>
+            <div class="flex items-center gap-2">
+              <div class="flex text-sm text-gray-600 dark:text-gray-400 justify-start gap-2 w-full">
+                <label for="photo" class="relative cursor-pointer bg-white dark:bg-gray-700 rounded-md font-medium text-cyan-600 hover:text-cyan-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-cyan-500">
+                  <span class="px-3 py-2">Upload a file</span>
+                  <input id="photo" name="photo" type="file" class="sr-only" (change)="onFileSelected($event)" accept="image/*">
+                </label>
+                <p class="pl-1 self-center">
+                  {{ selectedFileName ? selectedFileName : 'or drag and drop' }}
+                </p>
+              </div>
+              <button (click)="resetFileInput()" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:text-cyan-500 dark:hover:text-cyan-500 h-10 w-10 text-gray-700 dark:text-gray-300">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-4 w-4"
+                >
+                  <path d="M18 6 6 18"></path>
+                  <path d="m6 6 12 12"></path>
+                </svg>
+                <span class="sr-only">Reset</span>
+              </button>
+            </div>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+              PNG, JPG, GIF up to 10MB
+            </p>
+          </div>
+        </div>
+        <div class="mt-4">
+          <div class="flex justify-end ">
+            <button [disabled]="isLoading" (click)="closeModal()" class=" inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-cyan-500 dark:hover:text-cyan-500  disabled:opacity-50 duration-300">
+              Cancel
+            </button>
+            <button
+              [disabled]="isLoading"
+              (click)="truncateBackgroundImages()"
+              class=" inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-cyan-500 dark:hover:text-cyan-500  disabled:opacity-50 duration-300"
+            >
+              Reset background
+            </button>
+            <button
+              [disabled]="isLoading"
+              (click)="uploadImage()"
+              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-cyan-600 text-white hover:bg-cyan-700 h-10 px-4 py-2"
+              type="submit"
+            >
+              Upload
+            </button>
+
+          </div>
+        </div>
+      </div>
+    </div>
 
     <section class="w-full py-16 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
       <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
