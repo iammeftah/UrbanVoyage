@@ -69,7 +69,9 @@ export class RoutesPageComponent implements OnInit {
   isClient: boolean = false;
   private loginSubscription: Subscription = new Subscription();
 
-
+  formatPrice(price: number | undefined): string {
+    return price !== undefined ? price.toFixed(2) : '0.00';
+  }
 
   ngOnInit() {
     this.selectedSchedule = this.sharedDataService.getSelectedSchedule();

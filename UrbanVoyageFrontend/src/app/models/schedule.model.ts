@@ -14,8 +14,10 @@ export interface Schedule {
     distance: number;
   };
   availableSeats: number;
-  schedulePrice: number;
   seatType: 'STANDARD' | 'PREMIUM' | 'VIP';
+  schedulePrice: number;
+  originalPrice?: number;
+  discountPercentage?: number;
 
 
   // other fields...

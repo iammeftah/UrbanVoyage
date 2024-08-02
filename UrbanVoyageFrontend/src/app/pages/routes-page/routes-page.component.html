@@ -130,9 +130,23 @@
             <p appAutoTranslate class="text-sm text-gray-600 dark:text-gray-400">Duration</p>
             <p class="text-sm">{{ formatDuration(schedule.duration) }}</p>
           </div>
-          <div>
-            <p appAutoTranslate class="text-sm text-gray-600 dark:text-gray-400">Price</p>
-            <p class="text-sm">{{schedule.schedulePrice}} MAD</p>
+          <div class="price flex flex-col">
+            <span class="text-sm font-semibold">Price</span>
+            <div class="flex items-center">
+              <span class="text-lg" [ngClass]="{'text-green-600 font-bold': schedule.discountPercentage && schedule.discountPercentage > 0}">
+                {{ formatPrice(schedule.schedulePrice) }} MAD
+              </span>
+              <ng-container *ngIf="schedule.discountPercentage && schedule.discountPercentage > 0">
+                <span class="ml-2 text-sm text-green-600 italic">
+                  -{{ (schedule.discountPercentage || 0).toFixed(0) }}% OFF
+                </span>
+              </ng-container>
+            </div>
+            <ng-container *ngIf="schedule.discountPercentage && schedule.discountPercentage > 0">
+            <span class="text-sm text-gray-500 line-through">
+              {{ formatPrice(schedule.originalPrice || 0) }} MAD
+            </span>
+            </ng-container>
           </div>
           <div class="flex justify-end col-span-2">
             <button
