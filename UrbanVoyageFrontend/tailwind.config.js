@@ -6,6 +6,9 @@ module.exports = {
   darkMode: 'class', // Enable dark mode with a 'class' strategy
   theme: {
     extend: {
+      boxShadow: {
+        'glow': '0px 0px 13px 0px #0d9488',
+      },
       animation: {
         marquee: 'marquee 30s linear infinite',
       },

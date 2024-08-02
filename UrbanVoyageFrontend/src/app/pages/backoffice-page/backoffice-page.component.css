@@ -1,9 +1,9 @@
 .principal-btn {
-  @apply bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300
+  @apply bg-teal-600 hover:bg-teal-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300
 }
 
 .secondaty-btn{
-  @apply inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-cyan-500 dark:hover:text-cyan-500  disabled:opacity-50 duration-300
+  @apply inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-teal-500 dark:hover:text-teal-500  disabled:opacity-50 duration-300
 }
 
 .shadawi{

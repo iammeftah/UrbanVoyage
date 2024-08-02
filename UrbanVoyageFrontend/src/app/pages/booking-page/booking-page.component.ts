@@ -289,7 +289,7 @@ export class BookingPageComponent implements OnInit {
 
   getSeatTypeButtonClass(index: number): string {
     const baseClasses = 'w-full flex-1 py-2 px-4 rounded-full text-sm font-medium transition-all duration-300 focus:outline-none ';
-    const activeClasses = 'bg-cyan-500 text-white hover:bg-cyan-600 dark:bg-cyan-600 dark:hover:bg-cyan-700 ';
+    const activeClasses = 'bg-teal-500 text-white hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-700 ';
     const inactiveClasses = 'bg-gray-400 hover:bg-gray-300 dark:bg-gray-500 dark:hover:bg-gray-400 text-white dark:text-white ';
 
     return `${baseClasses} ${this.passenger.seatType === this.seatTypes[index] ? activeClasses : inactiveClasses}`;

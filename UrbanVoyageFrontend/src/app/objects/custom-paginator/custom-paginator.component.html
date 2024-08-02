@@ -3,7 +3,7 @@
     <ul class="flex flex-row items-center gap-1">
       <li>
         <a
-        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pl-2.5 hover:text-cyan-500 duration-300"
+        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pl-2.5 hover:text-teal-500 duration-300"
         aria-label="Go to previous page"
         [class.disabled]="currentPage === 1"
         (click)="onPageChange(currentPage - 1)"
@@ -33,7 +33,7 @@
           [class.border]="page === currentPage"
           [class.border-input]="page === currentPage"
           [class.bg-background]="page === currentPage"
-          class="inline-flex items-center  justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10 hover:text-cyan-500 duration-300"
+          class="inline-flex items-center  justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10 hover:text-teal-500 duration-300"
           (click)="onPageChange(page)"
           href="javascript:void(0);"
           >
@@ -43,7 +43,7 @@
       </ng-container>
       <li>
         <a
-        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:text-cyan-500 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pr-2.5 duration-300"
+        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:text-teal-500 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pr-2.5 duration-300"
         aria-label="Go to next page"
         [class.disabled]="currentPage === totalPages"
         (click)="onPageChange(currentPage + 1)"

@@ -1,7 +1,7 @@
 <div class="flex flex-col min-h-screen">
   <app-header></app-header>
 
-  <div *ngIf="loading" class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-gray-200 bg-opacity-20 backdrop-blur-lg z-50">
+  <div *ngIf="loading" class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-[#888888] bg-opacity-20 backdrop-blur-lg z-50">
     <app-loading-spinner *ngIf="loading"></app-loading-spinner>
   </div>
 
@@ -15,17 +15,17 @@
         <input
           [(ngModel)]="filterText"
           (input)="applyFilter()"
-          class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+          class="flex h-10 w-full rounded-md border border-[#777777] dark:border-[#444444] bg-white dark:bg-[#333333] px-3 py-2 text-sm placeholder:text-[#666666] focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
           placeholder="Filter by destination or travel type"
           type="text"
         />
       </div>
 
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+      <div class="bg-white dark:bg-[#222222] rounded-lg shadow-md overflow-hidden">
         <div class="relative w-full overflow-auto">
           <table class="w-full caption-bottom text-sm">
-            <thead class="[&_tr]:border-b bg-gray-50 dark:bg-gray-700">
-            <tr class="border-b transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+            <thead class="[&_tr]:border-b bg-gray-50 dark:bg-[#333333]">
+            <tr class="border-b transition-colors hover:bg-[#999999] dark:hover:bg-[#444444]">
               <th (click)="toggleSort('departure.time')" class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 cursor-pointer">
                 Departure
                 <i [class]="getSortIcon('departure.time')"></i>
@@ -50,7 +50,7 @@
             </thead>
             <tbody class="[&_tr:last-child]:border-0">
             <ng-container *ngIf="filteredSchedules.length > 0; else noRoutes">
-              <tr *ngFor="let schedule of filteredSchedules" class="border-b transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+              <tr *ngFor="let schedule of filteredSchedules" class="border-b transition-colors hover:bg-[#EEEEEE] dark:hover:bg-[#444444]">
                 <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
                   <div class="font-medium">{{ schedule.departureTime }}</div>
                   <div class="text-muted-foreground text-sm">{{ schedule.route.departureCity }}</div>
@@ -72,7 +72,7 @@
               </tr>
             </ng-container>
             <ng-template #noRoutes>
-              <tr class="border-b transition-colors hover:bg-gray-100 dark:hover:bg-gray-600">
+              <tr class="border-b transition-colors hover:bg-[#999999] dark:hover:bg-[#444444]">
                 <td colspan="6" class="p-6 text-center text-muted-foreground">
                   There are no available routes at the moment.
                 </td>

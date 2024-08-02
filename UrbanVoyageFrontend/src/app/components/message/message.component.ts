@@ -2,26 +2,17 @@ import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angu
 
 @Component({
   selector: 'app-message',
-  template: `
-    <div *ngIf="message"
-         class="flex flex-row gap-4 items-center justify-center fixed top-4 right-4 p-4 rounded-md shadow-md text-white z-50 max-w-[100%] "
-         [ngClass]="{'bg-green-500': type === 'success', 'bg-red-500': type === 'error'}"
-         data-aos="fade-left">
-      <i (click)="closeMessage()" class="bx bx-x cursor-pointer"></i>
-      {{ message }}
-    </div>
-  `,
-  styles: []
+  templateUrl: './message.component.html',
+  styleUrls: ['./message.component.css']
 })
 export class MessageComponent implements OnInit, OnDestroy {
   @Input() message: string | null = null;
   @Input() type: 'success' | 'error' = 'success';
   @Output() close = new EventEmitter<void>();
 
-  private timer: any; // Hold reference to the timer
+  private timer: any;
 
   ngOnInit() {
-    // Automatically close message after 3 seconds if it is open
     if (this.message) {
       this.timer = setTimeout(() => {
         this.closeMessage();
@@ -30,7 +21,6 @@ export class MessageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // Clean up the timer to avoid memory leaks
     if (this.timer) {
       clearTimeout(this.timer);
     }

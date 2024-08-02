@@ -104,8 +104,8 @@ export class ContactPageComponent implements OnInit  {
 
 
   initMap() {
-    // Define a custom marker icon with cyan color
-    const cyanIcon = L.icon({
+    // Define a custom marker icon with teal color
+    const tealIcon = L.icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
       shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
       iconSize: [16, 27], // Adjusted icon size to 2/3 of the original
@@ -127,7 +127,7 @@ export class ContactPageComponent implements OnInit  {
     }).addTo(this.map);
 
     this.locations.forEach(location => {
-      L.marker([location.lat, location.lng], { icon: cyanIcon })
+      L.marker([location.lat, location.lng], { icon: tealIcon })
         .addTo(this.map!)
         .bindPopup(`<b>${location.name}</b><br>${location.address}`);
     });
@@ -242,10 +242,10 @@ export class ContactPageComponent implements OnInit  {
     const g = Math.floor(Math.random() * 156);
     const b = Math.floor(Math.random() * 256);
 
-    // Adjusting the values to create a cyan or teal-like color
-    const cyanishColor = `rgb(${r}, ${g}, ${b})`;
+    // Adjusting the values to create a teal or teal-like color
+    const tealishColor = `rgb(${r}, ${g}, ${b})`;
 
-    return cyanishColor;
+    return tealishColor;
   }
 
 
@@ -259,11 +259,11 @@ export class ContactPageComponent implements OnInit  {
         datasets: [{
           data: this.cities.map(n => n.users),
           backgroundColor: [
-            'rgba(6, 182, 212, 0.8)',  // cyan-500
-            'rgba(8, 145, 178, 0.8)',  // cyan-600
-            'rgba(14, 116, 144, 0.8)', // cyan-700
-            'rgba(21, 94, 117, 0.8)',  // cyan-800
-            'rgba(22, 78, 99, 0.8)',   // cyan-900
+            'rgba(6, 182, 212, 0.8)',  // teal-500
+            'rgba(8, 145, 178, 0.8)',  // teal-600
+            'rgba(14, 116, 144, 0.8)', // teal-700
+            'rgba(21, 94, 117, 0.8)',  // teal-800
+            'rgba(22, 78, 99, 0.8)',   // teal-900
           ],
           borderWidth: 0.5, // Decrease the width of the border
         }]
@@ -305,7 +305,7 @@ export class ContactPageComponent implements OnInit  {
         elements: {
           arc: {
             borderWidth: 0,
-            hoverBackgroundColor: 'rgba(6, 182, 212, 1)', // Cyan-500 at full opacity
+            hoverBackgroundColor: 'rgba(6, 182, 212, 1)', // teal-500 at full opacity
             hoverBorderColor: 'white',
             hoverBorderWidth: 2,
           }

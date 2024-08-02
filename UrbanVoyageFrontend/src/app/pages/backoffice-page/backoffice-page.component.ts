@@ -343,8 +343,8 @@ export class BackofficePageComponent implements OnInit {
   }*/
 
   initializeCharts(): void {
-    const cyan500 = '#06b6d4';
-    const cyan400 = '#22d3ee';
+    const teal500 = '#06b6d4';
+    const teal400 = '#22d3ee';
 
     const userChartConfig: ChartConfiguration = {
       type: 'pie',
@@ -352,7 +352,7 @@ export class BackofficePageComponent implements OnInit {
         labels: ['Total Users', 'Total Passengers'],
         datasets: [{
           data: [this.statistics.totalUsers, this.statistics.totalPassengers],
-          backgroundColor: [cyan500, cyan400]
+          backgroundColor: [teal500, teal400]
         }]
       },
       options: {
@@ -377,8 +377,8 @@ export class BackofficePageComponent implements OnInit {
         datasets: [{
           label: 'Reservations per Month',
           data: this.statistics.reservationsPerMonth,
-          borderColor: cyan500,
-          backgroundColor: cyan400,
+          borderColor: teal500,
+          backgroundColor: teal400,
           tension: 0.1
         }]
       },

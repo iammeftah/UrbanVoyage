@@ -5,7 +5,7 @@
           <label class="text-sm font-medium mb-1 block" for="departureCity">
             Departure
           </label>
-          <select id="departureCity" [(ngModel)]="departureCity" name="departureCity" class="pr-2 flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+          <select id="departureCity" [(ngModel)]="departureCity" name="departureCity" class="pr-2 flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
             <option value="">Select Departure City</option>
             <option *ngFor="let location of locations" [value]="location.name">{{ location.name }}</option>
           </select>
@@ -15,7 +15,7 @@
           <label class="text-sm font-medium mb-1 block" for="arrivalCity">
             Destination
           </label>
-          <select id="arrivalCity" [(ngModel)]="arrivalCity" name="arrivalCity" class="pr-2 flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+          <select id="arrivalCity" [(ngModel)]="arrivalCity" name="arrivalCity" class="pr-2 flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
             <option value="">Select Arrival City</option>
             <option *ngFor="let location of locations" [value]="location.name">{{ location.name }}</option>
           </select>
@@ -25,7 +25,7 @@
         <div class="mb-6">
           <label class="block text-sm font-medium mb-1">Trip Type</label>
           <div class="flex justify-around bg-white border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg w-full md:w-fit relative">
-            <div class="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-t from-cyan-600 to-cyan-500 rounded-md transition-all duration-300 ease-in-out"
+            <div class="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-t from-teal-600 to-teal-500 rounded-md transition-all duration-300 ease-in-out"
                  [ngStyle]="{'transform': isOneWay ? 'translateX(0)' : 'translateX(100%)'}">
             </div>
             <button class="px-6 py-2 h-10 rounded-md transition-colors relative z-10"
@@ -43,13 +43,13 @@
 
         <div class="grid grid-cols-1  gap-4 mb-6">
           <label for="travel-date" class="block text-sm font-medium mb-1">Travel Date</label>
-          <input [(ngModel)]="travelDate" name="travelDate" type="date" id="travel-date" class="w-full h-10 px-3 py-2 border border-gray-300 dark:border-gray-600 cursor-pointer bg-white dark:bg-gray-700 rounded-md focus:ring-cyan-500 focus:border-cyan-500 custom-date-input">
+          <input [(ngModel)]="travelDate" name="travelDate" type="date" id="travel-date" class="w-full h-10 px-3 py-2 border border-gray-300 dark:border-gray-600 cursor-pointer bg-white dark:bg-gray-700 rounded-md focus:ring-teal-500 focus:border-teal-500 custom-date-input">
         </div>
 
         <!--
         <div class="grid grid-cols-1  gap-4 mb-6" [ngClass]="{'hidden': isOneWay}">
           <label for="return-date" class="block text-sm font-medium mb-1">Return Date</label>
-          <input type="date" id="return-date" class="w-full h-10 px-3 py-2 border border-gray-300 dark:border-gray-600 cursor-pointer bg-white dark:bg-gray-700 rounded-md focus:ring-cyan-500 focus:border-cyan-500 custom-date-input">
+          <input type="date" id="return-date" class="w-full h-10 px-3 py-2 border border-gray-300 dark:border-gray-600 cursor-pointer bg-white dark:bg-gray-700 rounded-md focus:ring-teal-500 focus:border-teal-500 custom-date-input">
         </div>
         -->
 
@@ -63,7 +63,7 @@
                 Adults
               </label>
               <input
-                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
                 id="adults"
                 type="number"
                 min="1"
@@ -75,7 +75,7 @@
                 Children
               </label>
               <input
-                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
+                class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
                 id="children"
                 type="number"
                 min="0"
@@ -91,7 +91,7 @@
         <div class="mb-6">
           <label class="block text-sm font-medium mb-1">Traveling with a Pet?</label>
           <div class="flex border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg w-fit relative">
-            <div class="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-t from-cyan-600 to-cyan-500 rounded-md transition-all duration-300 ease-in-out"
+            <div class="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-t from-teal-600 to-teal-500 rounded-md transition-all duration-300 ease-in-out"
                  [ngStyle]="{'transform': travelingWithPet ? 'translateX(0)' : 'translateX(100%)'}">
             </div>
             <button class="px-4 py-2 h-10 rounded-md transition-colors relative z-10"
@@ -107,7 +107,7 @@
         <div class="w-full flex justify-end sm:col-span-3" data-aos="fade-left">
           <button
             (click)="searchRoutes()"
-            class="inline-flex items-center justify-center rounded-md bg-cyan-600 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-gray-900"
+            class="inline-flex items-center justify-center rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-gray-900"
             type="submit"
           >
             Search

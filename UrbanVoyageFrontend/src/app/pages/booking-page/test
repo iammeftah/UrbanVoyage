@@ -12,7 +12,7 @@
         <div class="flex flex-col gap-8">
           <div>
             <h1 class="text-2xl font-bold">Book Your Seat</h1>
-            <p class="text-muted-foreground text-cyan-600">Select your preferred route and seats.</p>
+            <p class="text-muted-foreground text-teal-600">Select your preferred route and seats.</p>
           </div>
           <div class="flex flex-col gap-8">
             <div data-aos="fade-up" class="rounded-lg bg-white dark:bg-gray-800 text-card-foreground shadow-sm" data-v0-t="card">
@@ -80,7 +80,7 @@
                     First Name
                   </label>
                   <input
-                    class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-cyan-500 dark:hover:border-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500"
+                    class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-teal-500 dark:hover:border-teal-500 focus:border-teal-500 dark:focus:border-teal-500"
                     id="firstName"
                     placeholder="John"
                     fdprocessedid="ve1lg"
@@ -94,7 +94,7 @@
                     Last Name
                   </label>
                   <input
-                    class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-cyan-500 dark:hover:border-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500"
+                    class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-teal-500 dark:hover:border-teal-500 focus:border-teal-500 dark:focus:border-teal-500"
                     id="lastName"
                     placeholder="Doe"
                     fdprocessedid="ijtzp"
@@ -109,7 +109,7 @@
                   Email
                 </label>
                 <input
-                  class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-cyan-500 dark:hover:border-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500"
+                  class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-teal-500 dark:hover:border-teal-500 focus:border-teal-500 dark:focus:border-teal-500"
                   id="email"
                   placeholder="john@example.com"
                   type="email"
@@ -124,7 +124,7 @@
                   Phone
                 </label>
                 <input
-                  class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-cyan-500 dark:hover:border-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500"
+                  class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-teal-500 dark:hover:border-teal-500 focus:border-teal-500 dark:focus:border-teal-500"
                   id="phone"
                   placeholder="+1 (555) 555-5555"
                   type="tel"
@@ -139,7 +139,7 @@
                   Special Requests
                 </label>
                 <textarea
-                  class="flex h-36 resize-none w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-cyan-500 dark:hover:border-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500"
+                  class="flex h-36 resize-none w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-teal-500 dark:hover:border-teal-500 focus:border-teal-500 dark:focus:border-teal-500"
                   id="specialRequests"
                   placeholder="e.g. Wheelchair assistance, dietary restrictions"
                 ></textarea>
@@ -148,7 +148,7 @@
           </div>
         </div>
         <div class="w-full flex justify-end gap-6" aos="fade-up" aos-delay="100">
-          <button (click)="proceedToPayment()" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md dark:bg-cyan-600 dark:hover:bg-cyan-700  px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 duration-300">
+          <button (click)="proceedToPayment()" class="bg-teal-600 hover:bg-teal-700 inline-flex items-center justify-center rounded-md dark:bg-teal-600 dark:hover:bg-teal-700  px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 duration-300">
             Proceed to Payment
           </button>
         </div>
@@ -195,7 +195,7 @@
                     Card Number
                   </label>
                   <input
-                    class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-cyan-500 dark:hover:border-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500"
+                    class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-teal-500 dark:hover:border-teal-500 focus:border-teal-500 dark:focus:border-teal-500"
                     id="cardNumber"
                     placeholder="XXXX XXXX XXXX XXXX"
                     type="text"
@@ -211,7 +211,7 @@
                       Expiry Date
                     </label>
                     <input
-                      class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-cyan-500 dark:hover:border-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500"
+                      class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-teal-500 dark:hover:border-teal-500 focus:border-teal-500 dark:focus:border-teal-500"
                       id="expiryDate"
                       placeholder="MM/YY"
                       type="text"
@@ -226,7 +226,7 @@
                       CVV
                     </label>
                     <input
-                      class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-cyan-500 dark:hover:border-cyan-500 focus:border-cyan-500 dark:focus:border-cyan-500"
+                      class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none   disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText hover:border-teal-500 dark:hover:border-teal-500 focus:border-teal-500 dark:focus:border-teal-500"
                       id="cvv"
                       placeholder="123"
                       type="text"
@@ -239,10 +239,10 @@
           </div>
         </div>
         <div data-aos="fade-up" data-aos-delay="100" class="w-full flex justify-end gap-6">
-          <button (click)="goBackToDetails()" class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-cyan-600 dark:hover:text-cyan-600 dark:hover:border-cyan-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 duration-300">
+          <button (click)="goBackToDetails()" class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-teal-600 dark:hover:text-teal-600 dark:hover:border-teal-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 duration-300">
             Back
           </button>
-          <button (click)="confirmBooking()" class="bg-cyan-600 hover:bg-cyan-700 inline-flex items-center justify-center rounded-md dark:bg-cyan-600 dark:hover:bg-cyan-700  px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 duration-300">
+          <button (click)="confirmBooking()" class="bg-teal-600 hover:bg-teal-700 inline-flex items-center justify-center rounded-md dark:bg-teal-600 dark:hover:bg-teal-700  px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 duration-300">
             Confirm Booking
           </button>
         </div>

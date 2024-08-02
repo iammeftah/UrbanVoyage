@@ -7,7 +7,7 @@
       <!-- Find ur next text -->
       <div class="mb-8" data-aos="fade-up">
         <h1 appAutoTranslate class="text-3xl font-bold mb-2">Find your next trip</h1>
-        <p appAutoTranslate class="text-gray-600 dark:text-gray-300">Search for autocar routes to your destination.</p>
+        <p appAutoTranslate class="text-[#444444] dark:text-[#777777]">Search for autocar routes to your destination.</p>
       </div>
 
       <!-- Route picker card -->
@@ -22,24 +22,24 @@
                 </label>
                 <button
                   (click)="openDatePicker()"
-                  class="w-full px-3 py-2 text-left border border-gray-300 dark:border-gray-600 rounded-md focus:ring-cyan-500 focus:border-cyan-500 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 flex items-center justify-between"
+                  class="w-full px-3 py-2 text-left border border-[#777777] dark:border-[#444444] rounded-md focus:ring-teal-500 focus:border-teal-500 bg-white dark:bg-[#333333] text-[#333333] dark:text-[#888888] flex items-center justify-between"
                 >
                   <span>{{ travelDate | date:'mediumDate' }}</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#666666]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 </button>
 
                 <!-- Custom Date Picker -->
-                <div *ngIf="showDatePicker" class="absolute z-30 mt-1 w-64 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700">
+                <div *ngIf="showDatePicker" class="absolute z-30 mt-1 w-64 bg-white dark:bg-[#222222] shadow-lg rounded-md border border-[#888888] dark:border-[#333333]">
                   <div class="p-2">
                     <div class="flex justify-between items-center mb-2">
-                      <button (click)="prevMonth()" class="text-cyan-600 hover:text-cyan-700">&lt;</button>
+                      <button (click)="prevMonth()" class="text-teal-600 hover:text-teal-700">&lt;</button>
                       <span>{{ currentMonth | date:'MMMM yyyy' }}</span>
-                      <button (click)="nextMonth()" class="text-cyan-600 hover:text-cyan-700">&gt;</button>
+                      <button (click)="nextMonth()" class="text-teal-600 hover:text-teal-700">&gt;</button>
                     </div>
                     <div class="grid grid-cols-7 gap-1 text-center">
-                      <div *ngFor="let day of daysOfWeek" class="text-gray-500 text-xs font-medium">
+                      <div *ngFor="let day of daysOfWeek" class="text-[#555555] text-xs font-medium">
                         {{ day }}
                       </div>
                       <ng-container *ngFor="let day of calendarDays">
@@ -47,9 +47,9 @@
                           *ngIf="day !== 0"
                           (click)="selectDate(day)"
                           [ngClass]="{
-                'bg-cyan-100 dark:bg-cyan-800': isSelectedDate(day),
-                'text-gray-300 dark:text-gray-600': !isCurrentMonth(day),
-                'hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer': isCurrentMonth(day)
+                'bg-teal-100 dark:bg-teal-800': isSelectedDate(day),
+                'text-[#777777] dark:text-[#444444]': !isCurrentMonth(day),
+                'hover:bg-[#999999] dark:hover:bg-[#333333] cursor-pointer': isCurrentMonth(day)
               }"
                           class="p-1 text-sm rounded-full"
                         >
@@ -69,7 +69,7 @@
                 <label appAutoTranslate class="text-sm font-medium mb-1 block" for="departureCity">
                   Departure
                 </label>
-                <select id="departureCity" [(ngModel)]="departureCity" name="departureCity" class="pr-2 flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+                <select id="departureCity" [(ngModel)]="departureCity" name="departureCity" class="pr-2 flex h-10 w-full rounded-md border border-[#777777] dark:border-[#444444] bg-white dark:bg-[#333333] px-3 py-2 text-sm placeholder:text-[#666666] focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
                   <option value="">Select Departure City</option>
                   <option *ngFor="let location of locations" [value]="location.name">{{ location.name }}</option>
                 </select>
@@ -79,7 +79,7 @@
                 <label appAutoTranslate class="text-sm font-medium mb-1 block" for="arrivalCity">
                   Destination
                 </label>
-                <select id="arrivalCity" [(ngModel)]="arrivalCity" name="arrivalCity" class="pr-2 flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+                <select id="arrivalCity" [(ngModel)]="arrivalCity" name="arrivalCity" class="pr-2 flex h-10 w-full rounded-md border border-[#777777] dark:border-[#444444] bg-white dark:bg-[#333333] px-3 py-2 text-sm placeholder:text-[#666666] focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
                   <option value="">Select Arrival City</option>
                   <option *ngFor="let location of locations" [value]="location.name">{{ location.name }}</option>
                 </select>
@@ -97,7 +97,7 @@
             <button
               appAutoTranslate
               (click)="searchRoutes()"
-              class="inline-flex items-center justify-center rounded-md bg-cyan-600 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-gray-900"
+              class="inline-flex items-center justify-center rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-[#111111]"
               type="submit"
             >
               Search
@@ -114,20 +114,20 @@
     </div>
     <!-- Schedules list -->
     <div *ngIf="searchPerformed && !isLoading" class="relative z-0 mt-8 w-full px-6 md:px-32 justify-content grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div *ngFor="let schedule of schedules" class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm" data-aos="fade-up">
+      <div *ngFor="let schedule of schedules" class="rounded-lg border border-[#888888] border-opacity-40 dark:border-[#333333] bg-white dark:bg-[#222222] shadow-sm" data-aos="fade-up">
         <div class="p-6 grid grid-cols-2 gap-4">
           <div>
             <p class="text-lg font-semibold">{{ formatTime(schedule.departureTime) }}</p>
-            <p appAutoTranslate class="text-sm text-gray-600 dark:text-gray-400">Departure</p>
-            <p class="flex items-start justify-start gap-2 text-xl md:text-2xl  font-bold"><span class="text-sm text-cyan-500">From: </span>{{ schedule.route.departureCity }}</p>
+            <p appAutoTranslate class="text-sm text-[#444444] dark:text-[#666666]">Departure</p>
+            <p class="flex items-start justify-start gap-2 text-xl md:text-2xl  font-bold"><span class="text-sm text-teal-500">From: </span>{{ schedule.route.departureCity }}</p>
           </div>
           <div>
             <p class="text-lg font-semibold">{{ formatTime(schedule.arrivalTime) }}</p>
-            <p appAutoTranslate class="text-sm text-gray-600 dark:text-gray-400">Arrival</p>
-            <p class="flex items-start justify-start gap-2 text-xl md:text-2xl font-bold"><span class="text-sm text-cyan-500">To: </span> {{ schedule.route.arrivalCity }}</p>
+            <p appAutoTranslate class="text-sm text-[#444444] dark:text-[#666666]">Arrival</p>
+            <p class="flex items-start justify-start gap-2 text-xl md:text-2xl font-bold"><span class="text-sm text-teal-500">To: </span> {{ schedule.route.arrivalCity }}</p>
           </div>
           <div>
-            <p appAutoTranslate class="text-sm text-gray-600 dark:text-gray-400">Duration</p>
+            <p appAutoTranslate class="text-sm text-[#444444] dark:text-[#666666]">Duration</p>
             <p class="text-sm">{{ formatDuration(schedule.duration) }}</p>
           </div>
           <div class="price flex flex-col">
@@ -143,7 +143,7 @@
               </ng-container>
             </div>
             <ng-container *ngIf="schedule.discountPercentage && schedule.discountPercentage > 0">
-            <span class="text-sm text-gray-500 line-through">
+            <span class="text-sm text-[#555555] line-through">
               {{ formatPrice(schedule.originalPrice || 0) }} MAD
             </span>
             </ng-container>
@@ -152,7 +152,7 @@
             <button
               [disabled]="!isScheduleAvailable(schedule)"
               (click)="bookSchedule(schedule)"
-              class="w-32 bg-cyan-600 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300"
+              class="w-32 bg-teal-600 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300"
               [ngClass]="{'opacity-50 cursor-not-allowed': !isScheduleAvailable(schedule)}">
               {{ isScheduleAvailable(schedule) ? 'Book Now' : 'Unavailable' }}
             </button>
@@ -160,7 +160,7 @@
         </div>
       </div>
       <!-- Loading indicator -->
-      <div *ngIf="isLoading" class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-gray-200 bg-opacity-20 backdrop-blur-lg z-50">
+      <div *ngIf="isLoading" class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-[#888888] bg-opacity-20 backdrop-blur-lg z-50">
         <app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
       </div>
 
@@ -180,6 +180,6 @@
 
 
 
-<div *ngIf="loading" class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-gray-200 bg-opacity-20 backdrop-blur-lg z-50">
+<div *ngIf="loading" class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-[#888888] bg-opacity-20 backdrop-blur-lg z-50">
   <app-loading-spinner *ngIf="loading"></app-loading-spinner>
 </div>

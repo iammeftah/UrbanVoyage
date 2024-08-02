@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap'); /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@200..700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 @tailwind base;
 @tailwind components;
@@ -10,15 +10,12 @@
   @apply focus:outline-none;
 }
 
-
-
 input{
-  @apply border-gray-200 caret-cyan-500 dark:border-gray-500 hover:border-cyan-500 dark:hover:border-cyan-500  bg-lightBackground dark:bg-[#444444]  focus:border-cyan-500 dark:focus:border-cyan-500
+  @apply border-gray-200 caret-teal-500 dark:border-gray-500 hover:border-teal-500 dark:hover:border-teal-500  bg-lightBackground dark:bg-[#444444]  focus:border-teal-500 dark:focus:border-teal-500
 }
 .input{
-  @apply border-gray-200 caret-cyan-500 dark:border-gray-500 hover:border-cyan-500 dark:hover:border-cyan-500  bg-lightBackground dark:bg-[#444444]  focus:border-cyan-500 dark:focus:border-cyan-500
+  @apply border-gray-200 caret-teal-500 dark:border-gray-500 hover:border-teal-500 dark:hover:border-teal-500  bg-lightBackground dark:bg-[#444444]  focus:border-teal-500 dark:focus:border-teal-500
 }
-
 
 /* Chrome, Edge and Safari */
 *::-webkit-scrollbar {
@@ -40,17 +37,16 @@ input{
 
 *::-webkit-scrollbar-thumb {
   border-radius: 0;
-  background-color: #0284c7;
+  background-color: #14b8a6; /* Changed from cyan-600 to teal-500 */
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background-color: #0369a1;
+  background-color: #0d9488; /* Changed from cyan-700 to teal-600 */
 }
 
 *::-webkit-scrollbar-thumb:active {
-  background-color: #075985;
+  background-color: #0f766e; /* Changed from cyan-800 to teal-700 */
 }
-
 
 :root {
   transition: background-color 0.1s ease, color 0.1s ease;
