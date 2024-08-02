@@ -106,6 +106,11 @@ export class LoginPageComponent {
     this.showPasswordReset = false ;
   }
 
+  toggleRememberMe() {
+    this.rememberMe = !this.rememberMe;
+  }
+
+
   loginWithFacebook(): void {
     this.showMessage('Facebook login not implemented yet.', 'error');
   }
