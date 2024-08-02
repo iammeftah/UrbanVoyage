@@ -64,15 +64,17 @@ export class AuthService {
         console.log('Login response received:', response);
         if (response.token) {
           console.log('Token received. Length:', response.token.length);
-          if (rememberMe) {
-            console.log('Remember Me is true. Storing token in localStorage.');
-            localStorage.setItem('token', response.token);
-            console.log('Token stored in localStorage. Key:', 'token');
-          } else {
-            console.log('Remember Me is false. Storing token in sessionStorage.');
-            sessionStorage.setItem('token', response.token);
-            console.log('Token stored in sessionStorage. Key:', 'token');
-          }
+
+          // Set token expiration time
+          const expirationTime = rememberMe ? 30 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000; // 30 days or 1 day
+          const expirationDate = new Date(new Date().getTime() + expirationTime);
+
+          // Always store in localStorage, but with different expiration times
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('tokenExpiration', expirationDate.toISOString());
+
+          console.log('Token stored in localStorage with expiration:', expirationDate);
+
           this.setUserRoles(response.roles);
           console.log('User roles set:', response.roles);
           this.isLoggedInSubject.next(true);
