@@ -12,7 +12,7 @@
 
   <!-- Login Page -->
   <div class="flex-grow flex items-center justify-center mx-auto space-y-6 p-4 text-lightText dark:text-darkText w-full bg-lightBackground dark:bg-darkBackground">
-    <div class="w-full mt-0 md-mt-16 md:max-w-xl px-6 py-6 rounded-lg shadow-sm  bg-white dark:bg-[#333333]">
+    <div class="w-full mt-0 md-mt-16 md:max-w-xl px-6 py-6 rounded-lg shadow-sm bg-white dark:bg-[#333333]">
       <div class="space-y-2 text-center">
         <h1 class="text-3xl font-bold text-cyan-500">Login</h1>
         <p class="text-muted-foreground">Welcome back! Please login to your account.</p>
@@ -52,7 +52,7 @@
             <input type="checkbox" id="remember" class="rounded border-gray-300 text-cyan-500 shadow-sm focus:border-cyan-300 focus:ring focus:ring-cyan-200 focus:ring-opacity-50" />
             <label for="remember" class="text-sm text-gray-600 dark:text-gray-400">Remember me</label>
           </div>
-          <button (click)="forgotPassword()" class="text-sm text-cyan-500 hover:underline">Forgot password?</button>
+          <button (click)="showForgotPassword()" class="text-sm text-cyan-500 hover:underline">Forgot password?</button>
         </div>
         <button
           (click)="login()"
@@ -112,3 +112,13 @@
   <app-footer></app-footer>
 
 </div>
+
+
+<div *ngIf="showPasswordReset" data-aos="fade" class="fixed inset-0 z-50 overflow-auto bg-white dark:bg-darkBackground bg-opacity-50 dark:bg-opacity-50 backdrop-blur-sm flex items-center justify-center">
+  <app-reset-password-page data-aos="zoom-in"
+    *ngIf="showPasswordReset"
+    (closeReset)="hideForgotPassword()">
+  </app-reset-password-page>
+</div>
+
+

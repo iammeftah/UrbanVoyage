@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ResetPasswordService } from '../../services/reset-password.service';
 import { Router } from '@angular/router';
@@ -42,6 +42,13 @@ export class ResetPasswordPageComponent implements OnInit {
     this.resetForm.get('confirmPassword')?.valueChanges.subscribe(() => {
       this.resetForm.get('confirmPassword')?.updateValueAndValidity();
     });
+  }
+
+  @Output() closeReset = new EventEmitter<void>();
+
+
+  closeResetPassword(): void {
+    this.closeReset.emit();
   }
 
   passwordMatchValidator(g: FormGroup) {

@@ -12,8 +12,11 @@
 
 
 
+input{
+  @apply border-gray-200 caret-cyan-500 dark:border-gray-500 hover:border-cyan-500 dark:hover:border-cyan-500  bg-lightBackground dark:bg-[#444444]  focus:border-cyan-500 dark:focus:border-cyan-500
+}
 .input{
-  @apply border-gray-200 dark:border-gray-500 hover:border-cyan-500 dark:hover:border-cyan-500  bg-lightBackground dark:bg-[#444444]  focus:border-cyan-500 dark:focus:border-cyan-500
+  @apply border-gray-200 caret-cyan-500 dark:border-gray-500 hover:border-cyan-500 dark:hover:border-cyan-500  bg-lightBackground dark:bg-[#444444]  focus:border-cyan-500 dark:focus:border-cyan-500
 }
 
 

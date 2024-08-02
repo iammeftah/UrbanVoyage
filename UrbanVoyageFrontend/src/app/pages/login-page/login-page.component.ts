@@ -96,10 +96,14 @@ export class LoginPageComponent {
 
   }
 
-  forgotPassword(): void {
-    this.showMessage('Forgot password functionality not implemented yet.', 'error');
-    this.router.navigate(['/reset-password']);
+  showPasswordReset: boolean= false;
 
+  showForgotPassword(): void {
+    this.showPasswordReset = true ;
+  }
+
+  hideForgotPassword(){
+    this.showPasswordReset = false ;
   }
 
   loginWithFacebook(): void {
