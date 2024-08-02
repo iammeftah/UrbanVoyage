@@ -56,14 +56,29 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/verify`, { email, verificationCode });
   }
 
-  login(email: string, password: string): Observable<any> {
+  login(email: string, password: string, rememberMe: boolean): Observable<any> {
+    console.log('Login attempt - Email:', email, 'Remember Me:', rememberMe);
     this.isLoggedInSubject.next(true);
-    return this.http.post(`${this.apiUrl}/signin`, { email, password }).pipe(
+    return this.http.post(`${this.apiUrl}/signin`, { email, password, rememberMe }).pipe(
       tap((response: any) => {
+        console.log('Login response received:', response);
         if (response.token) {
-          localStorage.setItem('token', response.token);
+          console.log('Token received. Length:', response.token.length);
+          if (rememberMe) {
+            console.log('Remember Me is true. Storing token in localStorage.');
+            localStorage.setItem('token', response.token);
+            console.log('Token stored in localStorage. Key:', 'token');
+          } else {
+            console.log('Remember Me is false. Storing token in sessionStorage.');
+            sessionStorage.setItem('token', response.token);
+            console.log('Token stored in sessionStorage. Key:', 'token');
+          }
           this.setUserRoles(response.roles);
+          console.log('User roles set:', response.roles);
           this.isLoggedInSubject.next(true);
+          console.log('isLoggedInSubject updated to true');
+        } else {
+          console.warn('No token received in the response');
         }
       }),
       catchError((error) => {
@@ -104,13 +119,13 @@ export class AuthService {
 
   logout(): Observable<any> {
     localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
     localStorage.removeItem('userRoles');
     this.setAdminStatus(false);
     this.userRolesSubject.next([]);
     this.isLoggedInSubject.next(false);
     return this.http.post(`${this.apiUrl}/signout`, {});
   }
-
 
 
   isLoggedIn(): boolean {
@@ -135,7 +150,7 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem('token');
+    return localStorage.getItem('token') || sessionStorage.getItem('token');
   }
 
   checkUserExists(email: string, phoneNumber: string): Observable<any> {

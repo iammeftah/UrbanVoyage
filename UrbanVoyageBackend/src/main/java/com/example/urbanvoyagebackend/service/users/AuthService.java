@@ -26,12 +26,15 @@ public class AuthService {
     @Value("${jwt.expiration}")
     private Long jwtExpirationInMs;
 
+    @Value("${jwt.rememberMe.expiration}")
+    private Long rememberMeExpiration;
+
 
 
     @Autowired
     private UserRepository userRepository;
 
-    public LoginResponse authenticate(String email, String password) {
+    public LoginResponse authenticate(String email, String password, boolean rememberMe) {
         System.out.println("AuthService: Attempting to authenticate user with email: " + email);
         Optional<User> user = userRepository.findByEmail(email);
         System.out.println("Client: " + user);
@@ -43,7 +46,7 @@ public class AuthService {
             System.out.println();
             System.out.println("AuthService: Verifying password returns :" + verifyPassword(password,  user.get().getPassword()));
             System.out.println("AuthService: Client authentication successful");
-            return createLoginResponse(user.orElse(null));
+            return createLoginResponse(user.orElse(null), rememberMe);
         }
         System.out.println("AuthService: client authentication failed");
         return null;
@@ -55,8 +58,8 @@ public class AuthService {
         return inputPassword.equals(storedPassword); // Example comparison, adjust as needed
     }
 
-    private LoginResponse createLoginResponse(User user) {
-        String token = generateToken(user.getEmail());
+    private LoginResponse createLoginResponse(User user, boolean rememberMe) {
+        String token = generateToken(user.getEmail(), rememberMe);
         System.out.println("Generating JWT token: " + token);
 
         return new LoginResponse(
@@ -71,9 +74,11 @@ public class AuthService {
         );
     }
 
-    private String generateToken(String email) {
+    private String generateToken(String email, boolean rememberMe) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
+        Date expiryDate = rememberMe
+                ? new Date(now.getTime() + rememberMeExpiration)
+                : new Date(now.getTime() + jwtExpirationInMs);
 
         String token = Jwts.builder()
                 .setSubject(email)

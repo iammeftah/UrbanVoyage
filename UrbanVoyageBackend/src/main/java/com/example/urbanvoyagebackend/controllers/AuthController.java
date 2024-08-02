@@ -99,10 +99,11 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         System.out.println("Controller: Received signin request for email: " + loginRequest.getEmail());
-        System.out.println("Controller: Received signin request for password: " + loginRequest.getPassword() );
+        System.out.println("Controller: Received signin request for password: " + loginRequest.getPassword());
+        System.out.println("Controller: Remember Me: " + loginRequest.isRememberMe());
 
         try {
-            LoginResponse response = authService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
+            LoginResponse response = authService.authenticate(loginRequest.getEmail(), loginRequest.getPassword(), loginRequest.isRememberMe());
             if (response != null) {
                 System.out.println("Controller: Login successful for user: " + loginRequest.getEmail());
                 System.out.println("Controller: Is user admin: " + response.getRoles());

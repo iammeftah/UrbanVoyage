@@ -17,9 +17,13 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private Long jwtExpirationInMs;
 
+    @Value("${jwt.rememberMe.expiration}")
+    private long rememberMeExpiration;
+
     public String generateJwtToken(Authentication authentication) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
+
 
         return Jwts.builder()
                 .setSubject(authentication.getName()) // Set username/email as subject
@@ -28,4 +32,6 @@ public class JwtUtil {
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
+
+
 }

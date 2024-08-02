@@ -48,7 +48,7 @@ export class LoginPageComponent {
     this.loading = true;
     console.log('Attempting login with email:', this.email);
 
-    this.authService.login(this.email, this.password).subscribe(
+    this.authService.login(this.email, this.password, this.rememberMe).subscribe(
       (response) => {
         console.log('Login successful:', response);
 
