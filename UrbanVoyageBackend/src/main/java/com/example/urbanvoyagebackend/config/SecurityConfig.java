@@ -79,6 +79,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/contacts/**", "/error").permitAll()
                         .requestMatchers("/api/destinations/**", "/error").permitAll()
                         .requestMatchers("/api/background-image/**", "/error").permitAll()
+                        .requestMatchers("/api/reset-password/**", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2

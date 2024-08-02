@@ -24,6 +24,7 @@ export class LoginPageComponent {
 
   }
 
+
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
@@ -97,6 +98,8 @@ export class LoginPageComponent {
 
   forgotPassword(): void {
     this.showMessage('Forgot password functionality not implemented yet.', 'error');
+    this.router.navigate(['/reset-password']);
+
   }
 
   loginWithFacebook(): void {

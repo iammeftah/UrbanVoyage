@@ -38,6 +38,7 @@ import { OAuthRedirectComponent } from './components/oauth-redirect/oauth-redire
 import {AutoTranslateDirective} from "./services/auto-translate.directive";
 import { LanguageSelectorComponent } from './objects/language-selector/language-selector.component';
 import {ImageService} from "./services/image.service";
+import { ResetPasswordPageComponent } from './pages/reset-password-page/reset-password-page.component';
 
 export function initializeApp() {
   return () => {
@@ -79,7 +80,9 @@ export function initializeApp() {
     CustomPaginatorComponent,
     OAuthRedirectComponent,
     AutoTranslateDirective,
-    LanguageSelectorComponent
+    LanguageSelectorComponent,
+    ResetPasswordPageComponent
+
 
   ],
   imports: [

@@ -19,6 +19,7 @@ import {CancelPaymentComponent} from "./pages/cancel-payment/cancel-payment.comp
 import {ClientDashboardComponent} from "./pages/client-dashboard/client-dashboard.component";
 import {ClientGuard} from "./guards/client.guard";
 import {OAuthRedirectComponent} from "./components/oauth-redirect/oauth-redirect/oauth-redirect.component";
+import {ResetPasswordPageComponent} from "./pages/reset-password-page/reset-password-page.component";
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -51,6 +52,7 @@ const routes: Routes = [
     canActivate: [ClientGuard]
   },
   { path: 'oauth2/redirect', component: OAuthRedirectComponent },
+  { path: 'reset-password', component: ResetPasswordPageComponent },
 
 
 

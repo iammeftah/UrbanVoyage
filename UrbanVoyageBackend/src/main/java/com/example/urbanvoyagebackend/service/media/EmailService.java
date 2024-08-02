@@ -10,6 +10,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.util.Properties;
+import java.util.Random;
 
 @Service
 public class EmailService {
@@ -183,7 +184,64 @@ public class EmailService {
                 + "</html>";
     }
 
+    public void sendOTPEmail(String to, String otp) {
+        try {
+            JavaMailSender mailSender = getJavaMailSender();
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
 
+            String htmlMsg = createOTPEmailContent(otp);
+
+            helper.setText(htmlMsg, true);
+            helper.setTo(to);
+            helper.setSubject("UrbanVoyage Password Reset OTP");
+            helper.setFrom("noreply@urbanvoyage.com");
+
+            mailSender.send(mimeMessage);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send OTP email: " + e.getMessage(), e);
+        }
+    }
+
+    private String generateOTP() {
+        Random random = new Random();
+        int otp = 100000 + random.nextInt(900000);
+        return String.valueOf(otp);
+    }
+
+    private String createOTPEmailContent(String otp) {
+        return "<!DOCTYPE html>"
+                + "<html lang='en'>"
+                + "<head>"
+                + "<meta charset='UTF-8'>"
+                + "<meta name='viewport' content='width=device-width, initial-scale=1.0'>"
+                + "<title>Password Reset OTP</title>"
+                + "<style>"
+                + "body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }"
+                + ".container { max-width: 600px; margin: 0 auto; padding: 20px; }"
+                + ".header { background-color: #06b6d4; color: white; padding: 20px; text-align: center; }"
+                + ".content { background-color: #f9f9f9; padding: 20px; border-radius: 5px; }"
+                + ".otp { font-size: 24px; font-weight: bold; text-align: center; margin: 20px 0; padding: 10px; background-color: #e0e0e0; border-radius: 5px; }"
+                + ".footer { text-align: center; margin-top: 20px; font-size: 12px; color: #666; }"
+                + "</style>"
+                + "</head>"
+                + "<body>"
+                + "<div class='container'>"
+                + "<div class='header'>"
+                + "<h1>UrbanVoyage Password Reset</h1>"
+                + "</div>"
+                + "<div class='content'>"
+                + "<p>You have requested to reset your password. Please use the following OTP to complete the process:</p>"
+                + "<div class='otp'>" + otp + "</div>"
+                + "<p>If you didn't request this password reset, please ignore this email.</p>"
+                + "</div>"
+                + "<div class='footer'>"
+                + "<p>&copy; 2024 UrbanVoyage. All rights reserved.</p>"
+                + "</div>"
+                + "</div>"
+                + "</body>"
+                + "</html>";
+    }
 
 
 }

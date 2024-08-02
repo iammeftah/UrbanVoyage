@@ -13,7 +13,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -23,6 +27,7 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final Map<String, UserDTO> unverifiedUsers = new HashMap<>();
+    private final ConcurrentMap<String, OtpData> otpStorage = new ConcurrentHashMap<>();
 
 
     public List<User> getAllUsers() {
@@ -131,5 +136,56 @@ public class UserService implements UserDetailsService {
 
     public List<String> getAdminEmails() {
         return userRepository.findEmailsByRole(Role.ROLE_ADMIN);
+    }
+
+
+    public String getMaskedPhoneNumber(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            String phoneNumber = user.get().getPhoneNumber();
+            // Mask all but the last 4 digits
+            return phoneNumber.replaceAll("\\d(?=\\d{4})", "*");
+        }
+        return null;
+    }
+
+    public void storeOTP(String email, String otp) {
+        otpStorage.put(email, new OtpData(otp, LocalDateTime.now()));
+    }
+
+    public boolean verifyOTP(String email, String otp) {
+        OtpData storedOtpData = otpStorage.get(email);
+        if (storedOtpData != null && storedOtpData.otp.equals(otp)) {
+            // Check if OTP is not older than 5 minutes
+            if (ChronoUnit.MINUTES.between(storedOtpData.creationTime, LocalDateTime.now()) <= 5) {
+                otpStorage.remove(email);  // Remove OTP after successful verification
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+    public void resetPassword(String email, String newPassword) {
+        System.out.println("Attempting to reset password for email: " + email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String hashedPassword = MD5Util.md5(newPassword);
+        user.setPassword(hashedPassword);
+
+        userRepository.save(user);
+        System.out.println("Password reset successful for email: " + email);
+    }
+
+    private static class OtpData {
+        String otp;
+        LocalDateTime creationTime;
+
+        OtpData(String otp, LocalDateTime creationTime) {
+            this.otp = otp;
+            this.creationTime = creationTime;
+        }
     }
 }
