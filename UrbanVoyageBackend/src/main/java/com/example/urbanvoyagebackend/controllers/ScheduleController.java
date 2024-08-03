@@ -26,6 +26,12 @@ public class ScheduleController {
         return schedules.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
+    @GetMapping("/top")
+    public List<ScheduleDTO> getTopSchedules(@RequestParam(defaultValue = "10") int limit) {
+        List<Schedule> topSchedules = scheduleService.getTopSchedulesByBoughtTickets(limit);
+        return topSchedules.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
 
     private ScheduleDTO convertToDTO(Schedule schedule) {
         ScheduleDTO dto = new ScheduleDTO();
@@ -39,6 +45,7 @@ public class ScheduleController {
         routeDTO.setDepartureCity(schedule.getRoute().getDepartureCity());
         routeDTO.setArrivalCity(schedule.getRoute().getArrivalCity());
         routeDTO.setDistance(schedule.getRoute().getDistance());
+        routeDTO.setBoughtTicket(schedule.getRoute().getBoughtTicket());
         dto.setDuration(schedule.calculateDuration());
         dto.setSchedulePrice(schedule.getSchedulePrice());
 
@@ -89,4 +96,5 @@ public class ScheduleController {
             return ResponseEntity.notFound().build();
         }
     }
+
 }

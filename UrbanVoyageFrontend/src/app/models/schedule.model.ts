@@ -12,6 +12,7 @@ export interface Schedule {
     departureCity: string;
     arrivalCity: string;
     distance: number;
+    boughtTicket: number;
   };
   availableSeats: number;
   seatType: 'STANDARD' | 'PREMIUM' | 'VIP';

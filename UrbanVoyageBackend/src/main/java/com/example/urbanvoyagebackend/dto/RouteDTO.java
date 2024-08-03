@@ -5,6 +5,8 @@ public class RouteDTO {
     private String departureCity;
     private String arrivalCity;
     private double distance;
+    int boughtTicket ;
+
 
     // Getters and setters
     public Long getRouteID() { return routeID; }
@@ -15,4 +17,12 @@ public class RouteDTO {
     public void setArrivalCity(String arrivalCity) { this.arrivalCity = arrivalCity; }
     public double getDistance() { return distance; }
     public void setDistance(double distance) { this.distance = distance; }
+
+    public int getBoughtTicket() {
+        return boughtTicket;
+    }
+
+    public void setBoughtTicket(int boughtTicket) {
+        this.boughtTicket = boughtTicket;
+    }
 }

@@ -30,6 +30,9 @@ public class Route {
     @OneToMany(mappedBy = "route")
     private Set<Reservation> reservations;
 
+    @Column(name = "bought_ticket")
+    private int boughtTicket = 0;  // Initialize to 0
+
 
 
     // Constructors, getters, and setters
@@ -100,5 +103,18 @@ public class Route {
 
     public void setReservations(Set<Reservation> reservations) {
         this.reservations = reservations;
+    }
+
+    public int getBoughtTicket() {
+        return boughtTicket;
+    }
+
+    public void setBoughtTicket(int boughtTicket) {
+        this.boughtTicket = boughtTicket;
+    }
+
+    public Route increaseBoughtTicket() {
+        this.boughtTicket++;
+        return this;
     }
 }

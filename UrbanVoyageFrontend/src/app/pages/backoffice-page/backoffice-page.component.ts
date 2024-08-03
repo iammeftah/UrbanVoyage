@@ -943,6 +943,7 @@ export class BackofficePageComponent implements OnInit {
       for (let j = i + 1; j < this.locations.length; j++) {
         const departureCity = this.locations[i].name;
         const arrivalCity = this.locations[j].name;
+        const boughtTicket = 0 ;
 
         // Create a unique identifier for the route
         const routeKey = `${departureCity}-${arrivalCity}`;
@@ -955,7 +956,8 @@ export class BackofficePageComponent implements OnInit {
           const newRoute: Partial<Route> = {
             departureCity: departureCity,
             arrivalCity: arrivalCity,
-            distance: distance
+            distance: distance,
+            boughtTicket: boughtTicket
           };
 
           this.routeService.addRoute(newRoute as Route).subscribe({
@@ -973,7 +975,8 @@ export class BackofficePageComponent implements OnInit {
           const reverseRoute: Partial<Route> = {
             departureCity: arrivalCity,
             arrivalCity: departureCity,
-            distance: distance
+            distance: distance,
+            boughtTicket: boughtTicket
           };
 
           this.routeService.addRoute(reverseRoute as Route).subscribe({

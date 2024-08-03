@@ -39,6 +39,22 @@ export class SchedulesPageComponent implements OnInit {
     });
   }
 
+  loadTopSchedules() {
+    this.loading=true;
+    this.scheduleService.getTopSchedules().subscribe({
+      next: (data) => {
+        this.loading=false;
+        this.schedules = data;
+        this.filteredSchedules = [...this.schedules];
+        this.sortSchedules();
+      },
+      error: (error) => {
+        this.loading=false;
+        console.error('Error fetching schedules:', error);
+      }
+    });
+  }
+
   toggleSort(column: string) {
     if (this.sortColumn === column) {
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';

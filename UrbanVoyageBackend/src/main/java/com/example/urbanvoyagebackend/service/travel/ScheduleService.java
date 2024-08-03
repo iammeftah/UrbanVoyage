@@ -7,6 +7,7 @@ import com.example.urbanvoyagebackend.repository.travel.ScheduleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -48,5 +49,9 @@ public class ScheduleService {
                 .orElseThrow(() -> new EntityNotFoundException("Schedule not found"));
         schedule.setAvailableSeats(newAvailableSeats);
         return scheduleRepository.save(schedule);
+    }
+
+    public List<Schedule> getTopSchedulesByBoughtTickets(int limit) {
+        return scheduleRepository.findTopSchedulesByBoughtTickets(PageRequest.of(0, limit));
     }
 }

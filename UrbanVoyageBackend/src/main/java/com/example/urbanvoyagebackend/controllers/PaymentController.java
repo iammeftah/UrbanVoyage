@@ -4,10 +4,12 @@ import com.example.urbanvoyagebackend.entity.payment.Payment;
 import com.example.urbanvoyagebackend.entity.payment.RequestRefund;
 import com.example.urbanvoyagebackend.entity.travel.Passenger;
 import com.example.urbanvoyagebackend.entity.travel.Reservation;
+import com.example.urbanvoyagebackend.entity.travel.Route;
 import com.example.urbanvoyagebackend.models.CheckoutRequest;
 import com.example.urbanvoyagebackend.repository.travel.PaymentRepository;
 import com.example.urbanvoyagebackend.repository.travel.RefundRequestRepository;
 import com.example.urbanvoyagebackend.repository.travel.ReservationRepository;
+import com.example.urbanvoyagebackend.repository.travel.RouteRepository;
 import com.example.urbanvoyagebackend.service.media.EmailService;
 import com.example.urbanvoyagebackend.service.travel.PassengerService;
 import com.example.urbanvoyagebackend.service.travel.PaymentService;
@@ -100,6 +102,9 @@ public class PaymentController {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private RouteRepository routeRepository;
+
     @PostMapping("/confirm-payment")
     public ResponseEntity<?> confirmPayment(@RequestBody Map<String, String> payload) {
         String sessionId = payload.get("sessionId");
@@ -115,6 +120,15 @@ public class PaymentController {
                         .orElseThrow(() -> new RuntimeException("Reservation not found"));
 
                 reservation.setStatus(Reservation.ReservationStatus.CONFIRMED);
+
+                Route route = reservation.getRoute();
+                System.out.println("Increasing bought ticket count for route: {}"+ route.getRouteID());
+                route.increaseBoughtTicket();
+                Route savedRoute = routeRepository.save(route);
+                System.out.println("Updated bought ticket count: {}"+ savedRoute.getBoughtTicket());
+
+                routeRepository.save(route);
+
                 reservationRepository.save(reservation);
 
                 // Generate ticket PDF

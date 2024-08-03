@@ -7,6 +7,7 @@ export interface Route {
   distance: number;
   duration?: number;
   schedules?: Schedule[];
+  boughtTicket: number;
 }
 
 

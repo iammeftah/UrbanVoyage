@@ -37,6 +37,7 @@
           <div class="flex flex-row items-center justify-center gap-4">
             <input [(ngModel)]="searchDepartureCity" (input)="onSearch()" placeholder="Search Departure City" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#333333] px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
             <input [(ngModel)]="searchArrivalCity" (input)="onSearch()" placeholder="Search Arrival City" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#333333] px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
+            <button (click)="createAllRoutes()" class="bg-teal-600 hover:bg-teal-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors disabled:opacity-50 duration-300">Create all routes</button>
           </div>
         </div>
 

@@ -68,6 +68,17 @@ export class ScheduleService {
     );
   }
 
+  getTopSchedules(limit: number = 10): Observable<Schedule[]> {
+    return this.http.get<Schedule[]>(`${this.apiUrl}/top?limit=${limit}`).pipe(
+      map(schedules => schedules.map(schedule => ({
+        ...schedule,
+        route: schedule.route || {}
+      }))),
+      catchError(this.handleError)
+    );
+  }
+
+
   getScheduleById(id: number): Observable<Schedule> {
     return this.http.get<Schedule>(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)
@@ -183,4 +194,8 @@ export class ScheduleService {
     console.log('Deleting other schedules except:', selectedSchedule);
     return of(null);
   }
+
+
+
+
 }

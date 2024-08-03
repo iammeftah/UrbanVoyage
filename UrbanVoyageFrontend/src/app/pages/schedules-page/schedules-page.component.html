@@ -46,6 +46,10 @@
                 Price
                 <i [class]="getSortIcon('price')"></i>
               </th>
+              <th (click)="toggleSort('travel')" class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 cursor-pointer">
+                Travels
+                <i [class]="getSortIcon('travel')"></i>
+              </th>
             </tr>
             </thead>
             <tbody class="[&_tr:last-child]:border-0">
@@ -68,6 +72,9 @@
                 </td>
                 <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
                   <div class="font-medium">{{schedule.schedulePrice}}MAD</div>
+                </td>
+                <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                  <div class="font-medium">{{schedule.route.boughtTicket}}</div>
                 </td>
               </tr>
             </ng-container>
