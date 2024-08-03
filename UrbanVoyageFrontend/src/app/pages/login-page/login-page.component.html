@@ -23,6 +23,9 @@
           <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="email">
             Email
           </label>
+          <div class="text-sm text-[#AAAAAA] italic" *ngIf="isEmailLocked(email)">
+            This account is <span class="text-red-500">locked</span>. Try again in {{ formatCountdown(getRemainingLockoutTime(email)) }}.
+          </div>
           <input id="email" type="email" [(ngModel)]="email" name="email" required
                  class="input flex h-10 w-full duration-200 rounded-md border   px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText"
                  placeholder="Enter your email">
@@ -78,6 +81,7 @@
           </button>
         </div>
         <button
+          [disabled]="isEmailLocked(email) || loading"
           (click)="login()"
           class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors  disabled:pointer-events-none disabled:opacity-50 bg-teal-500 text-white hover:bg-teal-600 h-10 px-4 py-2 w-full"
         >

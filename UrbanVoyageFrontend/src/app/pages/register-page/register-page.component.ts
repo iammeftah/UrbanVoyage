@@ -122,6 +122,8 @@ export class RegisterPageComponent {
     );
   }
 
+
+
   private proceedWithRegistration(): void {
     const user = {
       firstName: this.firstName,

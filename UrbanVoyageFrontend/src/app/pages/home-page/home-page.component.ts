@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef, HostListener} from '@angular/core';
 import { debounceTime, distinctUntilChanged, Subject, Subscription, switchMap } from "rxjs";
 import { map } from "rxjs/operators";
 import { ScheduleService } from "../../services/schedule.service";
@@ -12,7 +12,7 @@ import { Schedule } from "../../models/schedule.model";
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.css']
 })
-export class HomePageComponent implements OnInit, OnDestroy {
+export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   searchResults: string[] = [];
   destinations?: any[];
   isAdmin = false;
@@ -174,5 +174,53 @@ export class HomePageComponent implements OnInit, OnDestroy {
   private setDefaultBackgroundImage() {
     this.backgroundImage = 'https://images.unsplash.com/photo-1597212618440-806262de4f6b?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
     this.isLoadingImage = false;
+  }
+
+
+
+  @ViewChild('compactHeader') compactHeader!: ElementRef;
+
+  isHeaderHidden = false;
+  isCompactHeaderVisible = false;
+  lastScrollTop = 0;
+  scrollThreshold = 100; // Adjust this value to change when the compact header appears
+
+  ngAfterViewInit() {
+    this.compactHeader.nativeElement.style.display = 'none';
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll() {
+    const st = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (st > this.lastScrollTop) {
+      // Scrolling down
+      this.isHeaderHidden = true;
+      if (st > this.scrollThreshold) {
+        this.showCompactHeader();
+      }
+    } else {
+      // Scrolling up
+      this.isHeaderHidden = false;
+      if (st <= this.scrollThreshold) {
+        this.hideCompactHeader();
+      }
+    }
+
+    this.lastScrollTop = st <= 0 ? 0 : st;
+  }
+
+  showCompactHeader() {
+    this.compactHeader.nativeElement.style.display = 'block';
+    setTimeout(() => {
+      this.isCompactHeaderVisible = true;
+    }, 50);
+  }
+
+  hideCompactHeader() {
+    this.isCompactHeaderVisible = false;
+    setTimeout(() => {
+      this.compactHeader.nativeElement.style.display = 'none';
+    }, 300);
   }
 }

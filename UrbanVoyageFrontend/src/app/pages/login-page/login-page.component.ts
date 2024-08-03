@@ -24,6 +24,83 @@ export class LoginPageComponent {
 
   }
 
+  maxAttempts: number = 5;
+  lockoutTime: number = 600; // 10 minutes in seconds
+  lockedEmails: { [email: string]: { attempts: number, lockoutEnd: number } } = {};
+  currentLockoutTimer: any;
+
+  ngOnInit() {
+    this.loadLockedEmails();
+  }
+
+  ngOnDestroy() {
+    if (this.currentLockoutTimer) {
+      clearInterval(this.currentLockoutTimer);
+    }
+  }
+
+  loadLockedEmails() {
+    const storedEmails = localStorage.getItem('lockedEmails');
+    if (storedEmails) {
+      this.lockedEmails = JSON.parse(storedEmails);
+      this.cleanupExpiredLockouts();
+    }
+  }
+
+  saveLockedEmails() {
+    localStorage.setItem('lockedEmails', JSON.stringify(this.lockedEmails));
+  }
+
+  cleanupExpiredLockouts() {
+    const now = new Date().getTime();
+    for (const email in this.lockedEmails) {
+      if (this.lockedEmails[email].lockoutEnd < now) {
+        delete this.lockedEmails[email];
+      }
+    }
+    this.saveLockedEmails();
+  }
+
+  isEmailLocked(email: string): boolean {
+    return this.lockedEmails[email] && this.lockedEmails[email].lockoutEnd > new Date().getTime();
+  }
+
+  getRemainingLockoutTime(email: string): number {
+    if (this.isEmailLocked(email)) {
+      return Math.ceil((this.lockedEmails[email].lockoutEnd - new Date().getTime()) / 1000);
+    }
+    return 0;
+  }
+
+  lockEmail(email: string): void {
+    const lockoutEnd = new Date().getTime() + this.lockoutTime * 1000;
+    this.lockedEmails[email] = { attempts: this.maxAttempts, lockoutEnd };
+    this.saveLockedEmails();
+    this.showMessage(`Too many failed attempts for ${email}. Account locked for 10 minutes.`, 'error');
+    this.startLockoutTimer(email);
+  }
+
+  startLockoutTimer(email: string): void {
+    if (this.currentLockoutTimer) {
+      clearInterval(this.currentLockoutTimer);
+    }
+    this.currentLockoutTimer = setInterval(() => {
+      const remainingTime = this.getRemainingLockoutTime(email);
+      if (remainingTime <= 0) {
+        clearInterval(this.currentLockoutTimer);
+        delete this.lockedEmails[email];
+        this.saveLockedEmails();
+        this.showMessage(`Lockout period for ${email} has ended. You can try logging in again.`, 'success');
+      }
+    }, 1000);
+  }
+
+  formatCountdown(seconds: number): string {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  }
+
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
@@ -75,12 +152,28 @@ export class LoginPageComponent {
         this.loading = false;
         this.showMessage('Login successful!', 'success');
         this.isLoggedIn = true;
+        if (this.lockedEmails[this.email]) {
+          delete this.lockedEmails[this.email];
+          this.saveLockedEmails();
+        }
         this.router.navigate([redirectTo]);
+
       },
       (error) => {
         this.loading = false;
         console.error('Login failed:', error);
-        this.showMessage(error.error?.message || 'An error occurred during login. Please try again.', 'error');
+
+        if (!this.lockedEmails[this.email]) {
+          this.lockedEmails[this.email] = { attempts: 0, lockoutEnd: 0 };
+        }
+        this.lockedEmails[this.email].attempts++;
+
+        if (this.lockedEmails[this.email].attempts >= this.maxAttempts) {
+          this.lockEmail(this.email);
+        } else {
+          this.saveLockedEmails();
+          this.showMessage(`Login failed. ${this.maxAttempts - this.lockedEmails[this.email].attempts} attempts remaining for ${this.email}.`, 'error');
+        }
       }
     );
 
@@ -129,4 +222,7 @@ export class LoginPageComponent {
   closeMessage(): void {
     this.message = null;
   }
+
+
+
 }

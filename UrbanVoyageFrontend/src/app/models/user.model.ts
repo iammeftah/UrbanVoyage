@@ -7,4 +7,5 @@ export interface User {
   username:string;
   hasReservations: boolean; // Add any other fields as necessary
   isClient:boolean;
+  isAdmin:boolean;
 }

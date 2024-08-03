@@ -11,12 +11,23 @@ module.exports = {
       },
       animation: {
         marquee: 'marquee 30s linear infinite',
+        slide: 'slide 5s linear infinite',
+        'slide-lr': 'slide-lr 3s linear infinite',
       },
       keyframes: {
         marquee: {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-50%)' },
-        }
+        },
+        slide: {
+          '0%, 100%': { left: '-50%' },
+          '50%': { left: '100%' },
+        },
+        'slide-lr': {
+          '0%': { left: '-25%' },
+          '100%': { left: '100%' },
+        },
+
       },
       colors: {
         //TEXT AND BACKGROUND
