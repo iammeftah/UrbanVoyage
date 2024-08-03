@@ -69,6 +69,35 @@ export class RoutesPageComponent implements OnInit {
   isClient: boolean = false;
   private loginSubscription: Subscription = new Subscription();
 
+
+  isOpen = false;
+  selectedCity = '';
+
+  isDepartureOpen = false;
+  isArrivalOpen = false;
+
+  toggleDepartureDropdown() {
+    this.isDepartureOpen = !this.isDepartureOpen;
+    if (this.isDepartureOpen) this.isArrivalOpen = false;
+  }
+
+  toggleArrivalDropdown() {
+    this.isArrivalOpen = !this.isArrivalOpen;
+    if (this.isArrivalOpen) this.isDepartureOpen = false;
+  }
+
+  selectDepartureCity(city: string) {
+    this.departureCity = city;
+    this.isDepartureOpen = false;
+  }
+
+  selectArrivalCity(city: string) {
+    this.arrivalCity = city;
+    this.isArrivalOpen = false;
+  }
+
+
+
   formatPrice(price: number | undefined): string {
     return price !== undefined ? price.toFixed(2) : '0.00';
   }

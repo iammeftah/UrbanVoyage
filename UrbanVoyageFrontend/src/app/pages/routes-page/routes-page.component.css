@@ -12,3 +12,8 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.custom-select option {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
