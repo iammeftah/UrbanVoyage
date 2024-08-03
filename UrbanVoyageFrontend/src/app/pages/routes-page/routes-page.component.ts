@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {BehaviorSubject, forkJoin, of, Subscription, switchMap, tap} from 'rxjs';
 import { Schedule } from 'src/app/models/schedule.model';
 import { Route } from 'src/app/models/route.model';
@@ -11,6 +11,7 @@ import {ReservationService} from "../../services/reservation.service";
 import {map} from "rxjs/operators";
 import { locations } from 'src/app/data/locations.data';
 import {DistanceService} from "../../services/distance.service";
+import {MoroccoMapComponent} from "../../components/morocco-map/morocco-map.component";
 
 
 interface AgencyLocation {
@@ -23,16 +24,19 @@ interface AgencyLocation {
 @Component({
   selector: 'app-routes-page',
   templateUrl: './routes-page.component.html',
-  styleUrls: ['./routes-page.component.css']
-})
+  styleUrls: ['./routes-page.component.css'],
+  })
 
 
 
 export class RoutesPageComponent implements OnInit {
+  @ViewChild(MoroccoMapComponent) mapComponent!: MoroccoMapComponent;
+
   isOneWay: boolean = true;
   travelingWithPet: boolean = false;
   departureCity: string = '';
   arrivalCity: string = '';
+  distance: number = 0 ;
 
   schedules: (Schedule & { availableSeats: number })[] = [];
   noRoutesFound: boolean = false;
@@ -96,6 +100,26 @@ export class RoutesPageComponent implements OnInit {
     this.isArrivalOpen = false;
   }
 
+  isMapModalOpen: boolean = false;
+
+
+
+
+  onCitiesSelected(event: { departure: string, arrival: string, distance: number }) {
+    this.departureCity = event.departure;
+    this.arrivalCity = event.arrival;
+    this.distance = event.distance;
+  }
+
+  openMapModal() {
+    this.isMapModalOpen = true;
+  }
+
+  closeMapModal() {
+    this.isMapModalOpen = false;
+  }
+
+
 
 
   formatPrice(price: number | undefined): string {
@@ -120,7 +144,6 @@ export class RoutesPageComponent implements OnInit {
         console.log('Login state updated:', this.isLoggedIn);
       }
     );
-
   }
 
   ngOnDestroy() {
@@ -424,6 +447,10 @@ export class RoutesPageComponent implements OnInit {
     });
   }
 
+  onSearchRoutes() {
+    this.searchRoutes();
+    this.closeMapModal();
+  }
 }
 
 

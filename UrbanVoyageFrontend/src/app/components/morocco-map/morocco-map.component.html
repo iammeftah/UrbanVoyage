@@ -1,0 +1,21 @@
+<div class="relative w-full h-full flex flex-col">
+  <div id="map" class="w-full flex-grow"></div>
+
+  <div class="bg-white dark:bg-[#222222]  p-4 flex justify-between items-center text-lightText dark:text-darkText">
+    <div class="flex space-x-4">
+      <div class="bg-gray-100 dark:bg-[#333333]  px-4 py-2 rounded-lg ">
+        From: <span class="text-teal-500 font-semibold">{{ departureCity || 'Select' }}</span>
+      </div>
+      <div class="bg-gray-100 dark:bg-[#333333]  px-4 py-2 rounded-lg">
+        To: <span class="text-teal-500 font-semibold">{{ arrivalCity || 'Select' }}</span>
+      </div>
+      <div class="bg-gray-100 dark:bg-[#333333]  px-4 py-2 rounded-lg" *ngIf="distance > 0">
+        Distance: <span class="text-teal-500 font-semibold">{{ distance }} km</span>
+      </div>
+    </div>
+    <div class="flex flex-row items-center justify-center gap-4">
+      <button class="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow transition-colors hover:text-teal-600 dark:hover:text-teal-600" (click)="closeMapModal()">Cancel</button>
+      <button class="inline-flex items-center justify-center rounded-md bg-teal-500 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-[#111111]" (click)="confirmSelection()">Confirm Journey</button>
+    </div>
+   </div>
+</div>

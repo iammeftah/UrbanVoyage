@@ -62,9 +62,8 @@
                 </div>
               </div>
             </div>
-
+          <!--
             <div class="flex flex-row gap-4 w-full">
-              <!-- Departure Location -->
               <div class="w-full mb-4">
                 <label appAutoTranslate class="text-sm font-medium mb-1 block" for="departureCity">
                   Departure
@@ -74,14 +73,13 @@
                     {{ departureCity || 'Select Departure City' }}
                   </div>
                   <div *ngIf="isDepartureOpen" class="absolute z-10 w-full mt-1 bg-white dark:bg-[#333333] border border-[#777777] dark:border-[#444444] rounded-md shadow-lg">
-                    <div (click)="selectDepartureCity('')" class="px-3 py-2 hover:bg-gray-100 dark:hover:bg-[#444444] cursor-pointer">Select Departure City</div>
-                    <div *ngFor="let location of locations" (click)="selectDepartureCity(location.name)" class="px-3 py-2 hover:bg-gray-100 dark:hover:bg-[#444444] cursor-pointer">
+                    <div (click)="selectDepartureCity('')" class="px-3 py-2 hover:bg-[#999999] dark:hover:bg-[#444444] cursor-pointer">Select Departure City</div>
+                    <div *ngFor="let location of locations" (click)="selectDepartureCity(location.name)" class="px-3 py-2 hover:bg-[#999999] dark:hover:bg-[#444444] cursor-pointer">
                       {{ location.name }}
                     </div>
                   </div>
                 </div>
               </div>
-              <!-- Destination Location -->
               <div class="w-full">
                 <label appAutoTranslate class="text-sm font-medium mb-1 block" for="arrivalCity">
                   Destination
@@ -91,14 +89,34 @@
                     {{ arrivalCity || 'Select Arrival City' }}
                   </div>
                   <div *ngIf="isArrivalOpen" class="absolute z-10 w-full mt-1 bg-white dark:bg-[#333333] border border-[#777777] dark:border-[#444444] rounded-md shadow-lg">
-                    <div (click)="selectArrivalCity('')" class="px-3 py-2 hover:bg-gray-100 dark:hover:bg-[#444444] cursor-pointer">Select Arrival City</div>
-                    <div *ngFor="let location of locations" (click)="selectArrivalCity(location.name)" class="px-3 py-2 hover:bg-gray-100 dark:hover:bg-[#444444] cursor-pointer">
+                    <div (click)="selectArrivalCity('')" class="px-3 py-2 hover:bg-[#999999] dark:hover:bg-[#444444] cursor-pointer">Select Arrival City</div>
+                    <div *ngFor="let location of locations" (click)="selectArrivalCity(location.name)" class="px-3 py-2 hover:bg-[#999999] dark:hover:bg-[#444444] cursor-pointer">
                       {{ location.name }}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          -->
+            <div class="w-full mt-4 flex flex-col gap-4">
+              <div class="flex justify-between items-center">
+                <div>
+                  <span class="font-semibold">Departure:</span> {{ departureCity || 'Not selected' }}
+                </div>
+                <div>
+                  <span class="font-semibold">Arrival:</span> {{ arrivalCity || 'Not selected' }}
+                </div>
+              </div>
+
+              <div class="flex justify-end">
+                <button (click)="openMapModal()" class="inline-flex items-center justify-center rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-[#111111]">
+                  Select Cities on Map
+                </button>
+              </div>
+            </div>
+
+
+
 
           </div>
 
@@ -106,7 +124,7 @@
 
 
 
-          <!-- Search Button -->
+          <!-- Search Button
           <div class="w-full mt-4 flex justify-end sm:col-span-3" data-aos="fade-left">
             <button
               appAutoTranslate
@@ -117,6 +135,7 @@
               Search
             </button>
           </div>
+          -->
         </form>
       </div>
 
@@ -192,7 +211,19 @@
   <app-footer></app-footer>
 </div>
 
-
+<!-- Map Modal -->
+<div *ngIf="isMapModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-white dark:bg-gray-800 w-4/5 h-4/5 rounded-lg overflow-hidden shadow-xl">
+    <div class="relative w-full h-full">
+      <app-morocco-map (citiesSelected)="onCitiesSelected($event)"  (searchRoutes)="onSearchRoutes()" (closeModal)="closeMapModal()">></app-morocco-map>
+      <button (click)="closeMapModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
 
 <div *ngIf="loading" class="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-[#888888] bg-opacity-20 backdrop-blur-lg z-50">
   <app-loading-spinner *ngIf="loading"></app-loading-spinner>

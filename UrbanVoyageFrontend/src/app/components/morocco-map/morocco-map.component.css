@@ -1,0 +1,61 @@
+#map {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.city-marker {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.city-label {
+  font-size: 12px;
+  font-weight: bold;
+  color: #333;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 4px 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.city-marker .city-label {
+  opacity: 0.7;
+  transform: scale(0.9);
+}
+
+.city-marker.hover .city-label {
+  color: #14b8a6;
+  opacity: 1;
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.city-marker.active .city-label {
+  color: #fff;
+  background-color: #14b8a6;
+  font-size: 14px;
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.leaflet-control-custom button {
+  background-color: #fff;
+  border: 2px solid rgba(0,0,0,0.2);
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.leaflet-control-custom button:hover {
+  background-color: #f4f4f4;
+  transform: scale(1.05);
+}
+
+
