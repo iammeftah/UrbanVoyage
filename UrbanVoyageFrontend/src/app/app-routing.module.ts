@@ -22,41 +22,25 @@ import {OAuthRedirectComponent} from "./components/oauth-redirect/oauth-redirect
 import {ResetPasswordPageComponent} from "./pages/reset-password-page/reset-password-page.component";
 
 const routes: Routes = [
-  { path: '', component: HomePageComponent },
-  { path: 'homepage', component: HomePageComponent },
-  { path: 'routes', component: RoutesPageComponent },
-  { path: 'booking', component: BookingPageComponent },
-  { path: 'schedules', component: SchedulesPageComponent },
-  { path: 'services', component: OurServicePageComponent },
-  { path: 'contact', component: ContactPageComponent },
-  { path: 'login', component: LoginPageComponent },
-  { path: 'register', component: RegisterPageComponent },
-  { path: 'auth', component: AuthPageComponent },
-  { path: 'register', component: RegisterPageComponent },
-  { path: 'verify-email', component: VerifyEmailComponent },
-  { path: 'booking', component: BookingPageComponent },
-  {
-    path: 'backoffice',
-    component: BackofficePageComponent,
-    canActivate: [AdminGuard]
-  },
-
-  { path: 'unauthorized', component: UnauthorizedPageComponent },
-  { path: 'success', component: SuccessPaymentComponent },
-
-  { path: 'cancel', component: CancelPaymentComponent },
-
-  {
-    path: 'client-space',
-    component: ClientDashboardComponent,
-    canActivate: [ClientGuard]
-  },
-  { path: 'oauth2/redirect', component: OAuthRedirectComponent },
-  { path: 'reset-password', component: ResetPasswordPageComponent },
-
-
-
-  // autres routes...
+  { path: '', component: HomePageComponent, title: 'Home' },
+  { path: 'homepage', component: HomePageComponent, title: 'Home' },
+  { path: 'routes', component: RoutesPageComponent, title: 'Routes' },
+  { path: 'booking', component: BookingPageComponent, title: 'Booking' },
+  { path: 'schedules', component: SchedulesPageComponent, title: 'Schedules' },
+  { path: 'services', component: OurServicePageComponent, title: 'Our Services' },
+  { path: 'contact', component: ContactPageComponent, title: 'Contact Us' },
+  { path: 'login', component: LoginPageComponent, title: 'Login' },
+  { path: 'register', component: RegisterPageComponent, title: 'Register' },
+  { path: 'auth', component: AuthPageComponent, title: 'Authentication' },
+  { path: 'verify-email', component: VerifyEmailComponent, title: 'Verify Email' },
+  { path: 'backoffice', component: BackofficePageComponent, canActivate: [AdminGuard], title: 'Back Office' },
+  { path: 'unauthorized', component: UnauthorizedPageComponent, title: 'Unauthorized' },
+  { path: 'success', component: SuccessPaymentComponent, title: 'Payment Successful' },
+  { path: 'cancel', component: CancelPaymentComponent, title: 'Payment Cancelled' },
+  { path: 'client-space', component: ClientDashboardComponent, canActivate: [ClientGuard], title: 'Client Dashboard' },
+  { path: 'oauth2/redirect', component: OAuthRedirectComponent, title: 'OAuth Redirect' },
+  { path: 'reset-password', component: ResetPasswordPageComponent, title: 'Reset Password' },
+  // ... other routes ...
 ];
 
 @NgModule({
