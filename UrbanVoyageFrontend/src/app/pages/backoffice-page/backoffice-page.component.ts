@@ -937,20 +937,28 @@ export class BackofficePageComponent implements OnInit {
 
 
   createAllRoutes(): void {
+    this.loading = true ;
+
     const createdRoutes: Set<string> = new Set(); // To keep track of routes already created
+
+    // Create a set of existing route keys
+    const existingRouteKeys: Set<string> = new Set(
+      this.routes.map(route => `${route.departureCity}-${route.arrivalCity}`)
+    );
 
     for (let i = 0; i < this.locations.length; i++) {
       for (let j = i + 1; j < this.locations.length; j++) {
         const departureCity = this.locations[i].name;
         const arrivalCity = this.locations[j].name;
-        const boughtTicket = 0 ;
+        const boughtTicket = 0;
 
         // Create a unique identifier for the route
         const routeKey = `${departureCity}-${arrivalCity}`;
         const reverseRouteKey = `${arrivalCity}-${departureCity}`;
 
-        // Check if this route or its reverse hasn't been created yet
-        if (!createdRoutes.has(routeKey) && !createdRoutes.has(reverseRouteKey)) {
+        // Check if this route or its reverse hasn't been created yet and doesn't exist
+        if (!createdRoutes.has(routeKey) && !createdRoutes.has(reverseRouteKey) &&
+          !existingRouteKeys.has(routeKey) && !existingRouteKeys.has(reverseRouteKey)) {
           const distance = this.cityDistances[departureCity][arrivalCity];
 
           const newRoute: Partial<Route> = {
@@ -965,6 +973,7 @@ export class BackofficePageComponent implements OnInit {
               console.log(`Route added: ${departureCity} to ${arrivalCity}`);
               this.routes.push(route);
               createdRoutes.add(routeKey);
+              existingRouteKeys.add(routeKey);
             },
             error: (error) => {
               console.error(`Error adding route from ${departureCity} to ${arrivalCity}:`, error);
@@ -984,6 +993,7 @@ export class BackofficePageComponent implements OnInit {
               console.log(`Reverse route added: ${arrivalCity} to ${departureCity}`);
               this.routes.push(route);
               createdRoutes.add(reverseRouteKey);
+              existingRouteKeys.add(reverseRouteKey);
             },
             error: (error) => {
               console.error(`Error adding reverse route from ${arrivalCity} to ${departureCity}:`, error);
@@ -995,6 +1005,7 @@ export class BackofficePageComponent implements OnInit {
 
     // After all routes are created, reload the routes
     setTimeout(() => this.loadRoutes(), 5000); // Wait for 5 seconds before reloading
+    this.loading = false;
   }
 
 
@@ -1207,14 +1218,30 @@ export class BackofficePageComponent implements OnInit {
     );
   }
 
+  sponsorLoding : boolean = false;
+
   addSponsor(): void {
+    this.sponsorLoding=true;
+    if(!this.newSponsor.name || !this.newSponsor.website || !this.newSponsor.imageUrl){
+      this.sponsorLoding = false;
+      this.showMessage("Please fill all sponsor fields.",'error');
+      return ;
+    }
     this.sponsorService.createSponsor(this.newSponsor).subscribe(
       sponsor => {
         this.sponsors.push(sponsor);
         this.newSponsor = { name: '', imageUrl: '', website: '' };
+        this.sponsorLoding = false;
+
+        this.showMessage("Sponsor added successfully.",'success');
+
       },
-      error => console.error('Error adding sponsor:', error)
-    );
+      error => {
+        this.showMessage("Error adding sponsor.",'error');
+        this.sponsorLoding = false;
+      }
+
+  );
   }
 
   updateSponsor(sponsor: Sponsor): void {

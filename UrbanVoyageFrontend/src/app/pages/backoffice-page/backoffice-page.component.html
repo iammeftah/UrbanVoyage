@@ -1,4 +1,4 @@
-<div class="flex flex-col min-h-screen">
+<div class="flex flex-col h-screen">
   <app-message [message]="message" [type]="messageType" (close)="closeMessage()"></app-message>
 
 
@@ -30,20 +30,21 @@
     </div>
 
     <!-- Main Content -->
-    <div class="flex-grow p-4 md:p-8" data-aos="fade-left">
-      <div *ngIf="activeTab === 'routes'" class="flex flex-col min-h-full">
+    <div class="w-full p-4 md:p-8" data-aos="fade-left">
+      <div *ngIf="activeTab === 'routes'" class="flex flex-col h-full">
+        <h2 class="text-xl font-bold mb-4">Manage Routes</h2>
+
         <div class="flex justify-between items-center gap-4 w-full mb-2">
-          <h2 class="text-xl font-bold mb-4">Manage Routes</h2>
-          <div class="flex flex-row items-center justify-center gap-4">
+          <div class="flex flex-row items-center justify-center gap-4 w-1/2">
             <input [(ngModel)]="searchDepartureCity" (input)="onSearch()" placeholder="Search Departure City" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#333333] px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
             <input [(ngModel)]="searchArrivalCity" (input)="onSearch()" placeholder="Search Arrival City" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#333333] px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
-            <button (click)="createAllRoutes()" class="bg-teal-600 hover:bg-teal-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors disabled:opacity-50 duration-300">Create all routes</button>
           </div>
+          <button (click)="createAllRoutes()" class=" w-64 h-10 bg-teal-600 hover:bg-teal-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors disabled:opacity-50 duration-300">Create all routes</button>
+
         </div>
 
         <div class="flex-grow overflow-auto">
           <div class="">
-
 
             <div class="overflow-x-auto">
               <table class="w-full caption-bottom text-sm rounded-lg overflow-hidden">
@@ -83,57 +84,52 @@
         </div>
       </div>
 
-      <div *ngIf="activeTab === 'schedules'">
+      <div *ngIf="activeTab === 'schedules'" class="flex flex-col h-full">
         <h2 class="text-xl font-bold mb-4">Manage Schedules</h2>
 
-        <!--
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
-          <select [(ngModel)]="newSchedule.departureCity" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#333333] px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
-            <option value="">Select Departure City</option>
-            <option *ngFor="let location of locations" [value]="location.name">{{ location.name }}</option>
-          </select>
-
-          <select [(ngModel)]="newSchedule.arrivalCity" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#333333] px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
-            <option value="">Select Arrival City</option>
-            <option *ngFor="let location of locations" [value]="location.name">{{ location.name }}</option>
-          </select>
-
-          <input type="datetime-local" [(ngModel)]="newSchedule.departureTime" name="departureTime" required
-                 class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#333333] px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
-
-          <input type="number" [(ngModel)]="newSchedule.availableSeats" name="availableSeats" placeholder="Available Seats" max="60" min="0" required
-                 class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#333333] px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText">
-
-          <button (click)="addSchedule()" class="bg-teal-600 hover:bg-teal-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">Add Schedule</button>
-        </div>
-        -->
-
-        <div class="overflow-x-auto">
-          <table class="w-full caption-bottom text-sm rounded-lg overflow-hidden">
-            <thead class=" bg-gray-50 dark:bg-[#222222]">
-            <tr class="w-full  transition-colors hover:bg-[#CCCCCC] dark:hover:bg-[#444444]">
-              <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Schedule ID</th>
-              <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Route</th>
-              <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Departure Time</th>
-              <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Arrival Time</th>
-              <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Available Seats</th>
-              <th class="w-1/4 h-10 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Actions</th>
+        <div class="flex-grow overflow-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 dark:bg-[#222222] sticky top-0">
+            <tr class="w-full transition-colors hover:bg-[#CCCCCC] dark:hover:bg-[#444444]">
+              <th class="px-4 py-2 text-left">Schedule ID</th>
+              <th class="px-4 py-2 text-left">Route</th>
+              <th class="px-4 py-2 text-left">Departure Time</th>
+              <th class="px-4 py-2 text-left">Arrival Time</th>
+              <th class="px-4 py-2 text-left">Available Seats</th>
+              <th class="px-4 py-2 text-left">Actions</th>
             </tr>
             </thead>
-            <tbody class="[&_tr:last-child]:border-0">
+            <tbody>
             <tr *ngFor="let schedule of paginatedSchedules" class="transition-colors hover:bg-[#CCCCCC] dark:hover:bg-[#444444]">
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ schedule.scheduleID}}</td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 flex items-center justify-center gap-8">{{ schedule.route.departureCity }} <i class='bx bx-sort rotate-90 text-xl text-teal-500' ></i> {{ schedule.route.arrivalCity }}</td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ schedule.departureTime | date:'medium' }}</td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ schedule.arrivalTime | date:'medium' }}</td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ schedule.availableSeats}}</td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 w-full flex flex-row gap-2 items-center justify-center">
-                <button (click)="openScheduleEditForm(schedule)" class="bg-teal-600 hover:bg-teal-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">Edit</button>
-                <button (click)="deleteSchedule(schedule.scheduleID)" class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-teal-500 dark:hover:text-teal-500  disabled:opacity-50 duration-300">Delete</button>
+              <td class="p-4 align-middle">{{ schedule.scheduleID }}</td>
+              <td class="p-4 align-middle">
+                <div class="flex items-center justify-center gap-8">
+                  {{ schedule.route.departureCity }}
+                  <i class='bx bx-sort rotate-90 text-xl text-teal-500'></i>
+                  {{ schedule.route.arrivalCity }}
+                </div>
+              </td>
+              <td class="p-4 align-middle">{{ schedule.departureTime | date:'medium' }}</td>
+              <td class="p-4 align-middle">{{ schedule.arrivalTime | date:'medium' }}</td>
+              <td class="p-4 align-middle">{{ schedule.availableSeats }}</td>
+              <td class="p-4 align-middle">
+                <div class="flex flex-row gap-2 items-center justify-center">
+                  <button (click)="openScheduleEditForm(schedule)"
+                          class="bg-teal-600 hover:bg-teal-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors disabled:opacity-50 duration-300">
+                    Edit
+                  </button>
+                  <button (click)="deleteSchedule(schedule.scheduleID)"
+                          class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-teal-500 dark:hover:text-teal-500 disabled:opacity-50 duration-300">
+                    Delete
+                  </button>
+                </div>
               </td>
             </tr>
             </tbody>
           </table>
+        </div>
+
+        <div class="mt-4">
           <app-custom-paginator
             [currentPage]="currentPage"
             [totalItems]="schedules.length"
@@ -144,13 +140,12 @@
       </div>
 
       <!-- Reservations Tab -->
-      <div *ngIf="activeTab === 'reservations'">
+      <div *ngIf="activeTab === 'reservations'" class="flex flex-col h-full">
         <h2 class="text-xl font-bold mb-4">Manage Reservations</h2>
 
-        <!-- Reservations Table -->
-        <div class="overflow-x-auto">
-          <table class="w-full caption-bottom text-sm rounded-lg overflow-hidden">
-            <thead class="bg-gray-50 dark:bg-[#222222]">
+        <div class="flex-grow overflow-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 dark:bg-[#222222] sticky top-0">
             <tr class="w-full h-10 transition-colors hover:bg-[#CCCCCC] dark:hover:bg-[#444444]">
               <th class="px-4 py-2">Reservation ID</th>
               <th class="px-4 py-2">User ID</th>
@@ -163,46 +158,46 @@
             </thead>
             <tbody>
             <tr *ngFor="let reservation of paginatedReservations" class="transition-colors hover:bg-[#CCCCCC] dark:hover:bg-[#444444]">
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ reservation.reservationID }}</td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ reservation.user.userID }}</td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ reservation.user.username }}</td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 flex items-center justify-center gap-8">{{ reservation.route.departureCity }} <i class='bx bx-sort rotate-90 text-xl text-teal-500' ></i> {{ reservation.route.arrivalCity }}</td>
-              <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ reservation.reservationDate | date:'mediumDate' }}</td>
-              <td class="align-middle flex justify-center items-center [&:has([role=checkbox])]:pr-0">
-                <span class="inline-flex items-center justify-center rounded-md px-2 py-1 font-medium text-white shadow transition-colors  disabled:opacity-50 duration-300" [ngClass]="{
-                  'bg-green-600 dark:bg-green-700 !text-white': reservation.status === 'CONFIRMED' || reservation.status === 'REFUNDED',
-                  'bg-yellow-600 dark:bg-yellow-700 !text-white': reservation.status === 'PENDING' || reservation.status === 'REFUND_REQUESTED',
-                  'bg-red-600 dark:bg-red-700 !text-white': reservation.status === 'CANCELLED' || reservation.status === 'REFUND_REJECTED'
-                }">
-
-                  <ng-container class="mr-1" *ngIf="reservation.status === 'CONFIRMED' || reservation.status === 'REFUNDED'">
-                    <i class='bx bx-check'></i>
-                  </ng-container>
-                  <ng-container class="mr-1" *ngIf="reservation.status === 'PENDING' || reservation.status === 'REFUND_REQUESTED'">
-                    <i class='bx bx-time-five'></i>
-                  </ng-container>
-                  <ng-container class="mr-1" *ngIf="reservation.status === 'CANCELLED' || reservation.status === 'REFUND_REJECTED'">
-                    <i class='bx bx-x'></i>
-                  </ng-container>
-
-                  <span class="ml-1">
-                    {{ reservation.status }}
-                  </span>
-                </span>
+              <td class="p-4 align-middle">{{ reservation.reservationID }}</td>
+              <td class="p-4 align-middle">{{ reservation.user.userID }}</td>
+              <td class="p-4 align-middle">{{ reservation.user.username }}</td>
+              <td class="p-4 align-middle">
+                <div class="flex items-center justify-center gap-8">
+                  {{ reservation.route.departureCity }}
+                  <i class='bx bx-sort rotate-90 text-xl text-teal-500'></i>
+                  {{ reservation.route.arrivalCity }}
+                </div>
               </td>
-
-
-              <td class=" px-4 py-2">
+              <td class="p-4 align-middle">{{ reservation.reservationDate | date:'mediumDate' }}</td>
+              <td class="p-4 align-middle">
+                <div class="flex justify-center items-center">
+              <span class="inline-flex items-center justify-center rounded-md px-2 py-1 font-medium text-white shadow transition-colors disabled:opacity-50 duration-300"
+                    [ngClass]="{
+                      'bg-green-600 dark:bg-green-700': reservation.status === 'CONFIRMED' || reservation.status === 'REFUNDED',
+                      'bg-yellow-600 dark:bg-yellow-700': reservation.status === 'PENDING' || reservation.status === 'REFUND_REQUESTED',
+                      'bg-red-600 dark:bg-red-700': reservation.status === 'CANCELLED' || reservation.status === 'REFUND_REJECTED'
+                    }">
+                <i class='bx mr-1'
+                   [ngClass]="{
+                     'bx-check': reservation.status === 'CONFIRMED' || reservation.status === 'REFUNDED',
+                     'bx-time-five': reservation.status === 'PENDING' || reservation.status === 'REFUND_REQUESTED',
+                     'bx-x': reservation.status === 'CANCELLED' || reservation.status === 'REFUND_REJECTED'
+                   }"></i>
+                {{ reservation.status }}
+              </span>
+                </div>
+              </td>
+              <td class="p-4 align-middle">
                 <div class="flex flex-row gap-2 items-center justify-center">
                   <ng-container [ngSwitch]="reservation.status">
                     <button *ngSwitchCase="'PENDING'"
                             (click)="updateReservationStatus(reservation, 'CONFIRMED')"
-                            class="bg-green-600 hover:bg-green-700 inline-flex items-center justify-center rounded-md px-4 py-1 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">
+                            class="bg-green-600 hover:bg-green-700 inline-flex items-center justify-center rounded-md px-4 py-1 text-sm font-medium text-white dark:text-darkText shadow transition-colors disabled:opacity-50 duration-300">
                       Confirm
                     </button>
                     <button *ngSwitchCase="'CONFIRMED'"
                             (click)="updateReservationStatus(reservation, 'CANCELLED')"
-                            class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-1 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-red-500 dark:hover:text-red-600  disabled:opacity-50 duration-300">
+                            class="inline-flex items-center justify-center rounded-md bg-transparent px-4 py-1 text-sm font-medium text-lightText dark:text-darkText shadow-sm transition-colors hover:text-red-500 dark:hover:text-red-600 disabled:opacity-50 duration-300">
                       Cancel
                     </button>
                     <span class="text-gray-500" *ngSwitchCase="'CANCELLED'">Cancelled</span>
@@ -212,6 +207,9 @@
             </tr>
             </tbody>
           </table>
+        </div>
+
+        <div class="mt-4">
           <app-custom-paginator
             [currentPage]="currentPage"
             [totalItems]="reservations.length"
@@ -228,7 +226,7 @@
 
         <div class="flex-grow overflow-auto">
           <div class="">
-            <div class="overflow-x-auto" data-aos="fade-up">
+            <div class="overflow-x-auto">
               <table class="w-full caption-bottom text-sm rounded-lg overflow-hidden">
                 <thead class="bg-gray-50 dark:bg-[#222222]">
                 <tr class="w-full h-10 transition-colors hover:bg-[#CCCCCC] dark:hover:bg-[#444444]">
@@ -424,7 +422,8 @@
                         <label for="website" class="text-sm font-medium">Website</label>
                         <input [(ngModel)]="newSponsor.website" name="website" id="website" class="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#333333] px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText" placeholder="Enter website URL" required>
                       </div>
-                      <button type="submit" class="w-full px-4 py-2 text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50">
+                      <button [disabled]="sponsorLoding"  type="submit" class="flex items-center justify-center gap-2 w-full px-4 py-2 text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50">
+                        <div *ngIf="sponsorLoding" class="animate-spin rounded-full border-4 border-teal-500 border-t-transparent h-4 w-4"></div>
                         Add Sponsor
                       </button>
                     </form>
