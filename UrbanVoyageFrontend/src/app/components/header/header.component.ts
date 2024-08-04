@@ -1,14 +1,14 @@
-import {Component, ElementRef, HostListener, Input, OnInit, Renderer2} from '@angular/core';
-import {AuthService} from "../../services/auth.service";
-import {Router} from "@angular/router";
-import {filter, Subscription, switchMap} from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { AuthService } from "../../services/auth.service";
+import { Router, NavigationEnd, Event } from "@angular/router";
+import { filter, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit{
+export class HeaderComponent implements OnInit, OnDestroy {
   isSidebarOpen: boolean = false;
   isLoggedIn: boolean = false;
   message: string | null = null;
@@ -21,12 +21,20 @@ export class HeaderComponent implements OnInit{
   private clientSubscription: Subscription | undefined;
   private adminSubscription: Subscription | undefined;
 
+  currentRoute: string = '';
 
   constructor(private authService: AuthService, private router: Router) {
     this.isLoggedIn = this.authService.isLoggedIn();
+
+    // Subscribe to router events to track the current route
+    this.subscriptions.add(
+      this.router.events.pipe(
+        filter((event: Event): event is NavigationEnd => event instanceof NavigationEnd)
+      ).subscribe((event: NavigationEnd) => {
+        this.currentRoute = event.urlAfterRedirects;
+      })
+    );
   }
-
-
 
   ngOnInit() {
     this.subscriptions.add(
@@ -42,14 +50,9 @@ export class HeaderComponent implements OnInit{
     );
   }
 
-
-
-
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
-
-
 
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
@@ -62,24 +65,22 @@ export class HeaderComponent implements OnInit{
   logout(): void {
     this.authService.logout();
     this.isLoggedIn = false;
-    this.message = "Log out successfuly"
+    this.message = "Log out successfully"
     this.messageType = 'success';
 
     this.router.navigate(['/login']);
   }
 
-  closeMessage(){
-    this.message = null ;
+  closeMessage() {
+    this.message = null;
   }
 
-  closelogout(){
+  closelogout() {
     this.closeSidebar();
     this.logout();
   }
 
-
-
-
-
+  isActive(route: string): boolean {
+    return this.currentRoute === route;
+  }
 }
-

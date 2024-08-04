@@ -23,6 +23,7 @@
         </div>
       </div>
 
+
       <!-- Edit Image Icon for Admins -->
       <button *ngIf="isAdmin" (click)="editImage()" class="absolute bottom-4 right-4 bg-white bg-opacity-70 hover:bg-opacity-100 text-[#222222] rounded-full p-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-teal-600">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -254,6 +255,10 @@
       </div>
     </section>
 
+    <div class="relative w-full h-px overflow-hidden bg-gray-200 dark:bg-gray-800">
+      <div class="absolute inset-0 w-1/4 bg-gradient-to-r from-transparent via-teal-500 to-transparent dark:via-teal-400 animate-slide-lr"></div>
+    </div>
+
     <section class="w-full py-16 md:py-24 lg:py-32 bg-gray-100 dark:bg-[#222222]">
       <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col items-center justify-center space-y-4 text-center" data-aos="fade-up">
@@ -307,6 +312,7 @@
         </div>
       </div>
     </section>
+
 
     <section class="w-full">
       <app-sponsors></app-sponsors>

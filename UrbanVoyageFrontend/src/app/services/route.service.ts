@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import {Observable, Subject, throwError} from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Route } from "../models/route.model";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import { Route } from "../models/route.model";
 export class RouteService {
   private apiUrl = 'http://localhost:8080/api/routes';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient , private router: Router) { }
 
   getRoutes(page: number, size: number): Observable<any> {
     return this.http.get(`${this.apiUrl}?page=${page}&size=${size}`).pipe(
@@ -35,8 +36,9 @@ export class RouteService {
   }
 
 
+  private searchTrigger = new Subject<void>();
 
-
+  searchTrigger$ = this.searchTrigger.asObservable();
 
   getRouteById(id: number): Observable<Route> {
     return this.http.get<Route>(`${this.apiUrl}/${id}`).pipe(

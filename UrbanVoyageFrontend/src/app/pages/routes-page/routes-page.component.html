@@ -62,42 +62,42 @@
                 </div>
               </div>
             </div>
-          <!--
-            <div class="flex flex-row gap-4 w-full">
-              <div class="w-full mb-4">
-                <label appAutoTranslate class="text-sm font-medium mb-1 block" for="departureCity">
-                  Departure
-                </label>
-                <div class="relative">
-                  <div (click)="toggleDepartureDropdown()" class="pr-2 flex h-10 w-full rounded-md border border-[#777777] dark:border-[#444444] bg-white dark:bg-[#333333] px-3 py-2 text-sm placeholder:text-[#666666] focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText cursor-pointer">
-                    {{ departureCity || 'Select Departure City' }}
+            <!--
+              <div class="flex flex-row gap-4 w-full">
+                <div class="w-full mb-4">
+                  <label appAutoTranslate class="text-sm font-medium mb-1 block" for="departureCity">
+                    Departure
+                  </label>
+                  <div class="relative">
+                    <div (click)="toggleDepartureDropdown()" class="pr-2 flex h-10 w-full rounded-md border border-[#777777] dark:border-[#444444] bg-white dark:bg-[#333333] px-3 py-2 text-sm placeholder:text-[#666666] focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText cursor-pointer">
+                      {{ departureCity || 'Select Departure City' }}
+                    </div>
+                    <div *ngIf="isDepartureOpen" class="absolute z-10 w-full mt-1 bg-white dark:bg-[#333333] border border-[#777777] dark:border-[#444444] rounded-md shadow-lg">
+                      <div (click)="selectDepartureCity('')" class="px-3 py-2 hover:bg-[#999999] dark:hover:bg-[#444444] cursor-pointer">Select Departure City</div>
+                      <div *ngFor="let location of locations" (click)="selectDepartureCity(location.name)" class="px-3 py-2 hover:bg-[#999999] dark:hover:bg-[#444444] cursor-pointer">
+                        {{ location.name }}
+                      </div>
+                    </div>
                   </div>
-                  <div *ngIf="isDepartureOpen" class="absolute z-10 w-full mt-1 bg-white dark:bg-[#333333] border border-[#777777] dark:border-[#444444] rounded-md shadow-lg">
-                    <div (click)="selectDepartureCity('')" class="px-3 py-2 hover:bg-[#999999] dark:hover:bg-[#444444] cursor-pointer">Select Departure City</div>
-                    <div *ngFor="let location of locations" (click)="selectDepartureCity(location.name)" class="px-3 py-2 hover:bg-[#999999] dark:hover:bg-[#444444] cursor-pointer">
-                      {{ location.name }}
+                </div>
+                <div class="w-full">
+                  <label appAutoTranslate class="text-sm font-medium mb-1 block" for="arrivalCity">
+                    Destination
+                  </label>
+                  <div class="relative">
+                    <div (click)="toggleArrivalDropdown()" class="pr-2 flex h-10 w-full rounded-md border border-[#777777] dark:border-[#444444] bg-white dark:bg-[#333333] px-3 py-2 text-sm placeholder:text-[#666666] focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText cursor-pointer">
+                      {{ arrivalCity || 'Select Arrival City' }}
+                    </div>
+                    <div *ngIf="isArrivalOpen" class="absolute z-10 w-full mt-1 bg-white dark:bg-[#333333] border border-[#777777] dark:border-[#444444] rounded-md shadow-lg">
+                      <div (click)="selectArrivalCity('')" class="px-3 py-2 hover:bg-[#999999] dark:hover:bg-[#444444] cursor-pointer">Select Arrival City</div>
+                      <div *ngFor="let location of locations" (click)="selectArrivalCity(location.name)" class="px-3 py-2 hover:bg-[#999999] dark:hover:bg-[#444444] cursor-pointer">
+                        {{ location.name }}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="w-full">
-                <label appAutoTranslate class="text-sm font-medium mb-1 block" for="arrivalCity">
-                  Destination
-                </label>
-                <div class="relative">
-                  <div (click)="toggleArrivalDropdown()" class="pr-2 flex h-10 w-full rounded-md border border-[#777777] dark:border-[#444444] bg-white dark:bg-[#333333] px-3 py-2 text-sm placeholder:text-[#666666] focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-darkText cursor-pointer">
-                    {{ arrivalCity || 'Select Arrival City' }}
-                  </div>
-                  <div *ngIf="isArrivalOpen" class="absolute z-10 w-full mt-1 bg-white dark:bg-[#333333] border border-[#777777] dark:border-[#444444] rounded-md shadow-lg">
-                    <div (click)="selectArrivalCity('')" class="px-3 py-2 hover:bg-[#999999] dark:hover:bg-[#444444] cursor-pointer">Select Arrival City</div>
-                    <div *ngFor="let location of locations" (click)="selectArrivalCity(location.name)" class="px-3 py-2 hover:bg-[#999999] dark:hover:bg-[#444444] cursor-pointer">
-                      {{ location.name }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          -->
+            -->
             <div class="w-full mt-4 flex flex-col gap-4">
               <div class="flex justify-between items-center">
                 <div>

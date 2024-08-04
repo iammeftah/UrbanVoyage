@@ -25,7 +25,7 @@ interface AgencyLocation {
   selector: 'app-routes-page',
   templateUrl: './routes-page.component.html',
   styleUrls: ['./routes-page.component.css'],
-  })
+})
 
 
 
@@ -452,9 +452,3 @@ export class RoutesPageComponent implements OnInit {
     this.closeMapModal();
   }
 }
-
-
-
-
-
-

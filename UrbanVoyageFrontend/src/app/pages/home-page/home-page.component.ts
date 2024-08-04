@@ -6,6 +6,9 @@ import { DestinationService } from "../../services/destination.service";
 import { AuthService } from "../../services/auth.service";
 import { ImageService } from "../../services/image.service";
 import { Schedule } from "../../models/schedule.model";
+import {RouteService} from "../../services/route.service";
+import {locations} from "../../data/locations.data";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-home-page',
@@ -30,7 +33,9 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
     private scheduleService: ScheduleService,
     private destinationService: DestinationService,
     private authService: AuthService,
-    private imageService: ImageService
+    private imageService: ImageService,
+    private routeService: RouteService,
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -223,4 +228,37 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
       this.compactHeader.nativeElement.style.display = 'none';
     }, 300);
   }
+
+
+  departureCity: string = '';
+  arrivalCity: string = '';
+
+  isOpen = false;
+  selectedCity = '';
+
+  isDepartureOpen = false;
+  isArrivalOpen = false;
+
+  toggleDepartureDropdown() {
+    this.isDepartureOpen = !this.isDepartureOpen;
+    if (this.isDepartureOpen) this.isArrivalOpen = false;
+  }
+
+  toggleArrivalDropdown() {
+    this.isArrivalOpen = !this.isArrivalOpen;
+    if (this.isArrivalOpen) this.isDepartureOpen = false;
+  }
+
+  selectDepartureCity(city: string) {
+    this.departureCity = city;
+    this.isDepartureOpen = false;
+  }
+
+  selectArrivalCity(city: string) {
+    this.arrivalCity = city;
+    this.isArrivalOpen = false;
+  }
+
+
+  protected readonly locations = locations;
 }
