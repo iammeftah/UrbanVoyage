@@ -97,6 +97,8 @@ export class ContactPageComponent implements OnInit  {
     });
   }
 
+
+
   map: any; // Declare map as any type
 
 
@@ -105,13 +107,34 @@ export class ContactPageComponent implements OnInit  {
 
   initMap() {
     // Define a custom marker icon with teal color
-    const tealIcon = L.icon({
-      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-      iconSize: [16, 27], // Adjusted icon size to 2/3 of the original
-      iconAnchor: [8, 27], // Adjusted icon anchor to 2/3 of the original
-      popupAnchor: [0, -22], // Adjusted popup anchor to 2/3 of the original
-      shadowSize: [27, 27] // Adjusted shadow size to 2/3 of the original
+    const tealIcon = L.divIcon({
+      className: 'city-marker',
+      html: `
+          <style>
+            .marker {
+              transition: all 0.3s ease;
+            }
+
+            .marker:hover {
+              transform: scale(1.1);
+            }
+
+            .marker-inner {
+              fill: #14b8a6;
+              transition: all 0.3s ease;
+            }
+
+            .marker .marker-inner:hover {
+              fill: #0d9488;
+            }
+          </style>
+
+          <svg class="marker" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+            <path class="marker-inner" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+          </svg>
+        `,
+      iconSize: [24, 24],
+      iconAnchor: [12, 24]
     });
 
 
@@ -122,8 +145,7 @@ export class ContactPageComponent implements OnInit  {
       maxZoom: 18
     });
 
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      attribution: '© Esri World Imagery contributors'
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     }).addTo(this.map);
 
     this.locations.forEach(location => {

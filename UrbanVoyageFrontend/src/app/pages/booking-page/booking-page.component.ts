@@ -325,7 +325,7 @@ export class BookingPageComponent implements OnInit {
       (createdPassenger) => {
         console.log('Passenger created:', createdPassenger);
 
-        this.showMessage('Passenger created: ' + this.passenger.firstName + ' ' + this.passenger.lastName , 'success');
+        this.showMessage('New passenger: ' + this.passenger.firstName + ' ' + this.passenger.lastName , 'success');
 
         this.sharedDataService.setSelectedPassenger(createdPassenger);
         this.proceedToPayment();

@@ -9,12 +9,21 @@ import {TitleService} from "./services/title.service";
 })
 export class AppComponent implements OnInit{
   title = 'UrbanVoyageFrontend';
-  constructor(private titleService: TitleService) {}
+  constructor(private titleService: TitleService) {
+    this.showLanding = !sessionStorage.getItem('animationShown');
+  }
 
   ngOnInit() {
     AOS.init();
     this.titleService.init();
 
+  }
+
+  showLanding: boolean;
+
+  onAnimationComplete() {
+    this.showLanding = false;
+    sessionStorage.setItem('animationShown', 'true');
   }
 
 

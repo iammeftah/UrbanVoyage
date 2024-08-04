@@ -40,6 +40,7 @@ import { LanguageSelectorComponent } from './objects/language-selector/language-
 import {ImageService} from "./services/image.service";
 import { ResetPasswordPageComponent } from './pages/reset-password-page/reset-password-page.component';
 import { MoroccoMapComponent } from './components/morocco-map/morocco-map.component';
+import { LandingAnimationComponent } from './objects/landing-animation/landing-animation.component';
 
 export function initializeApp() {
   return () => {
@@ -83,7 +84,8 @@ export function initializeApp() {
     AutoTranslateDirective,
     LanguageSelectorComponent,
     ResetPasswordPageComponent,
-    MoroccoMapComponent
+    MoroccoMapComponent,
+    LandingAnimationComponent
 
 
   ],
