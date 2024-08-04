@@ -17,3 +17,18 @@
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 }
+
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateX(-25%);
+  }
+  50% {
+    transform: translateX(25%);
+  }
+}
+
+.traveling {
+  animation: bounce 2s ease-in-out infinite;
+  display: inline-block;
+}

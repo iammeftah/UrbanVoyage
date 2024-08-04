@@ -29,17 +29,16 @@ export class MoroccoMapComponent implements OnInit, AfterViewInit {
 
   private initMap(): void {
     this.map = L.map('map', {
-      center: [31.7917, -7.0926],
-      zoom: 6,
+      center: [28.748110, -8.730076],
+      zoom: 5.8,
       minZoom: 5,
-      maxZoom: 7,
+      maxZoom: 8,
       zoomControl: false,
       zoomSnap: 0.1,
       zoomDelta: 0.5
     });
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this.map);
 
     this.addCustomControls();
@@ -58,7 +57,7 @@ export class MoroccoMapComponent implements OnInit, AfterViewInit {
       onAdd: () => {
         const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
         container.innerHTML = `
-          <button class="reset-zoom bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          <button class="reset-zoom bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V4a2 2 0 00-2-2H4zm3 3a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1z" clip-rule="evenodd" />
             </svg>
@@ -66,7 +65,7 @@ export class MoroccoMapComponent implements OnInit, AfterViewInit {
           </button>
         `;
         container.onclick = () => {
-          this.map.setView([31.7917, -7.0926], 6);
+          this.map.setView([28.748110, -8.730076], 5.8);
         };
         return container;
       }
@@ -80,8 +79,27 @@ export class MoroccoMapComponent implements OnInit, AfterViewInit {
       const cityIcon = L.divIcon({
         className: 'city-marker',
         html: `
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#14b8a6" width="24" height="24">
-            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+          <style>
+            .marker {
+              transition: all 0.3s ease;
+            }
+
+            .marker:hover {
+              transform: scale(1.1);
+            }
+
+            .marker-inner {
+              fill: #14b8a6;
+              transition: all 0.3s ease;
+            }
+
+            .marker .marker-inner:hover {
+              fill: #0d9488;
+            }
+          </style>
+
+          <svg class="marker" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+            <path class="marker-inner" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
           </svg>
         `,
         iconSize: [24, 24],

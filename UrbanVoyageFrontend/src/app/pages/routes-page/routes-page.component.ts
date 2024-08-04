@@ -119,7 +119,7 @@ export class RoutesPageComponent implements OnInit {
     this.isMapModalOpen = false;
   }
 
-
+  showTraffic :boolean = false;
 
 
   formatPrice(price: number | undefined): string {
@@ -155,6 +155,7 @@ export class RoutesPageComponent implements OnInit {
 
   searchRoutes(): void {
     this.loading = true;
+    this.showTraffic = true ;
     this.errorMessage = '';
     this.noRoutesFound = false;
     this.schedules = [];
