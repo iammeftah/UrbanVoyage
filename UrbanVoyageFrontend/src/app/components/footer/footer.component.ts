@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-footer',
@@ -6,12 +6,13 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./footer.component.css']
 })
 export class FooterComponent implements OnInit {
-
-  currentYear ?: number;
+  currentYear?: number;
 
   ngOnInit(): void {
     this.currentYear = new Date().getFullYear();
   }
 
-  protected readonly isSecureContext = isSecureContext;
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 }

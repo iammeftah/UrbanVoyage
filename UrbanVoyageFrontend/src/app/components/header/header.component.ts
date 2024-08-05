@@ -58,6 +58,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 
+
   closeSidebar() {
     this.isSidebarOpen = false;
   }
