@@ -44,13 +44,6 @@ textPath {
     scale 2s cubic-bezier(.81,-0.39,.13,1) forwards;
 }
 
-.main-text textPath {
-  animation-delay: 0s;
-}
-
-.sub-text textPath {
-  animation-delay: 0.5s; /* Delay the sub-text animation slightly */
-}
 
 @keyframes draw {
   0% {
@@ -71,8 +64,8 @@ textPath {
   }
   100% {
     filter:
-      drop-shadow(0 0 2px currentColor)
-      drop-shadow(0 0 4px currentColor);
+      drop-shadow(0 0 6px currentColor)
+      drop-shadow(0 0 10px currentColor);
     opacity: 1;
   }
 }
