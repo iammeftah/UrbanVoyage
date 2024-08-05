@@ -88,4 +88,10 @@ export class RouteService {
       catchError(this.handleError)
     );
   }
+
+  getTopRoutes(limit: number = 10): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/top?limit=${limit}`).pipe(
+      catchError(this.handleError)
+    );
+  }
 }

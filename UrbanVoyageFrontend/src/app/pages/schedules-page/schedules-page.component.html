@@ -5,7 +5,7 @@
     <app-loading-spinner *ngIf="loading"></app-loading-spinner>
   </div>
 
-  <div class="flex-grow w-full mx-auto px-4 md:px-32 py-8 md:py-12 bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText flex flex-col">
+  <div class="flex-grow w-full h-full mx-auto px-4 md:px-32 py-8 md:py-12 bg-lightBackground dark:bg-darkBackground text-lightText dark:text-darkText flex flex-col">
     <div class="flex-grow">
       <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold">Travel Schedules</h1>
@@ -21,7 +21,7 @@
         />
       </div>
 
-      <div class="bg-white dark:bg-[#222222] rounded-lg shadow-md overflow-hidden">
+      <div class="bg-white flex-grow dark:bg-[#222222] rounded-lg shadow-md overflow-hidden">
         <div class="relative w-full overflow-auto">
           <table class="w-full caption-bottom text-sm">
             <thead class="[&_tr]:border-b bg-gray-50 dark:bg-[#333333]">
@@ -54,7 +54,7 @@
             </thead>
             <tbody class="[&_tr:last-child]:border-0">
             <ng-container *ngIf="filteredSchedules.length > 0; else noRoutes">
-              <tr *ngFor="let schedule of filteredSchedules" class="border-b transition-colors hover:bg-[#EEEEEE] dark:hover:bg-[#444444]">
+              <tr *ngFor="let schedule of paginatedSchedules" class="border-b transition-colors hover:bg-[#EEEEEE] dark:hover:bg-[#444444]">
                 <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
                   <div class="font-medium">{{ schedule.departureTime }}</div>
                   <div class="text-muted-foreground text-sm">{{ schedule.route.departureCity }}</div>
@@ -89,6 +89,13 @@
           </table>
         </div>
       </div>
+      <!-- Add the custom paginator -->
+      <app-custom-paginator
+        [currentPage]="currentPage"
+        [totalItems]="filteredSchedules.length"
+        [itemsPerPage]="itemsPerPage"
+        (pageChange)="onPageChange($event)"
+      ></app-custom-paginator>
     </div>
   </div>
 

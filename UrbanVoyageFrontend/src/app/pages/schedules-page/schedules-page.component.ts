@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Schedule } from 'src/app/models/schedule.model';
 import { ScheduleService } from 'src/app/services/schedule.service';
+import {RouteService} from "../../services/route.service";
 
 
 @Component({
@@ -11,49 +12,68 @@ import { ScheduleService } from 'src/app/services/schedule.service';
 export class SchedulesPageComponent implements OnInit {
   schedules: Schedule[] = [];
   filteredSchedules: Schedule[] = [];
+  paginatedSchedules: Schedule[] = [];
   sortColumn: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
   filterText: string = '';
   loading: boolean = false;
 
+  // Pagination properties
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+
 
   constructor(private scheduleService: ScheduleService) {}
 
   ngOnInit() {
-    this.loadSchedules();
+    this.loadTopSchedules();
   }
 
   loadSchedules() {
-    this.loading=true;
+    this.loading = true;
     this.scheduleService.getSchedules().subscribe({
       next: (data) => {
-        this.loading=false;
+        this.loading = false;
         this.schedules = data;
         this.filteredSchedules = [...this.schedules];
         this.sortSchedules();
+        this.updatePaginatedSchedules();
       },
       error: (error) => {
-        this.loading=false;
+        this.loading = false;
         console.error('Error fetching schedules:', error);
       }
     });
   }
 
   loadTopSchedules() {
-    this.loading=true;
+    this.loading = true;
     this.scheduleService.getTopSchedules().subscribe({
       next: (data) => {
-        this.loading=false;
-        this.schedules = data;
+        this.loading = false;
+        this.schedules = this.removeDuplicateSchedules(data);
         this.filteredSchedules = [...this.schedules];
         this.sortSchedules();
+        this.updatePaginatedSchedules();
       },
       error: (error) => {
-        this.loading=false;
+        this.loading = false;
         console.error('Error fetching schedules:', error);
       }
     });
   }
+
+  removeDuplicateSchedules(schedules: Schedule[]): Schedule[] {
+    const uniqueRoutes = new Map<string, Schedule>();
+    schedules.forEach(schedule => {
+      const routeKey = `${schedule.route.departureCity}-${schedule.route.arrivalCity}`;
+      if (!uniqueRoutes.has(routeKey) || schedule.route.boughtTicket > uniqueRoutes.get(routeKey)!.route.boughtTicket) {
+        uniqueRoutes.set(routeKey, schedule);
+      }
+    });
+    return Array.from(uniqueRoutes.values()).sort((a, b) => b.route.boughtTicket - a.route.boughtTicket);
+  }
+
 
   toggleSort(column: string) {
     if (this.sortColumn === column) {
@@ -79,12 +99,25 @@ export class SchedulesPageComponent implements OnInit {
     return path.split('.').reduce((o, key) => (o && o[key] !== undefined) ? o[key] : null, obj);
   }
 
+  updatePaginatedSchedules() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedSchedules = this.filteredSchedules.slice(startIndex, endIndex);
+  }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.updatePaginatedSchedules();
+  }
+
   applyFilter() {
     this.filteredSchedules = this.schedules.filter(schedule =>
       schedule.route.departureCity.toLowerCase().includes(this.filterText.toLowerCase()) ||
       schedule.route.arrivalCity.toLowerCase().includes(this.filterText.toLowerCase())
     );
     this.sortSchedules();
+    this.currentPage = 1; // Reset to first page when filtering
+    this.updatePaginatedSchedules();
   }
 
   getSortIcon(column: string): string {
@@ -101,6 +134,8 @@ export class SchedulesPageComponent implements OnInit {
     const [hours, minutes] = duration.split(':');
     return `${hours}h ${minutes}min`;
   }
+
+
 
 
 }
