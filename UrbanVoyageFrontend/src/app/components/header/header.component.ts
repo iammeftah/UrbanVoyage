@@ -84,4 +84,5 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isActive(route: string): boolean {
     return this.currentRoute === route;
   }
+
 }

@@ -84,8 +84,11 @@
 
   <nav
     id="mobile-menu"
-    class="fixed opacity-100 md:opacity-0 top-0 right-0 bottom-0 w-full bg-white dark:bg-darkBackground text-lightText dark:text-darkText z-50 transform transition-transform duration-300 ease-in-out"
-    [ngClass]="{'translate-x-0': isSidebarOpen, 'translate-x-full': !isSidebarOpen}"
+    class="fixed top-0 right-0 bottom-0 w-full bg-white dark:bg-darkBackground text-lightText dark:text-darkText z-50 transform transition-transform duration-300 ease-in-out translate-x-full "
+    [ngClass]="{
+      'translate-x-0': isSidebarOpen,
+      'translate-x-full': !isSidebarOpen
+    }"
   >
     <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
       <span class="text-lg text-teal-500 font-semibold">Menu</span>
