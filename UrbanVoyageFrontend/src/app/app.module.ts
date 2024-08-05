@@ -42,6 +42,7 @@ import { ResetPasswordPageComponent } from './pages/reset-password-page/reset-pa
 import { MoroccoMapComponent } from './components/morocco-map/morocco-map.component';
 import { LandingAnimationComponent } from './objects/landing-animation/landing-animation.component';
 import { UrbanVoyage3DComponent } from './objects/urban-voyage3-d/urban-voyage3-d.component';
+import { MoroccoSVGComponent } from './objects/morocco-svg/morocco-svg.component';
 
 export function initializeApp() {
   return () => {
@@ -87,7 +88,8 @@ export function initializeApp() {
     ResetPasswordPageComponent,
     MoroccoMapComponent,
     LandingAnimationComponent,
-    UrbanVoyage3DComponent
+    UrbanVoyage3DComponent,
+    MoroccoSVGComponent
 
 
   ],

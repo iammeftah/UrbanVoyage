@@ -15,6 +15,6 @@ export class LandingAnimationComponent implements OnInit {
   startAnimation() {
     setTimeout(() => {
       this.animationComplete.emit();
-    }, 4000);
+    }, 5000); // Animation duration set to 5 seconds
   }
 }

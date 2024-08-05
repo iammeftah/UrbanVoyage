@@ -20,6 +20,8 @@ import {ClientDashboardComponent} from "./pages/client-dashboard/client-dashboar
 import {ClientGuard} from "./guards/client.guard";
 import {OAuthRedirectComponent} from "./components/oauth-redirect/oauth-redirect/oauth-redirect.component";
 import {ResetPasswordPageComponent} from "./pages/reset-password-page/reset-password-page.component";
+import {LandingAnimationComponent} from "./objects/landing-animation/landing-animation.component";
+import {MoroccoSVGComponent} from "./objects/morocco-svg/morocco-svg.component";
 
 const routes: Routes = [
   { path: '', component: HomePageComponent, title: 'Home' },
@@ -28,7 +30,7 @@ const routes: Routes = [
   { path: 'booking', component: BookingPageComponent, title: 'Booking' },
   { path: 'schedules', component: SchedulesPageComponent, title: 'Schedules' },
   { path: 'services', component: OurServicePageComponent, title: 'Our Services' },
-  { path: 'contact', component: ContactPageComponent, title: 'Contact Us' },
+  { path: 'contact', component: ContactPageComponent, title: 'About Us' },
   { path: 'login', component: LoginPageComponent, title: 'Login' },
   { path: 'register', component: RegisterPageComponent, title: 'Register' },
   { path: 'auth', component: AuthPageComponent, title: 'Authentication' },
@@ -40,6 +42,8 @@ const routes: Routes = [
   { path: 'client-space', component: ClientDashboardComponent, canActivate: [ClientGuard], title: 'Client Dashboard' },
   { path: 'oauth2/redirect', component: OAuthRedirectComponent, title: 'OAuth Redirect' },
   { path: 'reset-password', component: ResetPasswordPageComponent, title: 'Reset Password' },
+
+
   // ... other routes ...
 ];
 
