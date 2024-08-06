@@ -8,11 +8,12 @@
 }
 
 .animate-marquee {
-  animation: marquee 15s cubic-bezier(0,.58,1,.37) infinite both;
+  animation: marquee 15s linear infinite both;
 }
 
 .animate-marquee:hover {
   animation-play-state: paused;
 }
+
 
 

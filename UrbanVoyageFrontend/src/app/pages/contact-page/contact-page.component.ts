@@ -5,6 +5,7 @@ import { locations } from 'src/app/data/locations.data';
 import {AgencyLocation} from "../../models/agency-location.model";
 import {Contact} from "../../models/contact.model";
 import {ContactService} from "../../services/contact.service";
+import {FaqService} from "../../services/faq.service";
 
 Chart.register(...registerables);
 
@@ -38,7 +39,8 @@ export class ContactPageComponent implements OnInit  {
   closeMessage(): void {
     this.message = null;
   }
-
+  faqs: FAQ[] = [];
+  /*
   faqs: FAQ[] = [
     {
       question: 'What is the cancellation policy?',
@@ -55,7 +57,7 @@ export class ContactPageComponent implements OnInit  {
       answer: 'Our tour prices typically include transportation, guide services, and entrance fees to attractions. Meals and personal expenses are not included unless specified.',
       isOpen: false
     }
-  ];
+  ];*/
 
 
 
@@ -67,6 +69,18 @@ export class ContactPageComponent implements OnInit  {
     this.initUserGrowthChart();
     this.initCitiesChart();
     this.initMap();
+    this.loadFAQs();
+  }
+
+  loadFAQs() {
+    this.faqService.getAllFAQs().subscribe(
+      (data) => {
+        this.faqs = data;
+      },
+      (error) => {
+        console.error('Error fetching FAQs:', error);
+      }
+    );
   }
 
   initChart() {
@@ -389,7 +403,7 @@ export class ContactPageComponent implements OnInit  {
     read: false
   };
 
-  constructor(private contactService: ContactService) { }
+  constructor(private contactService: ContactService , private faqService:FaqService) { }
 
   onSubmit() {
     if (!this.contact.fullName || !this.contact.email || !this.contact.message) {

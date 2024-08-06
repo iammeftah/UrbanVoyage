@@ -18,6 +18,8 @@ import { AuthService } from 'src/app/services/auth.service';
 import {DestinationService} from "../../services/destination.service";
 import {Sponsor} from "../../models/sponsor.model";
 import {SponsorService} from "../../services/sponsor.service";
+import {FAQ} from "../../models/faq.model";
+import {FaqService} from "../../services/faq.service";
 
 
 declare var google: any;
@@ -43,8 +45,8 @@ interface Statistics {
 })
 export class BackofficePageComponent implements OnInit {
 
-  activeTab: 'routes' | 'schedules' | 'reservations' | 'refunds' | 'messages' | 'destinations'  = 'routes';
-  tabs: ('routes' | 'schedules' | 'reservations' | 'messages' | 'refunds' | 'destinations')[] = ['routes', 'schedules', 'reservations', 'refunds' ,'destinations' , 'messages'];
+  activeTab: 'routes' | 'schedules' | 'reservations' | 'refunds' | 'messages' | 'website'  = 'routes';
+  tabs: ('routes' | 'schedules' | 'reservations' | 'messages' | 'refunds' | 'website')[] = ['routes', 'schedules', 'reservations', 'refunds' ,'website' , 'messages'];
   refundRequests: any[] = [];
   routes: Route[] = [];
   schedules: Schedule[] = [];
@@ -133,7 +135,9 @@ export class BackofficePageComponent implements OnInit {
     private refundService: RefundService,
     private contactService: ContactService,
     private destinationService: DestinationService,
-    private sponsorService: SponsorService
+    private sponsorService: SponsorService,
+    private faqService: FaqService,
+
   ) {
     this.initializeCityDistances();
     this.newSchedule = {
@@ -156,6 +160,7 @@ export class BackofficePageComponent implements OnInit {
     this.loadDestinations();
     this.loadUnreadMessageCount();
     this.loadSponsors();
+    this.loadFAQs();
 
   }
 
@@ -772,7 +777,7 @@ export class BackofficePageComponent implements OnInit {
     this.isEditingSchedule = false;
   }
 
-  setActiveTab(tab: 'routes' | 'schedules' | 'reservations'  | 'messages' | 'refunds' | 'destinations'): void {
+  setActiveTab(tab: 'routes' | 'schedules' | 'reservations'  | 'messages' | 'refunds' | 'website'): void {
     this.activeTab = tab;
     this.currentPage = 1;
     /*
@@ -793,10 +798,10 @@ export class BackofficePageComponent implements OnInit {
         return 'book';
       case 'statistics':
         return 'bar_chart';
-      case 'destinations':
-        return 'traffic';
+      case 'website':
+        return 'web';
       case 'messages':
-        return 'mail'; // Changed to 'mail' as 'envelope' isn't a standard Material icon
+        return 'mail';
       case 'refunds':
         return 'undo';
       default:
@@ -1263,6 +1268,82 @@ export class BackofficePageComponent implements OnInit {
       },
       error => console.error('Error deleting sponsor:', error)
     );
+  }
+
+
+  faqs: FAQ[] = [];
+  newFAQ: FAQ = { question: '', answer: '', isOpen: false };
+  faqLoading = false;
+
+
+
+  loadFAQs() {
+    console.log('Loading FAQs...');
+    this.faqService.getAllFAQs().subscribe({
+      next: (faqs) => {
+        this.faqs = faqs;
+        console.log('FAQs loaded:', JSON.stringify(this.faqs));
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading FAQs:', error);
+      }
+    });
+  }
+
+  addFAQ(): void {
+    console.log('Adding new FAQ:', JSON.stringify(this.newFAQ));
+    if (!this.newFAQ.question || !this.newFAQ.answer) {
+      console.error('Question or answer is empty');
+      return;
+    }
+    this.faqLoading = true;
+    this.faqService.createFAQ(this.newFAQ).subscribe({
+      next: (createdFAQ) => {
+        console.log('FAQ added successfully:', JSON.stringify(createdFAQ));
+        this.faqs.push(createdFAQ);
+        this.newFAQ = { question: '', answer: '', isOpen: false };
+        this.faqLoading = false;
+        console.log('Updated faqs array:', JSON.stringify(this.faqs));
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error adding FAQ:', error);
+        this.faqLoading = false;
+      }
+    });
+  }
+
+  editFAQ(faq: FAQ) {
+    const updatedFAQ: FAQ = { ...faq };
+    this.faqService.updateFAQ(faq.id!, updatedFAQ).subscribe({
+      next: (updatedFAQ) => {
+        const index = this.faqs.findIndex(f => f.id === updatedFAQ.id);
+        if (index !== -1) {
+          this.faqs[index] = updatedFAQ;
+        }
+        this.showMessage('FAQ updated successfully', 'success');
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error updating FAQ:', error);
+        this.showMessage('Failed to update FAQ', 'error');
+      }
+    });
+  }
+
+  deleteFAQ(id: number) {
+    this.faqService.deleteFAQ(id).subscribe({
+      next: () => {
+        this.faqs = this.faqs.filter(faq => faq.id !== id);
+        this.showMessage('FAQ deleted successfully', 'success');
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error deleting FAQ:', error);
+        this.showMessage('Failed to delete FAQ', 'error');
+      }
+    });
   }
 
 }

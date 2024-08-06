@@ -1,10 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
-interface Sponsor {
-  name: string;
-  imageUrl: string;
-  website: string;
-}
+import { Sponsor } from "../../models/sponsor.model";
+import { SponsorService } from "../../services/sponsor.service";
 
 @Component({
   selector: 'app-sponsors',
@@ -12,17 +8,33 @@ interface Sponsor {
   styleUrls: ['./sponsors.component.css']
 })
 export class SponsorsComponent implements OnInit {
-  sponsors: Sponsor[] = [
-    { name: 'CTM Maroc', imageUrl: 'https://ctm.ma/wp-content/uploads/2020/11/logo_ctm-1.png', website: 'https://ctm.ma/' },
-    { name: 'Ghazala', imageUrl: 'https://www.transghazala.ma/img/ghazala-logo-blanc.svg', website: 'https://www.transghazala.ma/' },
-    { name: 'SupraTour', imageUrl: 'https://www.comparabus.com/bundles/static/uploads/Bus/Supratours/supratours-compagnie-maroc-autocars-voyage.png', website: 'https://www.supratours.ma/' },
-    { name: 'Globus', imageUrl: 'http://www.globusvoyages.com/files/images/logo.png', website: 'http://www.globusvoyages.com/' },
-  ];
+  sponsors: Sponsor[] = [];
 
-  duplicatedSponsors: Sponsor[] = [];
+  constructor(private sponsorService: SponsorService) {}
 
   ngOnInit() {
-    // Duplicate the sponsors array to create a seamless loop
-    this.duplicatedSponsors = [...this.sponsors,...this.sponsors, ...this.sponsors];
+    this.loadSponsors();
+  }
+
+  loadSponsors() {
+    this.sponsorService.getSponsors().subscribe({
+      next: (data) => {
+        this.sponsors = this.duplicateSponsorsIfFew(data);
+      },
+      error: (error) => {
+        console.error('Error fetching sponsors:', error);
+      }
+    });
+  }
+
+  duplicateSponsorsIfFew(originalSponsors: Sponsor[]): Sponsor[] {
+    const minDesiredSponsors = 10; // You can adjust this number as needed
+    let duplicatedSponsors = [...originalSponsors];
+
+    while (duplicatedSponsors.length < minDesiredSponsors) {
+      duplicatedSponsors = [...duplicatedSponsors, ...originalSponsors];
+    }
+
+    return duplicatedSponsors;
   }
 }

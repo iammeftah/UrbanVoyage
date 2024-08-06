@@ -89,7 +89,7 @@ export function initializeApp() {
     MoroccoMapComponent,
     LandingAnimationComponent,
     UrbanVoyage3DComponent,
-    MoroccoSVGComponent
+    MoroccoSVGComponent,
 
 
   ],
