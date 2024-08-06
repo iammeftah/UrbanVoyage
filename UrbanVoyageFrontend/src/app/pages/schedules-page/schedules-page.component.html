@@ -46,10 +46,6 @@
                 Price
                 <i [class]="getSortIcon('price')"></i>
               </th>
-              <th (click)="toggleSort('travel')" class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 cursor-pointer">
-                Travels
-                <i [class]="getSortIcon('travel')"></i>
-              </th>
             </tr>
             </thead>
             <tbody class="[&_tr:last-child]:border-0">
@@ -73,9 +69,6 @@
                 <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
                   <div class="font-medium">{{schedule.schedulePrice}}MAD</div>
                 </td>
-                <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                  <div class="font-medium">{{schedule.route.boughtTicket}}</div>
-                </td>
               </tr>
             </ng-container>
             <ng-template #noRoutes>
@@ -89,14 +82,14 @@
           </table>
         </div>
       </div>
-      <!-- Add the custom paginator -->
-      <app-custom-paginator
-        [currentPage]="currentPage"
-        [totalItems]="filteredSchedules.length"
-        [itemsPerPage]="itemsPerPage"
-        (pageChange)="onPageChange($event)"
-      ></app-custom-paginator>
     </div>
+    <!-- Add the custom paginator -->
+    <app-custom-paginator
+      [currentPage]="currentPage"
+      [totalItems]="filteredSchedules.length"
+      [itemsPerPage]="itemsPerPage"
+      (pageChange)="onPageChange($event)"
+    ></app-custom-paginator>
   </div>
 
   <app-footer></app-footer>
