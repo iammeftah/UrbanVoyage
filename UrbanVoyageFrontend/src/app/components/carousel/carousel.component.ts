@@ -26,7 +26,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
       description: "Wander through the enchanting blue-washed streets of this picturesque mountain town."
     },
     {
-      image: "https://plus.unsplash.com/premium_photo-1699533135446-ffc64587ac03?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      image: "https://images.unsplash.com/photo-1559925523-10de9e23cf90?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       title: "Fes",
       description: "Discover the ancient medina, traditional tanneries, and rich cultural heritage of this imperial city."
     },

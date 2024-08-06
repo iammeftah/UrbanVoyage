@@ -112,6 +112,7 @@ export class RoutesPageComponent implements OnInit {
   }
 
   openMapModal() {
+    this.showTraffic = false;
     this.isMapModalOpen = true;
   }
 

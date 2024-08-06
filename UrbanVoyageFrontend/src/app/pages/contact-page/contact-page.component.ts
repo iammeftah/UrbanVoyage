@@ -124,33 +124,28 @@ export class ContactPageComponent implements OnInit  {
     const tealIcon = L.divIcon({
       className: 'city-marker',
       html: `
-          <style>
-            .marker {
-              transition: all 0.3s ease;
-            }
-
-            .marker:hover {
-              transform: scale(1.1);
-            }
-
-            .marker-inner {
-              fill: #14b8a6;
-              transition: all 0.3s ease;
-            }
-
-            .marker .marker-inner:hover {
-              fill: #0d9488;
-            }
-          </style>
-
-          <svg class="marker" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-            <path class="marker-inner" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-          </svg>
-        `,
+      <style>
+        .marker {
+          transition: all 0.3s ease;
+        }
+        .marker:hover {
+          transform: scale(1.1);
+        }
+        .marker-inner {
+          fill: #14b8a6;
+          transition: all 0.3s ease;
+        }
+        .marker .marker-inner:hover {
+          fill: #0d9488;
+        }
+      </style>
+      <svg class="marker" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+        <path class="marker-inner" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+      </svg>
+    `,
       iconSize: [24, 24],
       iconAnchor: [12, 24]
     });
-
 
     this.map = L.map('map', {
       center: [32.4279, -6.3418], // Center map around Morocco initially
@@ -163,26 +158,22 @@ export class ContactPageComponent implements OnInit  {
     }).addTo(this.map);
 
     this.locations.forEach(location => {
+      const popupContent = `
+      <div class="popup-content">
+        <h3 class="text-lg font-bold">${location.name.toUpperCase()}</h3>
+      </div>
+    `;
+
       L.marker([location.lat, location.lng], { icon: tealIcon })
         .addTo(this.map!)
-        .bindPopup(`<b>${location.name}</b><br>${location.address}`);
+        .bindPopup(popupContent, {
+          maxWidth: 300,
+          className: 'custom-popup'
+        });
     });
 
     const bounds = L.latLngBounds(this.locations.map(loc => [loc.lat, loc.lng]));
     this.map.fitBounds(bounds, { padding: [50, 50] });
-  }
-
-  showLocationOnMap(location: AgencyLocation) {
-    if (this.map) {
-      this.map.flyTo([location.lat, location.lng], 14, {
-        duration: 4,  // Animation duration in seconds
-        easeLinearity: 0.5,  // Animation easing
-        zoom: { animate: true }
-      });
-
-      // Scroll to the map section
-      this.mapSection.nativeElement.scrollIntoView({ behavior: 'smooth' });
-    }
   }
 
 

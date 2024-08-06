@@ -2,7 +2,10 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "types": ["googlemaps"],
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "types": ["googlemaps" , "leaflet", "leaflet-routing-machine"],
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,

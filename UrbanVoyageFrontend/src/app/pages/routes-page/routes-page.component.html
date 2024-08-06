@@ -214,13 +214,17 @@
 </div>
 
 <!-- Map Modal -->
-<div data-aos="fade" *ngIf="isMapModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-  <div data-aos="zoom-in" class="bg-white dark:bg-gray-800 w-4/5 h-4/5 rounded-lg overflow-hidden shadow-xl">
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" data-aos="fade" *ngIf="isMapModalOpen">
+  <div class="bg-white dark:bg-[#222222] w-4/5 h-4/5 rounded-lg overflow-hidden shadow-xl" data-aos="zoom-in">
     <div class="relative w-full h-full">
-      <app-morocco-map (citiesSelected)="onCitiesSelected($event)"  (searchRoutes)="onSearchRoutes()" (closeModal)="closeMapModal()">></app-morocco-map>
-      <button (click)="closeMapModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+      <app-morocco-map
+        (citiesSelected)="onCitiesSelected($event)"
+        (closeModal)="closeMapModal()"
+        (searchRoutes)="onSearchRoutes()">
+      </app-morocco-map>
+      <button (click)="closeMapModal()" class="absolute top-4 right-4 text-[#555555] hover:text-[#333333]">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
         </svg>
       </button>
     </div>

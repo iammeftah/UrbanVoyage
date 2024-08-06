@@ -1,6 +1,27 @@
 import { Component, OnInit, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import * as L from 'leaflet';
 import { locations } from '../../data/locations.data';
+import 'leaflet-routing-machine';
+
+
+// Update the declaration to extend existing types
+
+declare module 'leaflet' {
+  namespace Routing {
+    type CustomRoutingControlOptions = L.Routing.RoutingControlOptions & {
+      waypoints: L.LatLng[];
+      lineOptions?: Partial<L.Routing.LineOptions>;
+    };
+
+    function control(options?: CustomRoutingControlOptions): Control;
+
+    interface Control extends L.Control {
+      addTo(map: L.Map): this;
+      on(event: string, fn: (e: any) => void): this;
+    }
+  }
+}
+
 
 @Component({
   selector: 'app-morocco-map',
@@ -11,6 +32,8 @@ export class MoroccoMapComponent implements OnInit, AfterViewInit {
   @Output() citiesSelected = new EventEmitter<{ departure: string, arrival: string, distance: number }>();
   @Output() closeModal = new EventEmitter<void>();
   @Output() searchRoutes = new EventEmitter<void>();
+
+  private routingControl: L.Routing.Control | null = null;
 
   private map!: L.Map;
   departureCity: string | null = null;
@@ -57,7 +80,7 @@ export class MoroccoMapComponent implements OnInit, AfterViewInit {
       onAdd: () => {
         const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
         container.innerHTML = `
-          <button class="reset-zoom bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded">
+          <button class="bg-teal-600 hover:bg-teal-700 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white dark:text-darkText shadow transition-colors  disabled:opacity-50 duration-300">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V4a2 2 0 00-2-2H4zm3 3a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1z" clip-rule="evenodd" />
             </svg>
@@ -172,40 +195,41 @@ export class MoroccoMapComponent implements OnInit, AfterViewInit {
       const arrival = locations.find(loc => loc.name === this.arrivalCity);
 
       if (departure && arrival) {
-        this.clearRoute();
-        this.routeLine = L.polyline([], {
-          color: '#14b8a6',
-          weight: 4,
-          opacity: 0.8,
-          dashArray: '10, 10'
-        }).addTo(this.map);
+        if (this.routingControl) {
+          this.map.removeControl(this.routingControl);
+        }
 
-        const points = [
-          [departure.lat, departure.lng],
-          [arrival.lat, arrival.lng]
-        ];
-
-        let i = 0;
-        const animateRoute = () => {
-          if (i < points.length) {
-            this.routeLine?.addLatLng(points[i] as L.LatLngExpression);
-            i++;
-            requestAnimationFrame(animateRoute);
-          } else {
-            this.map.fitBounds(this.routeLine!.getBounds(), { padding: [50, 50], duration: 0.3 });
+        const routingControlOptions: L.Routing.CustomRoutingControlOptions = {
+          waypoints: [
+            L.latLng(departure.lat, departure.lng),
+            L.latLng(arrival.lat, arrival.lng)
+          ],
+          routeWhileDragging: true,
+          showAlternatives: false,
+          fitSelectedRoutes: true,
+          lineOptions: {
+            styles: [{ color: '#14b8a6', weight: 4 }],
+            extendToWaypoints: true,
+            missingRouteTolerance: 0
           }
         };
 
-        animateRoute();
-        this.distance = this.calculateDistance(departure, arrival);
+        this.routingControl = L.Routing.control(routingControlOptions).addTo(this.map);
+
+        this.routingControl.on('routesfound', (e: any) => {
+          const routes = e.routes;
+          const summary = routes[0].summary;
+          this.distance = Math.round(summary.totalDistance / 1000); // Convert to km
+          this.updateFooter();
+        });
       }
     }
   }
 
   private clearRoute(): void {
-    if (this.routeLine) {
-      this.map.removeLayer(this.routeLine);
-      this.routeLine = null;
+    if (this.routingControl) {
+      this.map.removeControl(this.routingControl);
+      this.routingControl = null;
     }
     this.distance = 0;
   }
@@ -250,5 +274,46 @@ export class MoroccoMapComponent implements OnInit, AfterViewInit {
 
   closeMapModal(): void {
     this.closeModal.emit();
+  }
+
+
+
+  departureSearch: string = '';
+  arrivalSearch: string = '';
+  filteredDepartureCities: any[] = [];
+  filteredArrivalCities: any[] = [];
+
+  // ... existing methods ...
+
+  filterCities(type: 'departure' | 'arrival') {
+    const searchTerm = type === 'departure' ? this.departureSearch.toLowerCase() : this.arrivalSearch.toLowerCase();
+    const filteredCities = locations.filter(city =>
+      city.name.toLowerCase().includes(searchTerm)
+    );
+
+    if (type === 'departure') {
+      this.filteredDepartureCities = filteredCities;
+    } else {
+      this.filteredArrivalCities = filteredCities;
+    }
+  }
+
+  selectCity(type: 'departure' | 'arrival', city: any) {
+    if (type === 'departure') {
+      this.departureCity = city.name;
+      this.departureSearch = city.name;
+      this.filteredDepartureCities = [];
+    } else {
+      this.arrivalCity = city.name;
+      this.arrivalSearch = city.name;
+      this.filteredArrivalCities = [];
+    }
+
+    this.setActiveMarker(city.name);
+    this.map.setView([city.lat, city.lng], 7);
+
+    if (this.departureCity && this.arrivalCity) {
+      this.drawRoute();
+    }
   }
 }

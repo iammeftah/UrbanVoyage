@@ -32,7 +32,7 @@ public class FaqService {
                 .orElseThrow(() -> new RuntimeException("FAQ not found with id: " + id));
 
         faq.setQuestion(faqDetails.getQuestion());
-        faq.setAnswer(faqDetails.getAnswer());  // Changed from isAnswer to getAnswer
+        faq.setAnswer(faqDetails.getAnswer());
 
         return faqRepository.save(faq);
     }
