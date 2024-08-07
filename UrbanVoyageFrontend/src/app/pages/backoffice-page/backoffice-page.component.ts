@@ -942,75 +942,79 @@ export class BackofficePageComponent implements OnInit {
 
 
   createAllRoutes(): void {
-    this.loading = true ;
-
-    const createdRoutes: Set<string> = new Set(); // To keep track of routes already created
-
-    // Create a set of existing route keys
+    this.loading = true;
+    const createdRoutes: Set<string> = new Set();
     const existingRouteKeys: Set<string> = new Set(
       this.routes.map(route => `${route.departureCity}-${route.arrivalCity}`)
     );
+    const routePromises: Promise<void>[] = [];
+    const errors: string[] = [];
+
+    console.log(`Starting to create routes. Total locations: ${this.locations.length}`);
 
     for (let i = 0; i < this.locations.length; i++) {
-      for (let j = i + 1; j < this.locations.length; j++) {
-        const departureCity = this.locations[i].name;
-        const arrivalCity = this.locations[j].name;
-        const boughtTicket = 0;
+      for (let j = 0; j < this.locations.length; j++) {
+        if (i !== j) {
+          const departureCity = this.locations[i].name;
+          const arrivalCity = this.locations[j].name;
+          const routeKey = `${departureCity}-${arrivalCity}`;
 
-        // Create a unique identifier for the route
-        const routeKey = `${departureCity}-${arrivalCity}`;
-        const reverseRouteKey = `${arrivalCity}-${departureCity}`;
+          console.log(`Processing route: ${routeKey}`);
 
-        // Check if this route or its reverse hasn't been created yet and doesn't exist
-        if (!createdRoutes.has(routeKey) && !createdRoutes.has(reverseRouteKey) &&
-          !existingRouteKeys.has(routeKey) && !existingRouteKeys.has(reverseRouteKey)) {
+          if (createdRoutes.has(routeKey) || existingRouteKeys.has(routeKey)) {
+            console.log(`Skipping ${routeKey} - already exists`);
+            continue;
+          }
+
+          if (!this.cityDistances[departureCity] || !this.cityDistances[departureCity][arrivalCity]) {
+            console.log(`Skipping ${routeKey} - distance data missing`);
+            errors.push(`Missing distance data for ${routeKey}`);
+            continue;
+          }
+
           const distance = this.cityDistances[departureCity][arrivalCity];
 
           const newRoute: Partial<Route> = {
             departureCity: departureCity,
             arrivalCity: arrivalCity,
             distance: distance,
-            boughtTicket: boughtTicket
+            boughtTicket: 0
           };
 
-          this.routeService.addRoute(newRoute as Route).subscribe({
-            next: (route) => {
-              console.log(`Route added: ${departureCity} to ${arrivalCity}`);
-              this.routes.push(route);
-              createdRoutes.add(routeKey);
-              existingRouteKeys.add(routeKey);
-            },
-            error: (error) => {
-              console.error(`Error adding route from ${departureCity} to ${arrivalCity}:`, error);
-            }
+          const routePromise = new Promise<void>((resolve, reject) => {
+            this.routeService.addRoute(newRoute as Route).subscribe({
+              next: (route) => {
+                console.log(`Route added: ${departureCity} to ${arrivalCity}`);
+                this.routes.push(route);
+                createdRoutes.add(routeKey);
+                existingRouteKeys.add(routeKey);
+                resolve();
+              },
+              error: (error) => {
+                console.error(`Error adding route from ${departureCity} to ${arrivalCity}:`, error);
+                errors.push(`Failed to add route ${routeKey}: ${error.message}`);
+                reject(error);
+              }
+            });
           });
 
-          // Create the reverse route as well
-          const reverseRoute: Partial<Route> = {
-            departureCity: arrivalCity,
-            arrivalCity: departureCity,
-            distance: distance,
-            boughtTicket: boughtTicket
-          };
-
-          this.routeService.addRoute(reverseRoute as Route).subscribe({
-            next: (route) => {
-              console.log(`Reverse route added: ${arrivalCity} to ${departureCity}`);
-              this.routes.push(route);
-              createdRoutes.add(reverseRouteKey);
-              existingRouteKeys.add(reverseRouteKey);
-            },
-            error: (error) => {
-              console.error(`Error adding reverse route from ${arrivalCity} to ${departureCity}:`, error);
-            }
-          });
+          routePromises.push(routePromise);
         }
       }
     }
 
-    // After all routes are created, reload the routes
-    setTimeout(() => this.loadRoutes(), 5000); // Wait for 5 seconds before reloading
-    this.loading = false;
+    Promise.all(routePromises).then(() => {
+      console.log('All routes processed');
+      this.loadRoutes();
+      this.loading = false;
+      if (errors.length > 0) {
+        console.error('Errors encountered:', errors);
+        // You might want to display these errors to the user
+      }
+    }).catch((error) => {
+      console.error('Error creating routes:', error);
+      this.loading = false;
+    });
   }
 
 

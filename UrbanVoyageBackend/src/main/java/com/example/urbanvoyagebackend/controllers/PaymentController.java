@@ -14,9 +14,7 @@ import com.example.urbanvoyagebackend.service.media.EmailService;
 import com.example.urbanvoyagebackend.service.travel.PassengerService;
 import com.example.urbanvoyagebackend.service.travel.PaymentService;
 import com.example.urbanvoyagebackend.service.travel.TicketService;
-import com.stripe.model.Charge;
-import com.stripe.model.PaymentIntent;
-import com.stripe.model.Refund;
+import com.stripe.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -30,7 +28,9 @@ import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import com.stripe.model.Refund;
 import com.stripe.param.RefundCreateParams;
@@ -121,13 +121,35 @@ public class PaymentController {
 
                 reservation.setStatus(Reservation.ReservationStatus.CONFIRMED);
 
+                // Save the payment information
+                Payment payment = new Payment();
+                payment.setReservation(reservation);
+                payment.setAmount(session.getAmountTotal() / 100.0); // Stripe amounts are in cents
+                payment.setStatus("COMPLETED");
+                payment.setPaymentDate(new Date());
+                payment.setStripePaymentIntentId(session.getPaymentIntent());
+
+                // Retrieve the Charge ID
+                if (session.getPaymentIntent() != null) {
+                    try {
+                        PaymentIntent paymentIntent = PaymentIntent.retrieve(session.getPaymentIntent());
+                        String chargeId = paymentIntent.getLatestCharge();
+                        if (chargeId != null) {
+                            payment.setStripeChargeId(chargeId);
+                        }
+                    } catch (StripeException e) {
+                        // Log the error but continue with saving the payment
+                        System.err.println("Error retrieving Stripe Charge ID: " + e.getMessage());
+                    }
+                }
+
+                paymentService.savePayment(payment);
+
                 Route route = reservation.getRoute();
-                System.out.println("Increasing bought ticket count for route: {}"+ route.getRouteID());
+                System.out.println("Increasing bought ticket count for route: " + route.getRouteID());
                 route.increaseBoughtTicket();
                 Route savedRoute = routeRepository.save(route);
-                System.out.println("Updated bought ticket count: {}"+ savedRoute.getBoughtTicket());
-
-                routeRepository.save(route);
+                System.out.println("Updated bought ticket count: " + savedRoute.getBoughtTicket());
 
                 reservationRepository.save(reservation);
 
