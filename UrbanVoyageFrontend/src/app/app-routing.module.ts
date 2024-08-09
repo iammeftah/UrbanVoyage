@@ -39,7 +39,7 @@ const routes: Routes = [
   { path: 'unauthorized', component: UnauthorizedPageComponent, title: 'Unauthorized' },
   { path: 'success', component: SuccessPaymentComponent, title: 'Payment Successful' },
   { path: 'cancel', component: CancelPaymentComponent, title: 'Payment Cancelled' },
-  { path: 'client-space', component: ClientDashboardComponent, canActivate: [ClientGuard], title: 'Client Dashboard' },
+  { path: 'client-space', component: ClientDashboardComponent, canActivate: [ClientGuard], title: 'Client Space' },
   { path: 'oauth2/redirect', component: OAuthRedirectComponent, title: 'OAuth Redirect' },
   { path: 'reset-password', component: ResetPasswordPageComponent, title: 'Reset Password' },
 

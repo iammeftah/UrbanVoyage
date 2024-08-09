@@ -2,6 +2,7 @@ package com.example.urbanvoyagebackend.controllers;
 
 import com.example.urbanvoyagebackend.entity.travel.Route;
 import com.example.urbanvoyagebackend.repository.travel.RouteRepository;
+import com.example.urbanvoyagebackend.service.travel.DistanceService;
 import com.example.urbanvoyagebackend.service.travel.RouteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,8 @@ public class RouteController {
     private RouteService routeService;
     @Autowired
     private RouteRepository routeRepository;
+    @Autowired
+    private DistanceService distanceService;
 
 
     @GetMapping("/search-route")
