@@ -8,8 +8,7 @@ import { User } from "../../models/user.model";
 import { Reservation } from "../../models/reservation.model";
 import { PassengerService } from "../../services/passenger.service";
 import { Passenger } from "../../models/passenger.model";
-import {PricingService} from "../../services/pricing.service";
-import {DistanceService} from "../../services/distance.service";
+
 import {PaymentService} from "../../services/payment.service";
 
 @Component({
