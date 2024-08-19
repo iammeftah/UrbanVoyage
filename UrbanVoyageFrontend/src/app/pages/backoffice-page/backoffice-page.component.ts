@@ -58,6 +58,8 @@ export class BackofficePageComponent implements OnInit {
   isEditingSchedule: boolean = false;
   editingRoute: Route | null = null;
   editingSchedule: Schedule | null = null;
+  editingSponsor: Sponsor | null = null;
+  editingFAQ: FAQ | null = null;
 
   seatType: 'STANDARD' | 'PREMIUM' | 'VIP' = 'STANDARD' ;
 
@@ -1227,12 +1229,12 @@ export class BackofficePageComponent implements OnInit {
     );
   }
 
-  sponsorLoding : boolean = false;
+  sponsorLoading : boolean = false;
 
   addSponsor(): void {
-    this.sponsorLoding=true;
+    this.sponsorLoading=true;
     if(!this.newSponsor.name || !this.newSponsor.website || !this.newSponsor.imageUrl){
-      this.sponsorLoding = false;
+      this.sponsorLoading = false;
       this.showMessage("Please fill all sponsor fields.",'error');
       return ;
     }
@@ -1240,30 +1242,68 @@ export class BackofficePageComponent implements OnInit {
       sponsor => {
         this.sponsors.push(sponsor);
         this.newSponsor = { name: '', imageUrl: '', website: '' };
-        this.sponsorLoding = false;
+        this.sponsorLoading = false;
 
         this.showMessage("Sponsor added successfully.",'success');
 
       },
       error => {
         this.showMessage("Error adding sponsor.",'error');
-        this.sponsorLoding = false;
+        this.sponsorLoading = false;
       }
 
   );
   }
 
   updateSponsor(sponsor: Sponsor): void {
-    this.sponsorService.updateSponsor(sponsor.id!, sponsor).subscribe(
-      updatedSponsor => {
-        const index = this.sponsors.findIndex(s => s.id === updatedSponsor.id);
-        if (index !== -1) {
-          this.sponsors[index] = updatedSponsor;
-        }
-      },
-      error => console.error('Error updating sponsor:', error)
-    );
+    this.editingSponsor = sponsor;
+    this.newSponsor = { ...sponsor };
   }
+
+  addOrUpdateSponsor(): void {
+    this.sponsorLoading = true;
+    if(!this.newSponsor.name || !this.newSponsor.website || !this.newSponsor.imageUrl){
+      this.sponsorLoading = false;
+      this.showMessage("Please fill all sponsor fields.",'error');
+      return;
+    }
+
+    if (this.editingSponsor) {
+      // Update existing sponsor
+      this.sponsorService.updateSponsor(this.editingSponsor.id!, this.newSponsor).subscribe(
+        updatedSponsor => {
+          const index = this.sponsors.findIndex(s => s.id === updatedSponsor.id);
+          if (index !== -1) {
+            this.sponsors[index] = updatedSponsor;
+          }
+          this.resetSponsorForm();
+          this.showMessage("Sponsor updated successfully.",'success');
+        },
+        error => {
+          this.showMessage("Error updating sponsor.",'error');
+        }
+      ).add(() => this.sponsorLoading = false);
+    } else {
+      // Add new sponsor
+      this.sponsorService.createSponsor(this.newSponsor).subscribe(
+        sponsor => {
+          this.sponsors.push(sponsor);
+          this.resetSponsorForm();
+          this.showMessage("Sponsor added successfully.",'success');
+        },
+        error => {
+          this.showMessage("Error adding sponsor.",'error');
+        }
+      ).add(() => this.sponsorLoading = false);
+    }
+  }
+
+  resetSponsorForm(): void {
+    this.newSponsor = { name: '', imageUrl: '', website: '' };
+    this.editingSponsor = null;
+  }
+
+
 
   deleteSponsor(id: number): void {
     this.sponsorService.deleteSponsor(id).subscribe(
@@ -1318,6 +1358,13 @@ export class BackofficePageComponent implements OnInit {
     });
   }
 
+
+
+  startEditingFAQ(faq: FAQ) {
+    this.editingFAQ = faq;
+    this.newFAQ = { ...faq };
+  }
+
   editFAQ(faq: FAQ) {
     const updatedFAQ: FAQ = { ...faq };
     this.faqService.updateFAQ(faq.id!, updatedFAQ).subscribe({
@@ -1327,6 +1374,7 @@ export class BackofficePageComponent implements OnInit {
           this.faqs[index] = updatedFAQ;
         }
         this.showMessage('FAQ updated successfully', 'success');
+        this.resetFAQForm();
         this.cdr.detectChanges();
       },
       error: (error) => {
@@ -1334,6 +1382,51 @@ export class BackofficePageComponent implements OnInit {
         this.showMessage('Failed to update FAQ', 'error');
       }
     });
+  }
+
+  addOrUpdateFAQ(): void {
+    this.faqLoading = true;
+    if(!this.newFAQ.question || !this.newFAQ.answer){
+      this.faqLoading = false;
+      this.showMessage("Please fill all FAQ fields.",'error');
+      return;
+    }
+
+    if (this.editingFAQ) {
+      // Update existing FAQ
+      this.faqService.updateFAQ(this.editingFAQ.id!, this.newFAQ).subscribe({
+        next: (updatedFAQ) => {
+          const index = this.faqs.findIndex(f => f.id === updatedFAQ.id);
+          if (index !== -1) {
+            this.faqs[index] = updatedFAQ;
+          }
+          this.resetFAQForm();
+          this.showMessage("FAQ updated successfully.",'success');
+        },
+        error: (error) => {
+          console.error('Error updating FAQ:', error);
+          this.showMessage("Error updating FAQ.",'error');
+        }
+      }).add(() => this.faqLoading = false);
+    } else {
+      // Add new FAQ
+      this.faqService.createFAQ(this.newFAQ).subscribe({
+        next: (createdFAQ) => {
+          this.faqs.push(createdFAQ);
+          this.resetFAQForm();
+          this.showMessage("FAQ added successfully.",'success');
+        },
+        error: (error) => {
+          console.error('Error adding FAQ:', error);
+          this.showMessage("Error adding FAQ.",'error');
+        }
+      }).add(() => this.faqLoading = false);
+    }
+  }
+
+  resetFAQForm(): void {
+    this.newFAQ = { question: '', answer: '', isOpen: false };
+    this.editingFAQ = null;
   }
 
   deleteFAQ(id: number) {
