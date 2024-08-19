@@ -158,6 +158,7 @@ export class BackofficePageComponent implements OnInit {
     // this.loadStatistics();
     this.initializeGoogleMaps();
     this.loadReservations();
+    this.loadRefundRequests();
     this.loadContactMessages();
     this.loadDestinations();
     this.loadUnreadMessageCount();
