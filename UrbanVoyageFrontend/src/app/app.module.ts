@@ -92,6 +92,7 @@ export function initializeApp() {
     MoroccoSVGComponent,
 
 
+
   ],
   imports: [
     BrowserModule,
