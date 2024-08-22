@@ -10,11 +10,60 @@
   @apply focus:outline-none;
 }
 
-input{
-  @apply border-gray-200 caret-teal-500 dark:border-gray-500 hover:border-teal-500 dark:hover:border-teal-500  bg-lightBackground dark:bg-[#444444]  focus:border-teal-500 dark:focus:border-teal-500
+input {
+  border: 1px solid #e5e7eb; /* border-gray-200 */
+  caret-color: #0d9488; /* caret-teal-500 */
+  background-color: #f9fafb; /* bg-lightBackground */
+  transition: border-color 0.3s; /* Add smooth transition for border color */
 }
-.input{
-  @apply border-gray-200 caret-teal-500 dark:border-gray-500 hover:border-teal-500 dark:hover:border-teal-500  bg-lightBackground dark:bg-[#444444]  focus:border-teal-500 dark:focus:border-teal-500
+
+input:focus {
+  border-color: #0d9488; /* focus:border-teal-500 */
+}
+
+input:hover {
+  border-color: #0d9488; /* hover:border-teal-500 */
+}
+
+input.dark {
+  border-color: #6b7280; /* dark:border-gray-500 */
+  background-color: #444444; /* dark:bg-[#444444] */
+}
+
+input.dark:focus {
+  border-color: #0d9488; /* dark:focus:border-teal-500 */
+}
+
+input.dark:hover {
+  border-color: #0d9488; /* dark:hover:border-teal-500 */
+}
+
+.input {
+  border: 1px solid #e5e7eb; /* border-gray-200 */
+  caret-color: #0d9488; /* caret-teal-500 */
+  background-color: #f9fafb; /* bg-lightBackground */
+  transition: border-color 0.3s; /* Add smooth transition for border color */
+}
+
+.input:focus {
+  border-color: #0d9488; /* focus:border-teal-500 */
+}
+
+.input:hover {
+  border-color: #0d9488; /* hover:border-teal-500 */
+}
+
+.input.dark {
+  border-color: #6b7280; /* dark:border-gray-500 */
+  background-color: #444444; /* dark:bg-[#444444] */
+}
+
+.input.dark:focus {
+  border-color: #0d9488; /* dark:focus:border-teal-500 */
+}
+
+.input.dark:hover {
+  border-color: #0d9488; /* dark:hover:border-teal-500 */
 }
 
 /* Chrome, Edge and Safari */

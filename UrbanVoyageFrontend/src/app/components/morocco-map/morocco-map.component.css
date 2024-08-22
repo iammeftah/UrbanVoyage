@@ -11,14 +11,14 @@
 .city-label {
   font-size: 12px;
   font-weight: bold;
-  color: #4B5563;
-  text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
+  color: #4B5563; /* Equivalent to Tailwind's `text-gray-700` */
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
 }
 
 .leaflet-control-custom button {
   cursor: pointer;
   padding: 6px 10px;
-  @apply bg-teal-500;
+  background-color: #14b8a6; /* Equivalent to Tailwind's `bg-teal-500` */
   color: white;
   border: none;
   border-radius: 4px;
@@ -27,5 +27,5 @@
 }
 
 .leaflet-control-custom button:hover {
-  @apply bg-teal-500;
+  background-color: #0f766e; /* A slightly darker shade for hover state */
 }

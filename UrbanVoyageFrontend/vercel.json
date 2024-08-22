@@ -3,14 +3,17 @@
   "builds": [
     {
       "src": "package.json",
-      "use": "@vercel/node",
-      "config": { "buildCommand": "npm run vercel-build" }
+      "use": "@vercel/node-builder",
+      "config": {
+        "maxLambdaSize": "10mb",
+        "includeFiles": ["dist/**"]
+      }
     }
   ],
   "routes": [
-    { "handle": "filesystem" },
-    { "src": "/assets/(.*)", "dest": "/assets/$1" },
-    { "src": "/favicon.ico", "dest": "/favicon.ico" },
-    { "src": "/(.*)", "dest": "/index.html" }
+    {
+      "src": "/(.*)",
+      "dest": "/dist/urban-voyage-frontend/index.html"
+    }
   ]
 }

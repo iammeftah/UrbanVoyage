@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import {RouterOutlet} from "@angular/router";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { AuthPageComponent } from './pages/auth-page/auth-page.component';
@@ -100,7 +99,6 @@ export function initializeApp() {
     ReactiveFormsModule,
     HttpClientModule,
     FormsModule,
-    RouterOutlet,
     GoogleMapsModule,
   ],
 
