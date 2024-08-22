@@ -3,12 +3,15 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable, tap, throwError} from 'rxjs';
 import {catchError, map} from "rxjs/operators";
+import {environment} from "../environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ResetPasswordService {
-  private apiUrl = 'http://localhost:8080/api/reset-password'; // Replace with your actual API URL
+
+  private baseUrl = environment.baseUrl ;
+  private apiUrl = `${this.baseUrl}/api/reset-password`;
 
   constructor(private http: HttpClient) {}
 

@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {environment} from "../environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ImageService {
-  private apiUrl = `http://localhost:8080/api/background-image`;
+  private baseUrl = environment.baseUrl ;
+  private apiUrl = `${this.baseUrl}/api/background-image`;
 
   constructor(private http: HttpClient) {}
 

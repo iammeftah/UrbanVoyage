@@ -3,12 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Passenger } from '../models/passenger.model';
 import {map} from "rxjs/operators";
+import {environment} from "../environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PassengerService {
-  private apiUrl = 'http://localhost:8080/api/passengers';
+  private baseUrl = environment.baseUrl ;
+  private apiUrl = `${this.baseUrl}/api/passengers`;
 
   constructor(private http: HttpClient) { }
 

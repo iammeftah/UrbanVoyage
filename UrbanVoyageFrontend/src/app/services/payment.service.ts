@@ -4,13 +4,16 @@ import { loadStripe, Stripe } from '@stripe/stripe-js';
 import {firstValueFrom, Observable, throwError} from 'rxjs';
 import { SharedDataService } from './shared-data.service';
 import {catchError} from "rxjs/operators";
+import {environment} from "../environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PaymentService {
   private stripePromise: Promise<Stripe | null>;
-  private apiUrl = 'http://localhost:8080/api/payment';
+
+  private baseUrl = environment.baseUrl ;
+  private apiUrl = `${this.baseUrl}/api/payment`;
 
   constructor(
     private http: HttpClient,

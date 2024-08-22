@@ -4,12 +4,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {AuthService} from "./auth.service";
 import {catchError} from "rxjs/operators";
+import {environment} from "../environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class OAuthService {
-  private baseUrl = 'http://localhost:8080'; // Your Spring Boot backend URL
+  private baseUrl = environment.baseUrl ;
 
   constructor(private http: HttpClient , private authService: AuthService) {}
 

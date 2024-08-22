@@ -4,12 +4,15 @@ import {Observable, Subject, throwError} from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Route } from "../models/route.model";
 import {Router} from "@angular/router";
+import {environment} from "../environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class RouteService {
-  private apiUrl = 'http://localhost:8080/api/routes';
+
+  private baseUrl = environment.baseUrl ;
+  private apiUrl = `${this.baseUrl}/api/routes`;
 
   constructor(private http: HttpClient , private router: Router) { }
 

@@ -4,12 +4,14 @@ import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
+import {environment} from "../environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/api/auth';
+  private baseUrl = environment.baseUrl ;
+  private apiUrl = `${this.baseUrl}/api/auth`;
   private currentUserSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private isAdminSubject = new BehaviorSubject<boolean>(this.getStoredAdminStatus());
 

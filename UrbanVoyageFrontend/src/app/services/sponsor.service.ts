@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {Sponsor} from "../models/sponsor.model";
+import {environment} from "../environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SponsorService {
-  private apiUrl = 'http://localhost:8080/api/sponsors';
+  private baseUrl = environment.baseUrl ;
+  private apiUrl = `${this.baseUrl}/api/sponsors`;
 
   constructor(private http: HttpClient) { }
 

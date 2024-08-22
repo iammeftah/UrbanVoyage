@@ -3,12 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import {Observable, tap} from 'rxjs';
 import { FAQ } from '../models/faq.model';
 import {map} from "rxjs/operators";
+import {environment} from "../environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class FaqService {
-  private apiUrl = 'http://localhost:8080/api/faqs';
+  private baseUrl = environment.baseUrl ;
+  private apiUrl = `${this.baseUrl}/api/faqs`;
 
   constructor(private http: HttpClient) { }
 

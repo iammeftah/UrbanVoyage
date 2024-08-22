@@ -4,12 +4,15 @@ import { Observable, catchError, tap, throwError } from 'rxjs';
 import { Reservation } from '../models/reservation.model';
 import {PaymentService} from "./payment.service";
 import {AuthService} from "./auth.service";
+import {environment} from "../environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservationService {
-  private apiUrl = 'http://localhost:8080/api/reservations';
+
+  private baseUrl = environment.baseUrl ;
+  private apiUrl = `${this.baseUrl}/api/reservations`;
 
   constructor(private http: HttpClient ,private paymentService: PaymentService,private authService:AuthService) { }
 

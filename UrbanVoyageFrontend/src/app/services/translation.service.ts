@@ -2,13 +2,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
+import {environment} from "../environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class TranslationService {
   private currentLang = new BehaviorSubject<string>('en');
-  private apiUrl = 'http://localhost:8080/api/translate';
+  private baseUrl = environment.baseUrl ;
+  private apiUrl = `${this.baseUrl}/api/translate`;
 
   constructor(private http: HttpClient) {}
 

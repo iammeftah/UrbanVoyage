@@ -7,12 +7,15 @@ import {Route} from "../models/route.model";
 import {DistanceService} from "./distance.service";
 import {PricingService} from "./pricing.service";
 import {locations} from "../data/locations.data";
+import {environment} from "../environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ScheduleService {
-  private apiUrl = 'http://localhost:8080/api/schedules';
+  private baseUrl = environment.baseUrl ;
+  private apiUrl = `${this.baseUrl}/api/schedules`;
+
   private discountDates: { [key: string]: number } = {};
 
   constructor(

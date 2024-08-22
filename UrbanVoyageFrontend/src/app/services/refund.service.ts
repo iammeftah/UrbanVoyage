@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {environment} from "../environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class RefundService {
-  private apiUrl = 'http://localhost:8080/api/refunds'; // Adjust this to your API URL
+  private baseUrl = environment.baseUrl ;
+  private apiUrl = `${this.baseUrl}/api/refunds`;
 
   constructor(private http: HttpClient) {}
 
