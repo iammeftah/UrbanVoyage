@@ -52,7 +52,6 @@ export function initializeApp() {
   };
 }
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -73,7 +72,7 @@ export function initializeApp() {
     SponsorsComponent,
     VerifyEmailComponent,
     MessageComponent,
-    LoadingSpinnerComponent,
+    LoadingSpinnerComponent,  // Make sure this line is present
     BackofficePageComponent,
     UnauthorizedPageComponent,
     PaymentComponent,
@@ -89,9 +88,6 @@ export function initializeApp() {
     LandingAnimationComponent,
     UrbanVoyage3DComponent,
     MoroccoSVGComponent,
-
-
-
   ],
   imports: [
     BrowserModule,
@@ -101,8 +97,6 @@ export function initializeApp() {
     FormsModule,
     GoogleMapsModule,
   ],
-
-
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     {
@@ -112,8 +106,6 @@ export function initializeApp() {
       multi: true
     },
     ImageService
-
-
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
