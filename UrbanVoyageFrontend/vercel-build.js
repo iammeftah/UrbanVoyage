@@ -1,8 +1,5 @@
 const { execSync } = require('child_process');
+const path = require('path');
 
-try {
-  execSync('ng build --configuration production', { stdio: 'inherit' });
-} catch (error) {
-  console.error('Build failed');
-  process.exit(1);
-}
+const projectDir = path.resolve(__dirname, 'dist/urban-voyage-frontend');
+execSync('ng build --configuration production', { stdio: 'inherit' });
